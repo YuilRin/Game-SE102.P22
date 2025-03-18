@@ -21,9 +21,10 @@ void Enemy::Update(float elapsedTime) {
     x += dirX * speed;
     //y += dirY * speed;
 
-    if (x <= 0 || x + 30 >= 800) {
+    if (x <= 0 || x + 20 >= 800) {
         dirX *= -1; // Đảo hướng
     }
+
     // Chuyển đổi animation
     if (dirX > 0) {
         currentAnimation = &rightAnimation;

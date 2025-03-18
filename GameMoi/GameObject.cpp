@@ -5,6 +5,8 @@ void GameObject::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
         spriteBatch->Draw(texture, DirectX::XMFLOAT2(x, y));
     }
 }
+
+
 /*
 #include "GameObject.h"
 

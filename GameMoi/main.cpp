@@ -52,15 +52,28 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     ID3D11ShaderResourceView* player3 = nullptr;
     ID3D11ShaderResourceView* player4 = nullptr;
 
-    DirectX::CreateWICTextureFromFile(device, context, L"player.png", nullptr, &player1);
-    DirectX::CreateWICTextureFromFile(device, context, L"player.png", nullptr, &player2);
-    DirectX::CreateWICTextureFromFile(device, context, L"player.png", nullptr, &player3);
-    DirectX::CreateWICTextureFromFile(device, context, L"player.png", nullptr, &player4);
+    ID3D11ShaderResourceView* player13 = nullptr;
+    ID3D11ShaderResourceView* player23= nullptr;
+    ID3D11ShaderResourceView* player33 = nullptr;
+    ID3D11ShaderResourceView* player43 = nullptr;
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-1.png", nullptr, &player1);
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-2.png", nullptr, &player2);
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-3.png", nullptr, &player3);
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-4.png", nullptr, &player4);
+
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-1-R.png", nullptr, &player13);
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-2-R.png", nullptr, &player23);
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-3-R.png", nullptr, &player33);
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-4-R.png", nullptr, &player43);
 
     playerLeftFrames.push_back(player1);
     playerLeftFrames.push_back(player2);
-    playerRightFrames.push_back(player3);
-    playerRightFrames.push_back(player4);
+    playerLeftFrames.push_back(player3);
+    playerLeftFrames.push_back(player4);
+    playerRightFrames.push_back(player13);
+    playerRightFrames.push_back(player23);
+    playerRightFrames.push_back(player33);
+    playerRightFrames.push_back(player43);
 
     // Tạo Player với ảnh động
     player = std::make_unique<Player>(100.0f, 300.0f, playerLeftFrames, playerRightFrames, 0.15f);
@@ -73,16 +86,29 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     ID3D11ShaderResourceView* enemy2 = nullptr;
     ID3D11ShaderResourceView* enemy3 = nullptr;
     ID3D11ShaderResourceView* enemy4 = nullptr;
+    ID3D11ShaderResourceView* enemy13 = nullptr;
+    ID3D11ShaderResourceView* enemy23 = nullptr;
+    ID3D11ShaderResourceView* enemy33 = nullptr;
+    ID3D11ShaderResourceView* enemy43= nullptr;
 
-    DirectX::CreateWICTextureFromFile(device, context, L"enemy1.png", nullptr, &enemy1);
-    DirectX::CreateWICTextureFromFile(device, context, L"enemy2.png", nullptr, &enemy2);
-    DirectX::CreateWICTextureFromFile(device, context, L"enemy1.png", nullptr, &enemy3);
-    DirectX::CreateWICTextureFromFile(device, context, L"enemy2.png", nullptr, &enemy4);
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-1.png", nullptr, &enemy1);
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-2.png", nullptr, &enemy2);
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-3.png", nullptr, &enemy3);
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-4.png", nullptr, &enemy4);
+
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-1-R.png", nullptr, &enemy13);
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-2-R.png", nullptr, &enemy23);
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-3-R.png", nullptr, &enemy33);
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-4-R.png", nullptr, &enemy43);
 
     enemyLeftFrames.push_back(enemy1);
     enemyLeftFrames.push_back(enemy2);
-    enemyRightFrames.push_back(enemy3);
-    enemyRightFrames.push_back(enemy4);
+    enemyLeftFrames.push_back(enemy3);
+    enemyLeftFrames.push_back(enemy4);
+    enemyRightFrames.push_back(enemy13);
+    enemyRightFrames.push_back(enemy23);
+    enemyRightFrames.push_back(enemy33);
+    enemyRightFrames.push_back(enemy43);
 
     // Tạo danh sách Enemy
     enemies.emplace_back(100, 200, enemyLeftFrames, enemyRightFrames, 0.2f);

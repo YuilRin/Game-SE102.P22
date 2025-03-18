@@ -6,29 +6,29 @@ Player::Player(float x, float y,
     float frameTime)
     : GameObject(x, y), leftAnimation(leftTextures, frameTime), rightAnimation(rightTextures, frameTime) {
     speed = 10.0f;
-    //fireDirection = 0;
-    currentAnimation = &rightAnimation; // M?c ??nh h??ng ph?i
+   
+    currentAnimation = &rightAnimation; 
 }
 
 void Player::HandleInput(WPARAM key) {
     switch (key) {
     case 'A': case VK_LEFT:
         x -= speed;
-        fireDirection = 0;
+       
         currentAnimation = &leftAnimation;
         break;
     case 'D': case VK_RIGHT:
         x += speed;
-        fireDirection = 1;
+   
         currentAnimation = &rightAnimation;
         break;
     case 'W': case VK_UP:
         y -= speed;
-        fireDirection = 2;
+        
         break;
     case 'S': case VK_DOWN:
         y += speed;
-        fireDirection = 3;
+     
         break;
     case 'J':
         //fireballs.push_back({ x, y, fireDirection });
