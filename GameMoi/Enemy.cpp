@@ -4,7 +4,7 @@
 Enemy::Enemy(float x, float y, const std::vector<ID3D11ShaderResourceView*>& leftTextures,
     const std::vector<ID3D11ShaderResourceView*>& rightTextures, float frameTime)
     : GameObject(x, y), leftAnimation(leftTextures, frameTime), rightAnimation(rightTextures, frameTime) {
-    speed = 0.1f;
+    speed = 0.5f;
     dirX = 1;
     dirY = 0;
     lastMoveTime = 0.0f;
@@ -19,8 +19,11 @@ void Enemy::Update(float elapsedTime) {
     }
 
     x += dirX * speed;
-    y += dirY * speed;
+    //y += dirY * speed;
 
+    if (x <= 0 || x + 30 >= 800) {
+        dirX *= -1; // Đảo hướng
+    }
     // Chuyển đổi animation
     if (dirX > 0) {
         currentAnimation = &rightAnimation;

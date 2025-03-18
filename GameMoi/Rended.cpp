@@ -32,7 +32,7 @@ bool Render::Init(HWND hwnd, int width, int height) {
 }
 
 void Render::BeginRender() {
-    float clearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
+    float clearColor[4] = { 1.0f, 1.1f, 1.1f, 1.0f };
     deviceContext->ClearRenderTargetView(renderTargetView, clearColor);
     spriteBatch->Begin();
 }
