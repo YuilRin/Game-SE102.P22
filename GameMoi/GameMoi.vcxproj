@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyObject.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="Player.h" />
@@ -143,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyObject.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />

@@ -42,6 +42,9 @@
     <ClInclude Include="define.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -70,6 +73,9 @@
     </ClCompile>
     <ClCompile Include="TimeSpan.cpp">
       <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyObject.cpp">
+      <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

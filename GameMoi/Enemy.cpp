@@ -4,7 +4,7 @@
 Enemy::Enemy(float x, float y, const std::vector<ID3D11ShaderResourceView*>& leftTextures,
     const std::vector<ID3D11ShaderResourceView*>& rightTextures, float frameTime)
     : GameObject(x, y), leftAnimation(leftTextures, frameTime), rightAnimation(rightTextures, frameTime) {
-    speed = 0.5f;
+    speed = 1.0f;
     dirX = 1;
     dirY = 0;
     lastMoveTime = 0.0f;
