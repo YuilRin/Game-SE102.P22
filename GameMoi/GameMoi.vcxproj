@@ -130,11 +130,11 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Enemy.h" />
-    <ClInclude Include="EnemyObject.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Render.h" />
+    <ClInclude Include="TileMap.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="TimeSpan.h" />
   </ItemGroup>
@@ -144,11 +144,11 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="EnemyObject.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Rended.cpp" />
+    <ClCompile Include="TileMap.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="TimeSpan.cpp" />
   </ItemGroup>
