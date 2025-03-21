@@ -16,7 +16,8 @@ public:
     }
 
     virtual ~GameObject() {}
-
+    float GetX() { 
+        return this->x; };
     virtual void Update(float elapsedTime) = 0;
     virtual void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch);
 };

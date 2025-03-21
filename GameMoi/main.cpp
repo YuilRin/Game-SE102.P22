@@ -6,40 +6,41 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "WICTextureLoader.h"
+#include "TileMap.h"
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-// Kích thước cửa sổ
 const int WIDTH = 800;
 const int HEIGHT = 600;
 
-// Biến toàn cục
 HWND hwnd;
 Render renderer;
 std::unique_ptr<Player> player;
 std::vector<Enemy> enemies;
+std::unique_ptr<TileMap> tileMap;
 
-// Hàm khởi tạo DirectX và các đối tượng game
+
 bool InitGame(HINSTANCE hInstance, int nCmdShow) {
-    // Đăng ký lớp cửa sổ
+    
     WNDCLASS wc = {};
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
     wc.lpszClassName = L"DirectXGame";
     RegisterClass(&wc);
 
-    // Tạo cửa sổ
     hwnd = CreateWindowEx(0, L"DirectXGame", L"DirectX 11 Game",
         WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
         WIDTH, HEIGHT, NULL, NULL, hInstance, NULL);
 
-    if (!hwnd) return false;
+    if (!hwnd) 
+        return false;
+
     ShowWindow(hwnd, nCmdShow);
 
-    // Khởi tạo DirectX
     if (!renderer.Init(hwnd, WIDTH, HEIGHT)) return false;
 
-    // Lấy thiết bị Direct3D từ Render
+    tileMap = std::make_unique<TileMap>(&renderer, 32, 32, WIDTH, HEIGHT);
+
     ID3D11Device* device = renderer.GetDevice();
     ID3D11DeviceContext* context = renderer.GetDeviceContext();
 
@@ -114,10 +115,19 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     enemies.emplace_back(100, 200, enemyLeftFrames, enemyRightFrames, 0.2f);
     enemies.emplace_back(300, 400, enemyLeftFrames, enemyRightFrames, 0.2f);
 
+    std::vector<std::vector<int>> mapData = {
+    { 0, 1, 2, 3, 4, 5, 6 },
+    { 7, 8, 9, 10, 11, 12, 13 },
+    { 14, 15, 16, 17, 18, 19, 20 }
+    };
+
+
+    if (!tileMap->LoadMapData(mapData)) return false;
+    if (!tileMap->LoadTexture(renderer.GetDevice(), L"Image/tileset.png")) return false;
+
     return true;
 }
 
-// Vòng lặp game chính
 void GameLoop() {
     MSG msg = { 0 };
     DWORD prevTime = GetTickCount();
@@ -137,9 +147,12 @@ void GameLoop() {
         for (auto& enemy : enemies) {
             enemy.Update(deltaTime);
         }
+        tileMap->UpdateCamera(player->GetX());
 
         // Vẽ game
         renderer.BeginRender();
+        tileMap->Draw(&renderer);
+
         player->Render(renderer.GetSpriteBatch());
         for (auto& enemy : enemies) {
             enemy.Render(renderer.GetSpriteBatch());
@@ -153,8 +166,9 @@ void HandleInput(WPARAM key) {
     player->HandleInput(key);
 }
 
-// Xử lý sự kiện cửa sổ
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
+{
     switch (uMsg) {
     case WM_KEYDOWN:
         HandleInput(wParam);
@@ -166,9 +180,11 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-// Điểm vào chính của chương trình
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-    if (!InitGame(hInstance, nCmdShow)) return 0;
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+    if (!InitGame(hInstance, nCmdShow)) 
+        return 0;
     GameLoop();
     return 0;
 }

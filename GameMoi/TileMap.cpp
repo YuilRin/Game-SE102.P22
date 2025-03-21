@@ -5,16 +5,20 @@
 using namespace DirectX;  // Gọi trực tiếp các hàm XM
 
 
+TileMap::TileMap() : tileWidth(0), tileHeight(0), mapWidth(0), mapHeight(0), screenWidth(0), screenHeight(0), cameraX(0) {}
+
+
 TileMap::TileMap(Render* render, int tileW, int tileH, int screenW, int screenH)
     : tileWidth(tileW), tileHeight(tileH), screenWidth(screenW), screenHeight(screenH), cameraX(0) {
     spriteBatch = std::make_unique<DirectX::SpriteBatch>(render->GetDeviceContext());
 }
 
 TileMap::~TileMap() {
-    if (texture) texture->Release();
+    if (texture) 
+        texture->Release();
 }
 
-// Load ma tr?n map (ch?a ch? s? các tile)
+
 bool TileMap::LoadMapData(const std::vector<std::vector<int>>& data) {
     if (data.empty()) return false;
     mapData = data;
@@ -23,7 +27,6 @@ bool TileMap::LoadMapData(const std::vector<std::vector<int>>& data) {
     return true;
 }
 
-// Load texture map
 bool TileMap::LoadTexture(ID3D11Device* device, const wchar_t* filename) {
     HRESULT hr = DirectX::CreateWICTextureFromFile(device, filename, nullptr, &texture);
     return SUCCEEDED(hr);
@@ -31,7 +34,7 @@ bool TileMap::LoadTexture(ID3D11Device* device, const wchar_t* filename) {
 
 // C?p nh?t camera theo v? trí nhân v?t
 void TileMap::UpdateCamera(int playerX) {
-    cameraX = playerX - screenWidth / 2; // Camera di chuy?n theo nhân v?t
+    cameraX = playerX - screenWidth / 2; // Camera di chuyen theo nhân vat
     if (cameraX < 0) cameraX = 0;
     if (cameraX > mapWidth * tileWidth - screenWidth) cameraX = mapWidth * tileWidth - screenWidth;
 }
