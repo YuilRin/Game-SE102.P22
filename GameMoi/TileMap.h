@@ -1,5 +1,4 @@
 ﻿#pragma once
-#pragma once
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
@@ -22,10 +21,10 @@ private:
     int cameraX; // Vị trí của camera theo trục X
 
 public:
+   TileMap();
     TileMap(Render* render, int tileW, int tileH, int screenW, int screenH);
     ~TileMap();
-
-    bool LoadMapData(const std::vector<std::vector<int>>& data);
+       bool LoadMapData(const std::vector<std::vector<int>>& data);
     bool LoadTexture(ID3D11Device* device, const wchar_t* filename);
     void UpdateCamera(int playerX);
     void Draw(Render* render);

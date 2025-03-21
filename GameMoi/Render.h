@@ -8,8 +8,8 @@
 
 class Render {
 private:
-    ID3D11Device* device = nullptr;   // ? Gi? nguyên và kh?i t?o luôn
-    ID3D11DeviceContext* deviceContext = nullptr;  // ? S?a tên bi?n cho ?úng
+    ID3D11Device* device = nullptr;   
+    ID3D11DeviceContext* deviceContext = nullptr;  
     IDXGISwapChain* swapChain = nullptr;
     ID3D11RenderTargetView* renderTargetView = nullptr;
     std::unique_ptr<DirectX::SpriteBatch> spriteBatch;
@@ -22,7 +22,7 @@ public:
     void Cleanup();
 
     ID3D11Device* GetDevice() { return device; }
-    ID3D11DeviceContext* GetDeviceContext() { return deviceContext; }  // ? S?a l?i tên bi?n
+    ID3D11DeviceContext* GetDeviceContext() { return deviceContext; }  
 };
 
 #endif // RENDER_H
