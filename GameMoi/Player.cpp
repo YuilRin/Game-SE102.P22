@@ -38,6 +38,10 @@ void Player::HandleInput(WPARAM key) {
 
 void Player::Update(float elapsedTime) {
     currentAnimation->Update(elapsedTime);
+    if (x < 0) x = 0;
+    if (x > 1800) x = 0;
+    if (y < 0) y = 0;
+    if (y > 160) y = 160;
 
    /* for (auto& fireball : fireballs) {
         switch (fireball.direction) {

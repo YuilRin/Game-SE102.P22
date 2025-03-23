@@ -11,7 +11,7 @@
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 const int WIDTH = 800;
-const int HEIGHT = 600;
+const int HEIGHT = 400;
 
 HWND hwnd;
 Render renderer;
@@ -37,9 +37,10 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
 
     ShowWindow(hwnd, nCmdShow);
 
+
     if (!renderer.Init(hwnd, WIDTH, HEIGHT)) return false;
 
-    tileMap = std::make_unique<TileMap>(&renderer, 32, 32, WIDTH, HEIGHT);
+    tileMap = std::make_unique<TileMap>(&renderer, 128, 192, WIDTH, HEIGHT, 256, 192);
 
     ID3D11Device* device = renderer.GetDevice();
     ID3D11DeviceContext* context = renderer.GetDeviceContext();
@@ -77,7 +78,7 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     playerRightFrames.push_back(player43);
 
     // Tạo Player với ảnh động
-    player = std::make_unique<Player>(100.0f, 300.0f, playerLeftFrames, playerRightFrames, 0.15f);
+    player = std::make_unique<Player>(10, 160, playerLeftFrames, playerRightFrames, 0.15f);
 
     // === Load textures cho Enemy ===
     std::vector<ID3D11ShaderResourceView*> enemyLeftFrames;
@@ -116,14 +117,14 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     enemies.emplace_back(300, 400, enemyLeftFrames, enemyRightFrames, 0.2f);
 
     std::vector<std::vector<int>> mapData = {
-    { 0, 1, 2, 3, 4, 5, 6 },
-    { 7, 8, 9, 10, 11, 12, 13 },
-    { 14, 15, 16, 17, 18, 19, 20 }
-    };
-
+        {0,1,2,3,4,5}
+};
 
     if (!tileMap->LoadMapData(mapData)) return false;
-    if (!tileMap->LoadTexture(renderer.GetDevice(), L"Image/tileset.png")) return false;
+    if (!tileMap->LoadTexture(renderer.GetDevice(), L"Image/frame1.png")) return false;
+
+
+
 
     return true;
 }
