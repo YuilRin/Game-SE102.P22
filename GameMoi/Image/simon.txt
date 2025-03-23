@@ -7,11 +7,11 @@ down_and_hit_03		176	0	216	64
 up_and_hit_01		216	0	258	64		
 up_and_hit_02		258	0	289	64		
 up_and_hit_03		290	0	334	64		
-down		334	0	364	64		
-up		364	0	392	64		
-be_hit		395	0	425	64		
+down			334	0	364	64		
+up			364	0	392	64		
+be_hit			395	0	425	64		
 sit_down		429	0	459	48		
-jump		429	0	459	48		
+jump			429	0	459	48		
 stand_and_hit_01	460	0	507	64		
 stand_and_hit_02	510	0	541	64		
 stand_and_hit_03	542	0	584	64		

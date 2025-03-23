@@ -48,12 +48,16 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     // === Load textures cho Player ===
     ID3D11ShaderResourceView* spriteSheet = nullptr;
     DirectX::CreateWICTextureFromFile(device, context, L"Image/simon.jpg", nullptr, &spriteSheet);
-    std::vector<Frame> frames = {
-        {585, 0, 615, 64},
-        {618, 0, 640, 64},
-        {643, 0, 673, 64}
+
+    std::map<PlayerState, Animation> playerAnimations = {
+    {PlayerState::Idle, Animation(spriteSheet, {{585, 0, 615, 64}}, 0.15f)},  // Loop
+    {PlayerState::Walking, Animation(spriteSheet, {{585, 0, 615, 64}, {618, 0, 640, 64}, {643, 0, 673, 64}}, 0.15f)},  // Loop
+    {PlayerState::Jumping, Animation(spriteSheet, {{429, 0, 459, 48}}, 0.15f)},  // Không loop
+    {PlayerState::SitDown, Animation(spriteSheet, {{429, 0, 459, 48}}, 0.15f)}  // Không loop
     };
-    player = std::make_unique<Player>(10, 160, spriteSheet, frames, 0.15f);
+
+
+    player = std::make_unique<Player>(10, 160, playerAnimations);
 
 
     // === Load textures cho Enemy ===

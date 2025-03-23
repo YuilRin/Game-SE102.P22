@@ -5,25 +5,25 @@
 #include "GameObject.h"
 #include <vector>
 #include "Animation.h"
+
+enum class PlayerState { Idle, Walking, Jumping, SitDown };
+
 class Player : public GameObject {
 private:
     float speed;
-
     bool facingLeft;
     float velocityY;
-
+	float velocityX;
+	bool isHolding;
     float _gravity = 9.8f;
     bool _isJumping;
     bool _isAttacking;
     bool isOnGround;
     bool _isDead;
   
-	/* Animation leftAnimation; bỏ đi
-    Animation rightAnimation;
-    Animation* currentAnimation;*/
+    PlayerState state;
 
-    Animation animation;
-
+    std::map<PlayerState, Animation> animations;
 
     //std::map<int, Animation*> _animations;
     //std::vector<Weapon*> _listWeapon;
@@ -32,14 +32,8 @@ private:
   //  StopWatch* _attackStopWatch;
 
 public:
-   /* Player(float x, float y,
-        const std::vector<ID3D11ShaderResourceView*>& leftTextures,
-        const std::vector<ID3D11ShaderResourceView*>& rightTextures,
-        float frameTime);*/
-    Player(float x, float y,
-        ID3D11ShaderResourceView* spriteSheet, 
-        const std::vector<Frame>& frames, 
-        float frameTime);
+ 
+    Player(float x, float y, std::map<PlayerState, Animation> anims);
 
     void HandleInput(WPARAM key);
     void Update(float elapsedTime) override;
