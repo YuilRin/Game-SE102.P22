@@ -1,56 +1,32 @@
-#include "Player.h"
+﻿#include "Player.h"
 
-Player::Player(float x, float y,
-    const std::vector<ID3D11ShaderResourceView*>& leftTextures,
-    const std::vector<ID3D11ShaderResourceView*>& rightTextures,
-    float frameTime)
-    : GameObject(x, y), leftAnimation(leftTextures, frameTime), rightAnimation(rightTextures, frameTime) {
-    speed = 10.0f;
-   
-    currentAnimation = &rightAnimation; 
+Player::Player(float x, float y, ID3D11ShaderResourceView* spriteSheet, const std::vector<Frame>& frames, float frameTime)
+    : GameObject(x, y), animation(spriteSheet, frames, frameTime) {
 }
 
 void Player::HandleInput(WPARAM key) {
-    switch (key) {
-    case 'A': case VK_LEFT:
-        x -= speed;
-       
-        currentAnimation = &leftAnimation;
-        break;
-    case 'D': case VK_RIGHT:
-        x += speed;
-   
-        currentAnimation = &rightAnimation;
-        break;
-    case 'W': case VK_UP:
-        y -= speed;
-        
-        break;
-    case 'S': case VK_DOWN:
-        y += speed;
-     
-        break;
-    case 'J':
-        //fireballs.push_back({ x, y, fireDirection });
-        break;
+    if (key == 'A' || key == VK_LEFT) {
+        x -= 10.0f;
+        facingLeft = true;
+    }
+    if (key == 'D' || key == VK_RIGHT) {
+        x += 10.0f;
+        facingLeft = false;
     }
 }
 
 void Player::Update(float elapsedTime) {
-    currentAnimation->Update(elapsedTime);
-
-   /* for (auto& fireball : fireballs) {
-        switch (fireball.direction) {
-        case 0: fireball.x -= 2.0f; break;
-        case 1: fireball.x += 2.0f; break;
-        case 2: fireball.y -= 2.0f; break;
-        case 3: fireball.y += 2.0f; break;
+    if (!isOnGround) {
+        velocityY += _gravity * elapsedTime; // Giả lập trọng lực
+        y += velocityY;
+        if (y >= 320) { // Giới hạn y để dừng lại khi chạm mặt đất
+            y = 320;
+            velocityY = 0;
+            isOnGround = true;
         }
-    }*/
-}
-
-void Player::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
-    if (currentAnimation) {
-        currentAnimation->Render(spriteBatch, x, y);
     }
+    animation.Update(elapsedTime);
+}
+void Player::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
+    animation.Render(spriteBatch, x, y,facingLeft);
 }
