@@ -11,7 +11,7 @@
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 const int WIDTH = 800;
-const int HEIGHT = 400;
+const int HEIGHT = 600;
 
 HWND hwnd;
 Render renderer;
@@ -122,8 +122,6 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
 
     if (!tileMap->LoadMapData(mapData)) return false;
     if (!tileMap->LoadTexture(renderer.GetDevice(), L"Image/frame1.png")) return false;
-
-
 
 
     return true;

@@ -10,7 +10,7 @@ TileMap::TileMap() : tileWidth(0), tileHeight(0), mapWidth(0), mapHeight(0), scr
 
 
 TileMap::TileMap(Render* render, int tileW, int tileH, int screenW, int screenH, int camW,int camH)
-    : tileWidth(tileW), tileHeight(tileH), screenWidth(screenW), screenHeight(screenH), cameraX(0) {
+    : tileWidth(tileW), tileHeight(tileH), screenWidth(screenW), screenHeight(screenH), camWidth(camW), camHeight(camH), cameraX(0) {
     spriteBatch = std::make_unique<DirectX::SpriteBatch>(render->GetDeviceContext());
 
 }
@@ -43,8 +43,8 @@ void TileMap::UpdateCamera(int playerX) {
     // Giới hạn camera trong bản đồ
     if (cameraX < 0)
         cameraX = 0;
-    if (cameraX > mapWidth * tileWidth - camWidth)
-        cameraX = mapWidth * tileWidth - camWidth;
+    //if (cameraX > mapWidth * tileWidth - camWidth)
+    //    cameraX = mapWidth * tileWidth - camWidth;
 }
 
 
@@ -58,11 +58,12 @@ void TileMap::Draw(Render* render) {
         for (int x = 0; x < mapWidth; x++) {
             int tileID = mapData[y][x];
             if (tileID == -1) continue; // Không vẽ ô trống
-
+            int xScale = screenWidth / camWidth;
+            int yScale = screenHeight/ camHeight;
+    
             RECT srcRect = { tileID * tileWidth, 0, (tileID + 1) * tileWidth*2, tileHeight };
-            XMFLOAT2 pos(x * tileWidth*2 - cameraX, y *2* tileHeight);
-
-            spriteBatch->Draw(texture, pos, &srcRect, Colors::White, 0.0f, XMFLOAT2(0, 0), 2);
+            XMFLOAT2 pos(x * xScale * tileWidth - cameraX, y * yScale * tileHeight);
+            spriteBatch->Draw(texture, pos, &srcRect, Colors::White, 0.0f, XMFLOAT2(0, 0), max(xScale, yScale));
            
         }
 
