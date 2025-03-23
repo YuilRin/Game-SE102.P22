@@ -8,89 +8,57 @@
 class Player : public GameObject {
 private:
     float speed;
-    int fireDirection;
-    //std::vector<Fireball> fireballs;
-    Animation leftAnimation;
-    Animation rightAnimation;
-    Animation* currentAnimation;
 
-public:
-    Player(float x, float y,
-        const std::vector<ID3D11ShaderResourceView*>& leftTextures,
-        const std::vector<ID3D11ShaderResourceView*>& rightTextures,
-        float frameTime);
+    bool facingLeft;
+    float velocityY;
 
-    void HandleInput(WPARAM key);
-    void Update(float elapsedTime) override;
-    void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) override;
-};
-
-#endif
-
-
-/*
-#pragma once
-#ifndef PLAYER_H
-#define PLAYER_H
-
-#include "GameObject.h"
-#include "Animation.h"
-#include "CollisionBody.h"
-#include "Weapon.h"
-#include "StopWatch.h"
-#include <vector>
-#include <map>
-
-#define MOVE_SPEED 125
-#define JUMP_VEL 350
-#define GRAVITY 800
-#define ATTACK_TIME 600
-#define PROTECT_TIME 2000
-
-class Player : public GameObject {
-private:
-    float _speed;
-    float _gravity;
+    float _gravity = 9.8f;
     bool _isJumping;
     bool _isAttacking;
-    bool _isOnGround;
+    bool isOnGround;
     bool _isDead;
+  
+	/* Animation leftAnimation; bỏ đi
+    Animation rightAnimation;
+    Animation* currentAnimation;*/
 
-    Animation _leftAnimation;
-    Animation _rightAnimation;
-    Animation* _currentAnimation;
+    Animation animation;
 
-    std::map<int, Animation*> _animations;
-    std::vector<Weapon*> _listWeapon;
 
-    CollisionBody* _collisionBody;
-    StopWatch* _attackStopWatch;
+    //std::map<int, Animation*> _animations;
+    //std::vector<Weapon*> _listWeapon;
+
+//    CollisionBody* _collisionBody;
+  //  StopWatch* _attackStopWatch;
 
 public:
-    Player(float x, float y,
+   /* Player(float x, float y,
         const std::vector<ID3D11ShaderResourceView*>& leftTextures,
         const std::vector<ID3D11ShaderResourceView*>& rightTextures,
+        float frameTime);*/
+    Player(float x, float y,
+        ID3D11ShaderResourceView* spriteSheet, 
+        const std::vector<Frame>& frames, 
         float frameTime);
 
     void HandleInput(WPARAM key);
     void Update(float elapsedTime) override;
     void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) override;
 
-    // Điều khiển nhân vật
-    void moveLeft();
-    void moveRight();
-    void jump();
-    void attack();
-    void die();
-    void revive();
+    //void moveLeft();
+    //void moveRight();
+    //void jump();
+    //void attack();
+    //void die();
+    //void revive();
 
-    // Xử lý va chạm
-    float checkCollision(GameObject* object, float dt);
-    void applyGravity(float dt);
+    //// Xử lý va chạm
+    //float checkCollision(GameObject* object, float dt);
+    //void applyGravity(float dt);
 
-    bool isAttacking() const;
-    bool isDead() const;
+    //bool isAttacking() const;
+    //bool isDead() const;
 };
 
 #endif
-*/
+

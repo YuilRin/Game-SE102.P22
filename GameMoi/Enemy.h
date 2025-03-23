@@ -4,7 +4,7 @@
 
 #include "GameObject.h"
 #include "Animation.h"
-#include <vector>
+#include <vector>/*
 class Enemy : public GameObject {
 private:
     DirectX::XMFLOAT2 position;
@@ -23,5 +23,5 @@ public:
     void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch);
 };
 
-
+*/
 #endif

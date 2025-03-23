@@ -1,7 +1,8 @@
 #include "Animation.h"
 
-Animation::Animation(const std::vector<ID3D11ShaderResourceView*>& frames, float frameTime)
-    : frames(frames), frameTime(frameTime), elapsedTime(0), currentFrame(0) {
+
+Animation::Animation(ID3D11ShaderResourceView* spriteSheet, const std::vector<Frame>& frames, float frameTime)
+    : spriteSheet(spriteSheet), frames(frames), frameTime(frameTime), elapsedTime(0), currentFrame(0) {
 }
 
 void Animation::Update(float deltaTime) {
@@ -12,11 +13,11 @@ void Animation::Update(float deltaTime) {
     }
 }
 
-void Animation::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch, float x, float y) {
-    if (frames.empty() || currentFrame >= frames.size() || frames[currentFrame] == nullptr) {
-        return; // Không v? n?u frames r?ng ho?c currentFrame l?i
-    }
-    if (!frames.empty()) {
-        spriteBatch->Draw(frames[currentFrame], DirectX::XMFLOAT2(x, y));
-    }
+
+void Animation::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch, float x, float y, bool flip) {
+    if (!spriteSheet || frames.empty()) return;
+    const Frame& frame = frames[currentFrame];
+    RECT rect = { frame.left, frame.top, frame.right, frame.bottom };
+    DirectX::SpriteEffects effect = flip ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;
+    spriteBatch->Draw(spriteSheet, DirectX::XMFLOAT2(x, y), &rect, DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0, 0), 1.0f, effect);
 }
