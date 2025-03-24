@@ -1,14 +1,31 @@
 ﻿#include "Player.h"
+#include <Windows.h>
+#include <map>
+#include <string>
+#include <SpriteBatch.h>
+#include <WICTextureLoader.h>
+#include "Whip.h"
+#include "Axe.h"
 
-Player::Player(float x, float y, std::map<PlayerState, Animation> anims)
-    : GameObject(x, y), animations(std::move(anims)), state(PlayerState::Idle), facingLeft(false), velocityY(0), isOnGround(false) {
-  
+Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device)
+    : GameObject(x, y), animations(std::move(anims)), state(PlayerState::Idle), facingLeft(false), velocityY(0), isOnGround(false), device(device)
+{
+    currentWeapon = new Whip(x, y, whipLevel, device);  // Vị trí (300, 300)
+    //currentWeapon->SetActive(true);
 
-}void Player::HandleInput(WPARAM key) {
+}
+void Player::HandleInput(WPARAM key) {
     if (state == PlayerState::Jumping) {
         return; // Nếu đang nhảy, không cho đổi trạng thái
     }
-
+    if (key == 'K') { // Nhấn K để đổi vũ khí
+        if (currentWeapon->GetType() == WeaponType::WHIP) {
+            ChangeWeapon(WeaponType::AXE);
+        }
+        else {
+            ChangeWeapon(WeaponType::WHIP);
+        }
+    }
     PlayerState prevState = state; // Lưu trạng thái trước đó
 
     if (key == 'A' || key == VK_LEFT) {
@@ -46,7 +63,19 @@ Player::Player(float x, float y, std::map<PlayerState, Animation> anims)
         sprintf_s(message, "Tọa độ nhân vật: X = %.2f, Y = %.2f", x, y);
         MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);
     }
+    else if (key == 'J') {
+        if (state != PlayerState::Stand_Hit) {
+            state = PlayerState::Stand_Hit;
+            animations[state].reset();
+            attackTimer = 0.0f;
+            currentWeapon->SetActive(true);
+            currentWeapon->Attack();
+        }
+    }
+
 }
+float frameTimer = 0.0f;
+
 void Player::Update(float elapsedTime) {
     float ySan = 320;
     if (x >= 390) {
@@ -83,6 +112,33 @@ void Player::Update(float elapsedTime) {
                 y -= 13.0f;  // Trả lại y khi nhân vật đứng dậy
             }
         }
+        if (currentWeapon->IsActive()) {
+            float weaponOffsetX = facingLeft ? -20.0f : 20.0f;
+
+            Whip* whip = dynamic_cast<Whip*>(currentWeapon);
+            if (whip) {  // Kiểm tra nếu currentWeapon là Whip
+                whip->SetPos(x + weaponOffsetX - 2, y);
+            }
+            else {
+                Axe* axe = dynamic_cast<Axe*>(currentWeapon);
+                if (axe && !axe->IsThrown()) {  // Nếu Axe chưa được ném
+                    axe->SetPos(this->x, this->y - 10);  // Đặt lại vị trí gần nhân vật
+                    axe->ResetVelocity();  // Reset vận tốc
+                    axe->SetThrown(true);  // Đánh dấu là đã ném
+                }
+            }
+
+            currentWeapon->Update(elapsedTime);
+        }
+
+        if (state == PlayerState::Stand_Hit) {
+            attackTimer += elapsedTime;
+            if (attackTimer >= attackDuration) {
+                state = PlayerState::Idle;  // Chuyển về Idle khi hết thời gian tấn công
+                currentWeapon->SetActive(false);
+            }
+        }
+
 
 
         if (state == PlayerState::Walking) {
@@ -99,12 +155,43 @@ void Player::Update(float elapsedTime) {
     }
 
     animations[state].Update(elapsedTime);
+	if (currentWeapon->IsActive())
+		currentWeapon->Update(elapsedTime); 
 }
-
-
-
 
 
 void Player::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
     animations[state].Render(spriteBatch, x, y, facingLeft);
+    currentWeapon->Render(spriteBatch);
 }
+void Player::ChangeWeapon(WeaponType newType) {
+    delete currentWeapon;
+
+    switch (newType) {
+    case WeaponType::WHIP:
+        currentWeapon = new Whip(x, y, whipLevel, device);  // Truyền device vào
+        break;
+    case WeaponType::DAGGER:
+       // currentWeapon = new Dagger(x, y, facingLeft, device);
+        break;
+    case WeaponType::AXE:
+        currentWeapon = new Axe(x, y, device, facingLeft);
+        break;
+    }
+}
+void Player::UpgradeWhip() {
+	whipLevel++;
+	if (whipLevel > 5) {
+		whipLevel = 5;
+	}
+	if (currentWeapon->GetType() == WeaponType::WHIP) {
+		dynamic_cast<Whip*>(currentWeapon)->SetLevel(whipLevel);
+	}
+}
+
+void Player::Attack() {
+    if (currentWeapon->IsActive() == false) {
+        currentWeapon->Attack();
+    }
+}
+

@@ -5,8 +5,9 @@
 #include "GameObject.h"
 #include <vector>
 #include "Animation.h"
+#include "Weapon.h"
 
-enum class PlayerState { Idle, Walking, Jumping, SitDown };
+enum class PlayerState { Idle, Walking, Jumping, SitDown, Stand_Hit };
 
 class Player : public GameObject {
 private:
@@ -20,20 +21,27 @@ private:
     bool _isAttacking;
     bool isOnGround;
     bool _isDead;
+    int whipLevel=1;  
+    ID3D11Device* device;
+    ID3D11DeviceContext* deviceContext;
+
   
     PlayerState state;
 
     std::map<PlayerState, Animation> animations;
 
     //std::map<int, Animation*> _animations;
-    //std::vector<Weapon*> _listWeapon;
+    Weapon* currentWeapon;
+
+    float attackTimer = 0.0f;
+    const float attackDuration = 0.9f;
 
 //    CollisionBody* _collisionBody;
   //  StopWatch* _attackStopWatch;
 
 public:
  
-    Player(float x, float y, std::map<PlayerState, Animation> anims);
+    Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device);
 
     void HandleInput(WPARAM key);
     void Update(float elapsedTime) override;
@@ -42,7 +50,11 @@ public:
     //void moveLeft();
     //void moveRight();
     //void jump();
-    //void attack();
+    
+    void ChangeWeapon(WeaponType newType);
+	void UpgradeWhip();
+    void Attack();
+
     //void die();
     //void revive();
 
