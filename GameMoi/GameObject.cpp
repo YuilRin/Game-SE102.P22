@@ -5,8 +5,12 @@ void GameObject::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
         spriteBatch->Draw(texture, DirectX::XMFLOAT2(x, y));
     }
 }
-
-
+float GameObject::GetX() {
+    return this->x;
+}
+float GameObject::GetY() {
+    return this->y;
+}
 /*
 #include "GameObject.h"
 

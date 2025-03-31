@@ -7,6 +7,7 @@
 #include "Enemy.h"
 #include "WICTextureLoader.h"
 #include "TileMap.h"
+#include "Camera.h"
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -18,7 +19,7 @@ Render renderer;
 std::unique_ptr<Player> player;
 //std::vector<Enemy> enemies;
 std::unique_ptr<TileMap> tileMap;
-
+CCamera* camera;
 
 bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     
@@ -40,7 +41,7 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
 
     if (!renderer.Init(hwnd, WIDTH, HEIGHT)) return false;
 
-    tileMap = std::make_unique<TileMap>(&renderer, 128, 192, WIDTH, HEIGHT, 256, 192);
+    tileMap = std::make_unique<TileMap>(&renderer, 32, 32, WIDTH, HEIGHT);
 
     ID3D11Device* device = renderer.GetDevice();
     ID3D11DeviceContext* context = renderer.GetDeviceContext();
@@ -58,51 +59,23 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     };
 
 
-    player = std::make_unique<Player>(10, 160, playerAnimations,device);
+    player = std::make_unique<Player>(100, 160, playerAnimations,device);
 
-
-    // === Load textures cho Enemy ===
-    //std::vector<ID3D11ShaderResourceView*> enemyLeftFrames;
-    //std::vector<ID3D11ShaderResourceView*> enemyRightFrames;
-
-    //ID3D11ShaderResourceView* enemy1 = nullptr;
-    //ID3D11ShaderResourceView* enemy2 = nullptr;
-    //ID3D11ShaderResourceView* enemy3 = nullptr;
-    //ID3D11ShaderResourceView* enemy4 = nullptr;
-    //ID3D11ShaderResourceView* enemy13 = nullptr;
-    //ID3D11ShaderResourceView* enemy23 = nullptr;
-    //ID3D11ShaderResourceView* enemy33 = nullptr;
-    //ID3D11ShaderResourceView* enemy43= nullptr;
-
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-1.png", nullptr, &enemy1);
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-2.png", nullptr, &enemy2);
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-3.png", nullptr, &enemy3);
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-4.png", nullptr, &enemy4);
-
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-1-R.png", nullptr, &enemy13);
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-2-R.png", nullptr, &enemy23);
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-3-R.png", nullptr, &enemy33);
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-4-R.png", nullptr, &enemy43);
-
-    //enemyLeftFrames.push_back(enemy1);
-    //enemyLeftFrames.push_back(enemy2);
-    //enemyLeftFrames.push_back(enemy3);
-    //enemyLeftFrames.push_back(enemy4);
-    //enemyRightFrames.push_back(enemy13);
-    //enemyRightFrames.push_back(enemy23);
-    //enemyRightFrames.push_back(enemy33);
-    //enemyRightFrames.push_back(enemy43);
-
-    //// Tạo danh sách Enemy
-    //enemies.emplace_back(100, 200, enemyLeftFrames, enemyRightFrames, 0.2f);
-    //enemies.emplace_back(300, 400, enemyLeftFrames, enemyRightFrames, 0.2f);
+    camera = CCamera::GetInstance();
+    camera->Init();
+    camera->SetSize(WIDTH, HEIGHT);
 
     std::vector<std::vector<int>> mapData = {
-        {0,1,2,3,4,5}
+        {0, 1, 1, 2, 1, 1, 3, 4, 4, 5, 6, 5, 7, 5, 7, 5, 7, 5, 7, 5, 7, 5, 8, 0},
+        {0, 1, 9, 10, 9, 1, 3, 8, 8, 11, 3, 11, 3, 11, 3, 11, 3, 11, 3, 11, 3, 11, 12, 0},
+        {13, 9, 14, 15, 14, 9, 3, 12, 12, 16, 3, 16, 3, 16, 3, 16, 3, 16, 3, 16, 3, 16, 12, 0},
+        {17, 18, 18, 19, 18, 18, 3, 20, 20, 21, 22, 21, 22, 21, 22, 21, 22, 21, 22, 21, 22, 21, 12, 0},
+        {23, 23, 23, 23, 23, 23, 23, 24, 24, 25, 26, 25, 26, 25, 26, 25, 26, 25, 26, 25, 26, 27, 28, 0},
+        {29, 29, 29, 29, 29, 29, 29, 29, 29, 30, 31, 30, 31, 30, 31, 30, 31, 30, 31, 30, 31, 32, 33, 34}
 };
 
     if (!tileMap->LoadMapData(mapData)) return false;
-    if (!tileMap->LoadTexture(renderer.GetDevice(), L"Image/frame1.png")) return false;
+    if (!tileMap->LoadTexture(renderer.GetDevice(), L"Image/tileset.png")) return false;
 
 
     return true;
@@ -124,11 +97,11 @@ void GameLoop() {
 
         // Cập nhật game
         player->Update(deltaTime);
-        tileMap->UpdateCamera(player->GetX());
+        camera->SetPosition(player->GetX(), player->GetY());
 
         // Vẽ game
         renderer.BeginRender();
-        tileMap->Draw(&renderer);
+        tileMap->Draw(&renderer,camera);
 
         player->Render(renderer.GetSpriteBatch());
         renderer.EndRender();

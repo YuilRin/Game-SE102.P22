@@ -33,7 +33,7 @@ void Player::HandleInput(WPARAM key) {
             state = PlayerState::Walking;
             animations[state].reset(); // Chỉ reset nếu từ trạng thái khác sang Walking
         }
-        velocityX = -25.0f;
+        velocityX = -150.0f;
         facingLeft = true;
     }
     else if (key == 'D' || key == VK_RIGHT) {
@@ -41,7 +41,7 @@ void Player::HandleInput(WPARAM key) {
             state = PlayerState::Walking;
             animations[state].reset();
         }
-        velocityX = 25.0f;
+        velocityX = 150.0f;
         facingLeft = false;
     }
     else if (key == 'S' || key == VK_DOWN) {

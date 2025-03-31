@@ -2,11 +2,13 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
+#include "Camera.h"
 #include "Render.h"
 #include <vector>
+#include <string>
 #include <memory>
 #include <string>
-
+using namespace std;
 
 class TileMap {
 private:
@@ -18,21 +20,17 @@ private:
     int tileHeight;
     int mapWidth;
     int mapHeight;
-    int screenWidth;
-    int screenHeight;
-    int camWidth;
-    int camHeight;
-    int cameraX; // Vị trí của camera theo trục X
+    string mapFile;
+    string tilesetFile;
 
 public:
    TileMap();
-    TileMap(Render* render, int tileW, int tileH, int screenW, int screenH, int camW, int camH);
+    TileMap(Render* render, int tileW, int tileH, int screenW, int screenH);
     ~TileMap();
        bool LoadMapData(const std::vector<std::vector<int>>& data);
     bool LoadTexture(ID3D11Device* device, const wchar_t* filename);
     std::vector<std::vector<int>> LoadTileSet(int tileW,int tileH, const wchar_t* filename);
-    void UpdateCamera(int playerX);
-    void Draw(Render* render);
+    void Draw(Render* render,CCamera* camera);
 };
 
 #endif // TILEMAP_H
