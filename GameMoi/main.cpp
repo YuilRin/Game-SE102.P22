@@ -17,7 +17,6 @@ const int HEIGHT = 600;
 HWND hwnd;
 Render renderer;
 std::unique_ptr<Player> player;
-//std::vector<Enemy> enemies;
 std::unique_ptr<TileMap> tileMap;
 CCamera* camera;
 
@@ -58,13 +57,11 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
         {PlayerState::Stand_Hit, Animation(spriteSheet,{{460,	0,	507,	64},{510,	0,	541,	64},{542,	0,	584,	64}},0.3f)}
     };
 
-
-    player = std::make_unique<Player>(100, 160, playerAnimations,device);
+     player = std::make_unique<Player>(100, 160, playerAnimations,device);
 
     camera = CCamera::GetInstance();
     camera->Init();
     camera->SetSize(WIDTH, HEIGHT);
-
     std::vector<std::vector<int>> mapData = {
         {0, 1, 1, 2, 1, 1, 3, 4, 4, 5, 6, 5, 7, 5, 7, 5, 7, 5, 7, 5, 7, 5, 8, 0},
         {0, 1, 9, 10, 9, 1, 3, 8, 8, 11, 3, 11, 3, 11, 3, 11, 3, 11, 3, 11, 3, 11, 12, 0},
@@ -84,7 +81,6 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
 void GameLoop() {
     MSG msg = { 0 };
     DWORD prevTime = GetTickCount();
-
     while (msg.message != WM_QUIT) {
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
             TranslateMessage(&msg);
@@ -107,7 +103,6 @@ void GameLoop() {
         renderer.EndRender();
     }
 }
-
 // Xử lý đầu vào bàn phím
 void HandleInput(WPARAM key) {
     player->HandleInput(key);
