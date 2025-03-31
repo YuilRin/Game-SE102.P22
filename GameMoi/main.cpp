@@ -16,7 +16,6 @@ const int HEIGHT = 600;
 HWND hwnd;
 Render renderer;
 std::unique_ptr<Player> player;
-//std::vector<Enemy> enemies;
 std::unique_ptr<TileMap> tileMap;
 
 
@@ -60,58 +59,18 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
 
     player = std::make_unique<Player>(10, 160, playerAnimations,device);
 
-
-    // === Load textures cho Enemy ===
-    //std::vector<ID3D11ShaderResourceView*> enemyLeftFrames;
-    //std::vector<ID3D11ShaderResourceView*> enemyRightFrames;
-
-    //ID3D11ShaderResourceView* enemy1 = nullptr;
-    //ID3D11ShaderResourceView* enemy2 = nullptr;
-    //ID3D11ShaderResourceView* enemy3 = nullptr;
-    //ID3D11ShaderResourceView* enemy4 = nullptr;
-    //ID3D11ShaderResourceView* enemy13 = nullptr;
-    //ID3D11ShaderResourceView* enemy23 = nullptr;
-    //ID3D11ShaderResourceView* enemy33 = nullptr;
-    //ID3D11ShaderResourceView* enemy43= nullptr;
-
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-1.png", nullptr, &enemy1);
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-2.png", nullptr, &enemy2);
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-3.png", nullptr, &enemy3);
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-4.png", nullptr, &enemy4);
-
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-1-R.png", nullptr, &enemy13);
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-2-R.png", nullptr, &enemy23);
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-3-R.png", nullptr, &enemy33);
-    //DirectX::CreateWICTextureFromFile(device, context, L"Image/enemy-4-R.png", nullptr, &enemy43);
-
-    //enemyLeftFrames.push_back(enemy1);
-    //enemyLeftFrames.push_back(enemy2);
-    //enemyLeftFrames.push_back(enemy3);
-    //enemyLeftFrames.push_back(enemy4);
-    //enemyRightFrames.push_back(enemy13);
-    //enemyRightFrames.push_back(enemy23);
-    //enemyRightFrames.push_back(enemy33);
-    //enemyRightFrames.push_back(enemy43);
-
-    //// Tạo danh sách Enemy
-    //enemies.emplace_back(100, 200, enemyLeftFrames, enemyRightFrames, 0.2f);
-    //enemies.emplace_back(300, 400, enemyLeftFrames, enemyRightFrames, 0.2f);
-
     std::vector<std::vector<int>> mapData = {
         {0,1,2,3,4,5}
 };
 
     if (!tileMap->LoadMapData(mapData)) return false;
     if (!tileMap->LoadTexture(renderer.GetDevice(), L"Image/frame1.png")) return false;
-
-
     return true;
 }
 
 void GameLoop() {
     MSG msg = { 0 };
     DWORD prevTime = GetTickCount();
-
     while (msg.message != WM_QUIT) {
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
             TranslateMessage(&msg);
@@ -134,7 +93,6 @@ void GameLoop() {
         renderer.EndRender();
     }
 }
-
 // Xử lý đầu vào bàn phím
 void HandleInput(WPARAM key) {
     player->HandleInput(key);

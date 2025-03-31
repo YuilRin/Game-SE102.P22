@@ -10,15 +10,13 @@
 Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device)
     : GameObject(x, y), animations(std::move(anims)), state(PlayerState::Idle), facingLeft(false), velocityY(0), isOnGround(false), device(device)
 {
-    currentWeapon = new Whip(x, y, whipLevel, device);  // Vị trí (300, 300)
-    //currentWeapon->SetActive(true);
-
+    currentWeapon = new Whip(x, y, whipLevel, device);  
 }
 void Player::HandleInput(WPARAM key) {
     if (state == PlayerState::Jumping) {
-        return; // Nếu đang nhảy, không cho đổi trạng thái
+        return; 
     }
-    if (key == 'K') { // Nhấn K để đổi vũ khí
+    if (key == 'K') { 
         if (currentWeapon->GetType() == WeaponType::WHIP) {
             ChangeWeapon(WeaponType::AXE);
         }
@@ -92,7 +90,6 @@ void Player::Update(float elapsedTime) {
             velocityY = 0;
             isOnGround = true;
 
-            // Kiểm tra nếu vẫn giữ phím di chuyển thì tiếp tục đi
             if (GetAsyncKeyState('A') & 0x8000 || GetAsyncKeyState(VK_LEFT) & 0x8000) {
                 state = PlayerState::Walking;
             }
