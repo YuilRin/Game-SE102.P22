@@ -9,6 +9,9 @@
 
 enum class PlayerState { Idle, Walking, Jumping, SitDown, Stand_Hit };
 
+//enum class PlayerState { Idle, Moving, Jumping, Crouching, Climbing, Attacking, TakingDamage, Dead, PickingUpItem };
+
+
 class Player : public GameObject {
 private:
     float speed;
@@ -29,15 +32,10 @@ private:
     PlayerState state;
 
     std::map<PlayerState, Animation> animations;
-
-    //std::map<int, Animation*> _animations;
     Weapon* currentWeapon;
 
     float attackTimer = 0.0f;
     const float attackDuration = 0.9f;
-
-//    CollisionBody* _collisionBody;
-  //  StopWatch* _attackStopWatch;
 
 public:
  
@@ -46,11 +44,6 @@ public:
     void HandleInput(WPARAM key);
     void Update(float elapsedTime) override;
     void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) override;
-
-    //void moveLeft();
-    //void moveRight();
-    //void jump();
-    
     void ChangeWeapon(WeaponType newType);
 	void UpgradeWhip();
     void Attack();
