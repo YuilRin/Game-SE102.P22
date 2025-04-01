@@ -133,6 +133,8 @@
     <ClInclude Include="Axe.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="GameInit.h" />
+    <ClInclude Include="GameLoop.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="Player.h" />
@@ -142,12 +144,15 @@
     <ClInclude Include="TimeSpan.h" />
     <ClInclude Include="Weapon.h" />
     <ClInclude Include="Whip.h" />
+    <ClInclude Include="WindowProc.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Axe.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="GameInit.cpp" />
+    <ClCompile Include="GameLoop.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -157,6 +162,7 @@
     <ClCompile Include="TimeSpan.cpp" />
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="Whip.cpp" />
+    <ClCompile Include="WindowProc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

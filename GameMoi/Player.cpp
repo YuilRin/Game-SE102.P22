@@ -12,7 +12,23 @@ Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11D
 {
     currentWeapon = new Whip(x, y, whipLevel, device);  
 }
-void Player::HandleInput(WPARAM key) {
+
+#include "Player.h"
+
+void Player::onKeyReleased(WPARAM key) {
+    // Xử lý khi phím được nhả ra
+    switch (key) {
+    case VK_LEFT:
+    case VK_RIGHT:
+        speed = 0;  // Dừng di chuyển
+        break;
+    case VK_SPACE:
+        isJumping = false;  // Ngừng nhảy
+        break;
+    }
+}
+
+void Player::onKeyPressed(WPARAM key) {
     if (state == PlayerState::Jumping) {
         return; 
     }
