@@ -75,11 +75,18 @@ void Player::HandleInput(WPARAM key) {
 float frameTimer = 0.0f;
 
 void Player::Update(float elapsedTime) {
-    float ySan = 320;
+    float ySan = 340;
     if (x >= 390) {
-        ySan = 280;
+        ySan = 290;
     }
-
+    if (x <= 0)
+    {
+        x = 0;
+    }
+    if (x >= 750)
+    {
+        x = 750;
+    }
     if (!isOnGround) {
         velocityY += 9.8f * elapsedTime;  // Trọng lực
         y += velocityY;

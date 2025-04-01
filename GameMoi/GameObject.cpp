@@ -11,6 +11,16 @@ float GameObject::GetX() {
 float GameObject::GetY() {
     return this->y;
 }
+void GameObject::GetPosition(float x, float& y)
+{
+    x = this->x;
+    y = this->y;
+}
+void GameObject::SetPosition(float x, float& y)
+{
+    this->x = x;
+    this->y = y;
+}
 /*
 #include "GameObject.h"
 

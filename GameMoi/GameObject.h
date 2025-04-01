@@ -18,6 +18,8 @@ public:
     virtual ~GameObject() {}
     float GetX();
     float GetY();
+    void GetPosition(float x, float& y);
+    void SetPosition(float x, float& y);
     virtual void Update(float elapsedTime) = 0;
     virtual void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch);
 };

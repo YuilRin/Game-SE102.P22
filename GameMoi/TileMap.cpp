@@ -2,7 +2,8 @@
 #include "WICTextureLoader.h" // Th? vi?n h? tr? load ?nh
 #include <d3d11.h>
 #include <DirectXMath.h> 
-
+#include <fstream>
+#include <sstream>
 using namespace DirectX;  // Gọi trực tiếp các hàm XM
 
 
@@ -21,7 +22,21 @@ TileMap::~TileMap() {
 }
 
 
-bool TileMap::LoadMapData(const std::vector<std::vector<int>>& data) {
+bool TileMap::LoadMapData(string &filePath) {
+    ifstream file(filePath);
+    std::vector<std::vector<int>> data;
+    string line;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        vector<int> row;
+        int value;
+        while (ss >> value) {
+            row.push_back(value);
+        }
+        data.push_back(row);
+    }
+
+    file.close();
     if (data.empty() || data[0].empty()) return false;
 
     size_t width = data[0].size();
@@ -51,14 +66,15 @@ void TileMap::Draw(Render* render,CCamera* camera) {
 
 
     float camX= camera->GetLeft();
+    
 
     for (int y = 0; y < mapHeight; y++) {
         for (int x = 0; x < mapWidth; x++) {
             int tileID = mapData[y][x];
             if (tileID == -1) continue; // Không vẽ ô trống
-            float scale = 3.0f;
-            RECT srcRect = { tileID  * tileWidth, 0, (tileID + 1)  * tileWidth  , tileHeight };
-            XMFLOAT2 pos(x * tileWidth*scale - camX *scale, y   * tileHeight*scale);
+            float scale = 3.125f;
+            RECT srcRect = { tileID  *  tileWidth, 0, (tileID + 1)  * tileWidth  , tileHeight };
+            XMFLOAT2 pos(x * scale* tileWidth - scale * camX , y   * scale * tileHeight);
             spriteBatch->Draw(texture, pos, &srcRect, Colors::White, 0.0f, XMFLOAT2(0, 0),scale);
            
         }
@@ -68,4 +84,12 @@ void TileMap::Draw(Render* render,CCamera* camera) {
     spriteBatch->End();
 }
 
+int TileMap::GetWidth()
+{
+    return mapWidth*32;
+}
+int TileMap::GetHeight()
+{
+    return mapHeight*32;
+}
 

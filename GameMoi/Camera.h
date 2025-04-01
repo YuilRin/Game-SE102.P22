@@ -8,12 +8,7 @@ public:
 	void SetPosition(float x, float y);
 	void SetSize(int width, int height);
 
-	void Lock();
-	void Unlock();
-
 	void Reset();
-
-	bool Locked();
 
 	float GetTop();
 	float GetLeft();
@@ -23,7 +18,6 @@ public:
 	~CCamera();
 
 protected:
-	bool locked;
 
 	float x;
 	float y;

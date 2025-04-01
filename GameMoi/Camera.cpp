@@ -11,7 +11,7 @@ CCamera* CCamera::GetInstance()
 }
 void CCamera::Init()
 {
-	locked = false;
+
 	x = 0.0f;
 	y = 0.0f;
 	width = 0;
@@ -19,20 +19,10 @@ void CCamera::Init()
 }
 void CCamera::SetPosition(float x, float y)
 {
-	if (!locked)
-	{
-	
-		if (x < 0) {
-			this->x = 0;
-			return;
-		}
-		if (x > 500) {
-			this->x = 500;
-			return;
-		}
-		this->x = x;
-		this->y = y;
-	}
+
+	this->x = x;
+	this->y = y;
+
 }
 
 void CCamera::SetSize(int width, int height)
@@ -41,27 +31,13 @@ void CCamera::SetSize(int width, int height)
 	this->height = height;
 }
 
-void CCamera::Lock()
-{
-	locked = true;
-}
-
-void CCamera::Unlock()
-{
-	locked = false;
-}
 
 void CCamera::Reset()
 {
 	x = 0.0f;
 	y = 0.0f;
-	locked = false;
 }
 
-bool CCamera::Locked()
-{
-	return locked;
-}
 
 float CCamera::GetTop()
 {

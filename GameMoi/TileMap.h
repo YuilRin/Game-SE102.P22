@@ -27,10 +27,12 @@ public:
    TileMap();
     TileMap(Render* render, int tileW, int tileH, int screenW, int screenH);
     ~TileMap();
-       bool LoadMapData(const std::vector<std::vector<int>>& data);
+       bool LoadMapData(string &filePath);
     bool LoadTexture(ID3D11Device* device, const wchar_t* filename);
     std::vector<std::vector<int>> LoadTileSet(int tileW,int tileH, const wchar_t* filename);
     void Draw(Render* render,CCamera* camera);
+    int GetWidth();
+    int GetHeight();
 };
 
 #endif // TILEMAP_H

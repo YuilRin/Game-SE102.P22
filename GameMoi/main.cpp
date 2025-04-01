@@ -8,6 +8,9 @@
 #include "WICTextureLoader.h"
 #include "TileMap.h"
 #include "Camera.h"
+#include <algorithm>
+using namespace std;
+void GameLoop();
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -57,21 +60,15 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
         {PlayerState::Stand_Hit, Animation(spriteSheet,{{460,	0,	507,	64},{510,	0,	541,	64},{542,	0,	584,	64}},0.3f)}
     };
 
-     player = std::make_unique<Player>(100, 160, playerAnimations,device);
+     player = std::make_unique<Player>(100, 128, playerAnimations,device);
 
     camera = CCamera::GetInstance();
     camera->Init();
     camera->SetSize(WIDTH, HEIGHT);
-    std::vector<std::vector<int>> mapData = {
-        {0, 1, 1, 2, 1, 1, 3, 4, 4, 5, 6, 5, 7, 5, 7, 5, 7, 5, 7, 5, 7, 5, 8, 0},
-        {0, 1, 9, 10, 9, 1, 3, 8, 8, 11, 3, 11, 3, 11, 3, 11, 3, 11, 3, 11, 3, 11, 12, 0},
-        {13, 9, 14, 15, 14, 9, 3, 12, 12, 16, 3, 16, 3, 16, 3, 16, 3, 16, 3, 16, 3, 16, 12, 0},
-        {17, 18, 18, 19, 18, 18, 3, 20, 20, 21, 22, 21, 22, 21, 22, 21, 22, 21, 22, 21, 22, 21, 12, 0},
-        {23, 23, 23, 23, 23, 23, 23, 24, 24, 25, 26, 25, 26, 25, 26, 25, 26, 25, 26, 25, 26, 27, 28, 0},
-        {29, 29, 29, 29, 29, 29, 29, 29, 29, 30, 31, 30, 31, 30, 31, 30, 31, 30, 31, 30, 31, 32, 33, 34}
-};
 
-    if (!tileMap->LoadMapData(mapData)) return false;
+    string MapData = "Image/tileset.txt";
+
+    if (!tileMap->LoadMapData(MapData)) return false;
     if (!tileMap->LoadTexture(renderer.GetDevice(), L"Image/tileset.png")) return false;
 
 
@@ -93,7 +90,16 @@ void GameLoop() {
 
         // Cập nhật game
         player->Update(deltaTime);
-        camera->SetPosition(player->GetX(), player->GetY());
+
+        float camX = player->GetX()-WIDTH/3;
+
+        // Đảm bảo camera không ra khỏi giới hạn bản đồ
+        float leftEdge = 0;
+        float rightEdge = tileMap->GetWidth() - WIDTH/3;
+
+        camX = max(leftEdge, min(camX, rightEdge));
+        camera->SetPosition(camX, 0);
+
 
         // Vẽ game
         renderer.BeginRender();
