@@ -10,20 +10,32 @@
 Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device)
     : GameObject(x, y), animations(std::move(anims)), state(PlayerState::Idle), facingLeft(false), velocityY(0), isOnGround(false), device(device)
 {
+    _info = new Info();
+    _info->init();
+    _info->SetHeart(50);
+    _info->SetLife(3);
+    _info->SetScore(0);
+    //_info->SetMaxWeapon(1);
+    _info->SetPlayerHitPoint(16);
+    _info->SetEnemyHitPoint(16);
+    _info->ActiveTime();
+    _info->SetTime(300);
+
     currentWeapon = new Whip(x, y, whipLevel, device);  
 }
 
 #include "Player.h"
 
-void Player::onKeyReleased(WPARAM key) {
+void Player::onKeyReleased(WPARAM key) 
+{
     // Xử lý khi phím được nhả ra
-    switch (key) {
+    switch (key) 
+    {
     case VK_LEFT:
-    case VK_RIGHT:
-        speed = 0;  // Dừng di chuyển
         break;
-    case VK_SPACE:
-        isJumping = false;  // Ngừng nhảy
+    case VK_RIGHT:  
+        break;
+    case VK_SPACE: 
         break;
     }
 }
