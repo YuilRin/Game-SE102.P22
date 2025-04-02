@@ -6,6 +6,7 @@
 #include <vector>
 #include "Animation.h"
 #include "Weapon.h"
+#include "Info.h"
 
 enum class PlayerState { 
     Idle, Walking, Jumping, SitDown, Stand_Hit,
@@ -51,8 +52,11 @@ private:
     int currentStage;
     bool isChangingStage;
 
+    Info* _info;
+
 public:
  
+    
     Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device);
 
     void onKeyPressed(WPARAM key);
@@ -61,10 +65,8 @@ public:
 
     void Update(float elapsedTime) override;
     void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) override;
-    
 
-    
-
+    /// Move
     void MoveLeft();
     void MoveRight();
     void Jump();
@@ -74,17 +76,20 @@ public:
     void ClimbUp();
     void ClimbDown();
 
+    /// Attack
     void Attack();
     void TakeDamage(int damage);
     void Revive();
     void ChangeState(PlayerState newState);
     void CheckCollision(GameObject* object);
 
+    /// Weapon
     void ChangeWeapon(WeaponType newType);
     void AddWeapon(Weapon* newWeapon);
     void RemoveWeapon(WeaponType type);
     void UseWeapon(WeaponType type);
 
+    /// Stage
     void SetStage(int stageID);
     int GetStage();
     bool IsChangingStage();
