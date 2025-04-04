@@ -2,8 +2,8 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
-#include "Camera.h"
-#include "Render.h"
+#include "../Camera/Camera.h"
+#include "../Render.h"
 #include <vector>
 #include <string>
 #include <memory>
@@ -25,7 +25,7 @@ private:
 
 public:
    TileMap();
-    TileMap(Render* render, int tileW, int tileH, int screenW, int screenH);
+    TileMap(Render* render, int tileW, int tileH);
     ~TileMap();
        bool LoadMapData(string &filePath);
     bool LoadTexture(ID3D11Device* device, const wchar_t* filename);

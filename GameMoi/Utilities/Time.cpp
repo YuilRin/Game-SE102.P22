@@ -1,4 +1,4 @@
-#include "GameTime.h"
+#include "Time.h"
 
 GameTime* GameTime::_instance = nullptr;
 
@@ -72,7 +72,6 @@ float GameTime::getElapsedGameTime()
 
 float GameTime::getTotalGameTime()
 {
-	updateGameTime();
 	return this->_totalGameTime.getMiliSeconds();
 }
 

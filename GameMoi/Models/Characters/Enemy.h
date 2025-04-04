@@ -2,8 +2,8 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
-#include "GameObject.h"
-#include "Animation.h"
+#include "../GameObject.h"
+#include "../../Animation/Animation.h"
 #include <vector>
 /*
 class Enemy : public GameObject {

@@ -15,6 +15,9 @@ public:
 
 	float GetRight();
 	float GetBottom();
+
+	float GetWidth();
+	float GetHeight();
 	~CCamera();
 
 protected:

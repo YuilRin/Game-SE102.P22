@@ -3,7 +3,7 @@
 #define WHIP_H
 
 #include "Weapon.h"
-#include "Animation.h"
+#include "../../Animation/Animation.h"
 
 class Whip : public Weapon {
 private:
