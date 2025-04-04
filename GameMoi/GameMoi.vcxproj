@@ -129,40 +129,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Animation.h" />
-    <ClInclude Include="Axe.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="GameInit.h" />
-    <ClInclude Include="GameLoop.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="define.h" />
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="Animation\Animation.h" />
+    <ClInclude Include="Camera\Camera.h" />
+    <ClInclude Include="Models\Characters\Enemy.h" />
+    <ClInclude Include="Models\Characters\Player.h" />
+    <ClInclude Include="Models\GameObject.h" />
+    <ClInclude Include="Models\Weapons\Axe.h" />
+    <ClInclude Include="Models\Weapons\Weapon.h" />
+    <ClInclude Include="Models\Weapons\Whip.h" />
     <ClInclude Include="Render.h" />
-    <ClInclude Include="TileMap.h" />
-    <ClInclude Include="Time.h" />
-    <ClInclude Include="TimeSpan.h" />
-    <ClInclude Include="Weapon.h" />
-    <ClInclude Include="Whip.h" />
-    <ClInclude Include="WindowProc.h" />
+    <ClInclude Include="Tilemap\TileMap.h" />
+    <ClInclude Include="Utilities\define.h" />
+    <ClInclude Include="Utilities\Time.h" />
+    <ClInclude Include="Utilities\TimeSpan.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Animation.cpp" />
-    <ClCompile Include="Axe.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="GameInit.cpp" />
-    <ClCompile Include="GameLoop.cpp" />
-    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Animation\Animation.cpp" />
+    <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Models\Characters\Enemy.cpp" />
+    <ClCompile Include="Models\Characters\Player.cpp" />
+    <ClCompile Include="Models\GameObject.cpp" />
+    <ClCompile Include="Models\Weapons\Axe.cpp" />
+    <ClCompile Include="Models\Weapons\Weapon.cpp" />
+    <ClCompile Include="Models\Weapons\Whip.cpp" />
     <ClCompile Include="Rended.cpp" />
-    <ClCompile Include="TileMap.cpp" />
-    <ClCompile Include="Time.cpp" />
-    <ClCompile Include="TimeSpan.cpp" />
-    <ClCompile Include="Weapon.cpp" />
-    <ClCompile Include="Whip.cpp" />
-    <ClCompile Include="WindowProc.cpp" />
+    <ClCompile Include="Tilemap\TileMap.cpp" />
+    <ClCompile Include="Utilities\Time.cpp" />
+    <ClCompile Include="Utilities\TimeSpan.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

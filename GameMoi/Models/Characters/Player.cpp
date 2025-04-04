@@ -4,31 +4,15 @@
 #include <string>
 #include <SpriteBatch.h>
 #include <WICTextureLoader.h>
-#include "Whip.h"
-#include "Axe.h"
+#include "../Weapons/Whip.h"
+#include "../Weapons/Axe.h"
 
 Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device)
     : GameObject(x, y), animations(std::move(anims)), state(PlayerState::Idle), facingLeft(false), velocityY(0), isOnGround(false), device(device)
 {
     currentWeapon = new Whip(x, y, whipLevel, device);  
 }
-
-#include "Player.h"
-
-void Player::onKeyReleased(WPARAM key) {
-    // Xử lý khi phím được nhả ra
-    switch (key) {
-    case VK_LEFT:
-    case VK_RIGHT:
-        speed = 0;  // Dừng di chuyển
-        break;
-    case VK_SPACE:
-        isJumping = false;  // Ngừng nhảy
-        break;
-    }
-}
-
-void Player::onKeyPressed(WPARAM key) {
+void Player::HandleInput(WPARAM key) {
     if (state == PlayerState::Jumping) {
         return; 
     }
@@ -133,7 +117,7 @@ void Player::Update(float elapsedTime) {
             }
         }
         if (currentWeapon->IsActive()) {
-            float weaponOffsetX = facingLeft ? -20.0f : 20.0f;
+            float weaponOffsetX = facingLeft ? -30.0f : 20.0f;
 
             Whip* whip = dynamic_cast<Whip*>(currentWeapon);
             if (whip) {  // Kiểm tra nếu currentWeapon là Whip
@@ -171,6 +155,7 @@ void Player::Update(float elapsedTime) {
                 state = PlayerState::Idle;
                 velocityX = 0; // Dừng lại ngay
             }
+
         }
     }
 
