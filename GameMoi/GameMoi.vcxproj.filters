@@ -96,6 +96,15 @@
     <ClInclude Include="Models\Characters\Enemy.h">
       <Filter>Header Files\Models\Characters</Filter>
     </ClInclude>
+    <ClInclude Include="GameInit.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowProc.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="GameLoop.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -136,6 +145,15 @@
     </ClCompile>
     <ClCompile Include="Camera\Camera.cpp">
       <Filter>Source Files\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="GameInit.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowProc.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameLoop.cpp">
+      <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
