@@ -1,5 +1,5 @@
 ﻿#include "WindowProc.h"
-#include "GameInit.h"
+#include "../Runtime/GameInit.h"
 
 void HandleInput(WPARAM key) {
     player->onKeyPressed(key);

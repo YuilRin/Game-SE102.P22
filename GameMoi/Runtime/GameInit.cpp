@@ -27,7 +27,7 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     // Khởi tạo DirectX
     if (!renderer.Init(hwnd, WIDTH, HEIGHT)) return false;
 
-    tileMap = std::make_unique<TileMap>(&renderer, 32, 32, WIDTH, HEIGHT);
+    tileMap = std::make_unique<TileMap>(&renderer, 32, 32);
     ID3D11Device* device = renderer.GetDevice();
     ID3D11DeviceContext* context = renderer.GetDeviceContext();
 

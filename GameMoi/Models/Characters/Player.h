@@ -6,7 +6,7 @@
 #include <vector>
 #include "../../Animation/Animation.h"
 #include "../Weapons/Weapon.h"
-#include "Info.h"
+#include "../../Utilities/Info.h"
 
 enum class PlayerState { 
     Idle, Walking, Jumping, SitDown, Stand_Hit,

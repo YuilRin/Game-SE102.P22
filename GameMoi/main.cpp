@@ -2,14 +2,14 @@
 #include <d3d11.h>
 #include <memory>
 #include <vector>
-#include "Render.h"
+#include "Utilities/Render.h"
 #include "Models/Characters/Player.h"
 #include "Models/Characters/Enemy.h"
 #include "WICTextureLoader.h"
 #include "Tilemap/TileMap.h"
 #include "Camera/Camera.h"
 #include <algorithm>
-#include "GameInit.h"
+#include "Runtime/GameInit.h"
 
 using namespace std;
 

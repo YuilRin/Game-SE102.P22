@@ -3,11 +3,11 @@
 #define GAME_INIT_H
 
 #include <memory>
-#include "Render.h"
-#include "Player.h"
-#include "TileMap.h"
+#include "../Utilities/Render.h"
+#include "../Models/Characters/Player.h"
+#include "../Tilemap/TileMap.h"
 #include "GameLoop.h"
-#include "Camera.h"
+#include "../Camera/Camera.h"
 
 extern HWND hwnd;
 extern Render renderer;
