@@ -40,56 +40,73 @@ void Player::onKeyReleased(WPARAM key)
     }
 }
 
+void Player::MoveLeft() {
+    if (state != PlayerState::Walking) {
+        state = PlayerState::Walking;
+        animations[state].reset(); // Chỉ reset nếu từ trạng thái khác sang Walking
+    }
+    velocityX = -150.0f;
+    facingLeft = true;
+}
+
+void Player::MoveRight() {
+	if (state != PlayerState::Walking) {
+		state = PlayerState::Walking;
+		animations[state].reset(); // Chỉ reset nếu từ trạng thái khác sang Walking
+	}
+	velocityX = 150.0f;
+	facingLeft = false;
+}
+
+void Player::SitDown() {
+	if (isOnGround && state != PlayerState::SitDown) {
+		state = PlayerState::SitDown;
+		animations[state].reset(); // Chỉ reset nếu từ trạng thái khác sang SitDown
+	}
+	y += 13.0f;  // Giảm y khi ngồi xuống
+}
+
+void Player::Jump() {
+    if (isOnGround) {
+        velocityY = -4.0f;
+        isOnGround = false;
+        state = PlayerState::Jumping;
+        animations[state].reset();
+    }
+	
+}
 void Player::onKeyPressed(WPARAM key) {
     if (state == PlayerState::Jumping) {
-        return; 
+        return;
     }
-    if (key == 'K') { 
-        if (currentWeapon->GetType() == WeaponType::WHIP) {
-            ChangeWeapon(WeaponType::AXE);
-        }
-        else {
-            ChangeWeapon(WeaponType::WHIP);
-        }
-    }
+
     PlayerState prevState = state; // Lưu trạng thái trước đó
 
-    if (key == 'A' || key == VK_LEFT) {
-        if (state != PlayerState::Walking) {
-            state = PlayerState::Walking;
-            animations[state].reset(); // Chỉ reset nếu từ trạng thái khác sang Walking
-        }
-        velocityX = -150.0f;
-        facingLeft = true;
-    }
-    else if (key == 'D' || key == VK_RIGHT) {
-        if (state != PlayerState::Walking) {
-            state = PlayerState::Walking;
-            animations[state].reset();
-        }
-        velocityX = 150.0f;
-        facingLeft = false;
-    }
-    else if (key == 'S' || key == VK_DOWN) {
-        if (isOnGround && state != PlayerState::SitDown) {
-            state = PlayerState::SitDown;
-            velocityX = 0;
-            y += 13.0f;
-        }
-    }
-    else if (key == 'W' || key == VK_UP) {
-        if (isOnGround) {
-            velocityY = -4.0f;
-            isOnGround = false;
-            state = PlayerState::Jumping;
-        }
-    }
-    else if (key == 'G') { // Hiển thị tọa độ
+    switch (key) {
+    case 'A': case VK_LEFT:
+        MoveLeft();
+        break;
+
+    case 'D': case VK_RIGHT:
+        MoveRight();
+        break;
+
+    case 'S': case VK_DOWN:
+		SitDown();
+        break;
+
+    case 'W': case VK_UP:
+		Jump();
+        break;
+
+    case 'G': { // Hiển thị tọa độ
         char message[50];
         sprintf_s(message, "Tọa độ nhân vật: X = %.2f, Y = %.2f", x, y);
         MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);
+        break;
     }
-    else if (key == 'J') {
+
+    case 'J': // Đánh
         if (state != PlayerState::Stand_Hit) {
             state = PlayerState::Stand_Hit;
             animations[state].reset();
@@ -97,9 +114,17 @@ void Player::onKeyPressed(WPARAM key) {
             currentWeapon->SetActive(true);
             currentWeapon->Attack();
         }
-    }
+        break;
 
+    case 'K': // Đổi vũ khí
+        ChangeWeapon(currentWeapon->GetType() == WeaponType::WHIP ? WeaponType::AXE : WeaponType::WHIP);
+        break;
+
+    default:
+        break;
+    }
 }
+
 float frameTimer = 0.0f;
 
 void Player::Update(float elapsedTime) {
