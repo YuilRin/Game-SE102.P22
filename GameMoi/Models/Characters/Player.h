@@ -2,10 +2,10 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "GameObject.h"
+#include "../GameObject.h"
 #include <vector>
-#include "Animation.h"
-#include "Weapon.h"
+#include "../../Animation/Animation.h"
+#include "../Weapons/Weapon.h"
 
 enum class PlayerState { Idle, Walking, Jumping, SitDown, Stand_Hit };
 

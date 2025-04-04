@@ -10,7 +10,7 @@ using namespace DirectX;  // Gọi trực tiếp các hàm XM
 TileMap::TileMap() : tileWidth(0), tileHeight(0), mapWidth(0), mapHeight(0) {}
 
 
-TileMap::TileMap(Render* render, int tileW, int tileH, int screenW, int screenH)
+TileMap::TileMap(Render* render, int tileW, int tileH)
     : tileWidth(tileW), tileHeight(tileH) {
     spriteBatch = std::make_unique<DirectX::SpriteBatch>(render->GetDeviceContext());
 
@@ -19,6 +19,7 @@ TileMap::TileMap(Render* render, int tileW, int tileH, int screenW, int screenH)
 TileMap::~TileMap() {
     if (texture) 
         texture->Release();
+    mapData.clear();
 }
 
 
@@ -64,15 +65,31 @@ void TileMap::Draw(Render* render,CCamera* camera) {
     auto context = render->GetDeviceContext();
     spriteBatch->Begin();
 
+    float camX = camera->GetLeft();
+    //float camY = camera->GetTop();
+    //float camH = camera->GetHeight();
+    //float camW = camera->GetWidth();
 
-    float camX= camera->GetLeft();
-    
+    float scale = 3.125f;
+    //char message[50];
+
+    ////float camW = camera->GetWidth();
+    ////float camH = camera->GetHeight();
+
+    //int yStart=0, yStop=0, xStart=0, xStop=0;
+    //yStart = (camY / 32) / scale;
+    //yStop = int(((camY+camH) / 32) / scale);
+    //sprintf_s(message, "Tọa độ nhân vật: X = %.2f, Y = %.2f", yStop, camW);
+    //MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);
+    //xStart = int((camX / 32) / scale);
+    //xStop = int(((camX + camW) / 32)/scale);
+
+
 
     for (int y = 0; y < mapHeight; y++) {
         for (int x = 0; x < mapWidth; x++) {
             int tileID = mapData[y][x];
             if (tileID == -1) continue; // Không vẽ ô trống
-            float scale = 3.125f;
             RECT srcRect = { tileID  *  tileWidth, 0, (tileID + 1)  * tileWidth  , tileHeight };
             XMFLOAT2 pos(x * scale* tileWidth - scale * camX , y   * scale * tileHeight);
             spriteBatch->Draw(texture, pos, &srcRect, Colors::White, 0.0f, XMFLOAT2(0, 0),scale);
@@ -86,10 +103,10 @@ void TileMap::Draw(Render* render,CCamera* camera) {
 
 int TileMap::GetWidth()
 {
-    return mapWidth*32;
+    return mapWidth;
 }
 int TileMap::GetHeight()
 {
-    return mapHeight*32;
+    return mapHeight;
 }
 

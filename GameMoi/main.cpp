@@ -3,11 +3,11 @@
 #include <memory>
 #include <vector>
 #include "Render.h"
-#include "Player.h"
-#include "Enemy.h"
+#include "Models/Characters/Player.h"
+#include "Models/Characters/Enemy.h"
 #include "WICTextureLoader.h"
-#include "TileMap.h"
-#include "Camera.h"
+#include "Tilemap/TileMap.h"
+#include "Camera/Camera.h"
 #include <algorithm>
 using namespace std;
 void GameLoop();
@@ -43,7 +43,7 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
 
     if (!renderer.Init(hwnd, WIDTH, HEIGHT)) return false;
 
-    tileMap = std::make_unique<TileMap>(&renderer, 32, 32, WIDTH, HEIGHT);
+    tileMap = std::make_unique<TileMap>(&renderer, 32, 32);
 
     ID3D11Device* device = renderer.GetDevice();
     ID3D11DeviceContext* context = renderer.GetDeviceContext();
@@ -60,7 +60,7 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
         {PlayerState::Stand_Hit, Animation(spriteSheet,{{460,	0,	507,	64},{510,	0,	541,	64},{542,	0,	584,	64}},0.3f)}
     };
 
-     player = std::make_unique<Player>(100, 128, playerAnimations,device);
+     player = std::make_unique<Player>(200, 128, playerAnimations,device);
 
     camera = CCamera::GetInstance();
     camera->Init();
@@ -95,7 +95,7 @@ void GameLoop() {
 
         // Đảm bảo camera không ra khỏi giới hạn bản đồ
         float leftEdge = 0;
-        float rightEdge = tileMap->GetWidth() - WIDTH/3;
+        float rightEdge = tileMap->GetWidth()*32 - WIDTH/3;
 
         camX = max(leftEdge, min(camX, rightEdge));
         camera->SetPosition(camX, 0);

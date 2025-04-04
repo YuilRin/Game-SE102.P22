@@ -51,7 +51,7 @@ bool Axe::IsThrown() { return isThrown; }
 
 void Axe::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
     if (isActive) {
-        axeAnimation.Render(spriteBatch, x, y, false);
+        axeAnimation.Render(spriteBatch, x, y, true);
     }
 }
 

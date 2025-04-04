@@ -2,6 +2,7 @@
 #include <WICTextureLoader.h>
 #include <comdef.h>
 
+
 Whip::Whip(float x, float y, int level, ID3D11Device* device)
     : Weapon(x, y, WeaponType::WHIP, nullptr), whipLevel(level) {
 

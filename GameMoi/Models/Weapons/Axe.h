@@ -3,7 +3,7 @@
 #define AXE_H
 
 #include "Weapon.h"
-#include "Animation.h"
+#include "../../Animation/Animation.h"
 
 class Axe : public Weapon {
 private:

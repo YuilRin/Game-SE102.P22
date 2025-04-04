@@ -2,7 +2,7 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-#include "GameObject.h"
+#include "../GameObject.h"
 
 enum class WeaponType { WHIP, DAGGER, AXE };
 
