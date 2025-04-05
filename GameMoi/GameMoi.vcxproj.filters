@@ -78,7 +78,7 @@
     <ClInclude Include="Tilemap\TileMap.h">
       <Filter>Header Files\Tilemap</Filter>
     </ClInclude>
-    <ClInclude Include="Utilities\Time.h">
+    <ClInclude Include="Utilities\GameTime.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="Utilities\TimeSpan.h">
@@ -94,6 +94,21 @@
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="Models\Characters\Enemy.h">
+      <Filter>Header Files\Models\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\GameInit.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\GameLoop.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\StopWatch.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\WindowProc.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\Characters\Info.h">
       <Filter>Header Files\Models\Characters</Filter>
     </ClInclude>
   </ItemGroup>
@@ -136,6 +151,21 @@
     </ClCompile>
     <ClCompile Include="Camera\Camera.cpp">
       <Filter>Source Files\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\GameInit.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\GameLoop.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\StopWatch.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\WindowProc.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Models\Characters\Info.cpp">
+      <Filter>Source Files\Models\Characters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
