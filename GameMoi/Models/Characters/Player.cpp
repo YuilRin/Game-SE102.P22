@@ -109,6 +109,11 @@ void Player::Jump() {
     }
 }
 
+void Player::SetGroundColliders(const std::vector<Collider>& colliders) {
+    groundColliders = colliders;
+}
+
+
 void Player::Attack() {
     if (state == PlayerState::Stand_Hit || currentWeapon->IsActive())
         return;
@@ -154,6 +159,45 @@ const T& myClamp(const T& v, const T& lo, const T& hi) {
 }
 
 void Player::Update(float elapsedTime) {
+    //velocityY += 9.8f * elapsedTime;
+    //y += velocityY;
+    //x += velocityX * elapsedTime;
+
+    //// Tạo collider của player
+    //Collider playerCollider(x, y, 32, 64); // chỉnh lại nếu player có kích thước khác
+
+    //for (const auto& ground : groundColliders) {
+    //    if (playerCollider.CheckCollision(ground)) {
+    //        y = ground.y - playerCollider.height;  // đưa player đứng lên trên mặt gạch
+    //        velocityY = 0;
+    //        isOnGround = true;
+    //        state = PlayerState::Idle;
+    //        velocityX = 0;
+    //        break;
+    //    }
+    //}
+    //if (isOnGround) {
+    //    // Nếu đang đi thì tiếp tục di chuyển theo chiều ngang
+    //    if (state == PlayerState::Walking) {
+    //        x += velocityX * elapsedTime;
+    //    }
+
+    //    // Nếu đang tấn công thì kiểm tra thời gian tấn công
+    //    if (state == PlayerState::Stand_Hit) {
+    //        attackTimer += elapsedTime;
+    //        if (attackTimer >= attackDuration) {
+    //            state = PlayerState::Idle;
+    //            currentWeapon->SetActive(false);
+    //        }
+    //    }
+
+    //    // Cập nhật weapon nếu có
+    //    HandleWeaponUpdate(elapsedTime);
+    //}
+
+    //// Cập nhật animation theo state hiện tại
+    //animations[state].Update(elapsedTime);
+
     float ySan = (x >= 390) ? 290.0f : 340.0f;
 
     x = myClamp(x, 0.0f, 750.0f);
@@ -182,7 +226,7 @@ void Player::Update(float elapsedTime) {
                 state = PlayerState::Idle;
                 currentWeapon->SetActive(false);
             }
-        }      
+        }
         HandleWeaponUpdate(elapsedTime);
     }
 

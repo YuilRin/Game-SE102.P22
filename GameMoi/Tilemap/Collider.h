@@ -1,5 +1,6 @@
 ﻿#ifndef COLLIDER_H
 #define COLLIDER_H
+#include <vector>
 
 class Collider {
 public:
@@ -17,6 +18,8 @@ public:
     float GetY() const { return y; }
     float GetWidth() const { return width; }
     float GetHeight() const { return height; }
+
+    static std::vector<Collider> CreateCollisionObjects(std::vector<std::vector<int>>& tileMap, int TILE_SIZE);
 };
 
 #endif // COLLIDER_H

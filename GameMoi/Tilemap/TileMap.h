@@ -33,6 +33,19 @@ public:
     void Draw(Render* render,CCamera* camera);
     int GetWidth();
     int GetHeight();
+
+    ////////////////////////////////////////////////
+    int GetTileSize() { return 100.0f; };
+    std::vector<std::vector<int>> GetMapData() { return mapData; }
+
+	
+	ID3D11ShaderResourceView* GetTexture() { return texture; }
+	int GetTileWidth() { return tileWidth; }
+	int GetTileHeight() { return tileHeight; }
+	int GetMapWidth() { return mapWidth; }
+	int GetMapHeight() { return mapHeight; }
+	void SetMapFile(const string& file) { mapFile = file; }
+	void SetTilesetFile(const string& file) { tilesetFile = file; }
 };
 
 #endif // TILEMAP_H

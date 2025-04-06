@@ -114,7 +114,7 @@
     <ClInclude Include="Models\Characters\Info.h">
       <Filter>Header Files\Models\Characters</Filter>
     </ClInclude>
-    <ClInclude Include="Collider.h">
+    <ClInclude Include="Tilemap\Collider.h">
       <Filter>Header Files\Tilemap</Filter>
     </ClInclude>
   </ItemGroup>
@@ -173,7 +173,7 @@
     <ClCompile Include="Tilemap\TileMap.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="Collider.cpp">
+    <ClCompile Include="Tilemap\Collider.cpp">
       <Filter>Source Files\Tilemap</Filter>
     </ClCompile>
   </ItemGroup>
@@ -208,5 +208,10 @@
     <Image Include="Image\tileset.png">
       <Filter>Image</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Image\tileset.txt">
+      <Filter>Image</Filter>
+    </Text>
   </ItemGroup>
 </Project>

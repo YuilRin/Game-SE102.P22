@@ -131,7 +131,6 @@
   <ItemGroup>
     <ClInclude Include="Animation\Animation.h" />
     <ClInclude Include="Camera\Camera.h" />
-    <ClInclude Include="Collider.h" />
     <ClInclude Include="Models\Characters\Enemy.h" />
     <ClInclude Include="Models\Characters\Info.h" />
     <ClInclude Include="Models\Characters\Player.h" />
@@ -140,6 +139,7 @@
     <ClInclude Include="Models\Weapons\Weapon.h" />
     <ClInclude Include="Models\Weapons\Whip.h" />
     <ClInclude Include="Render.h" />
+    <ClInclude Include="Tilemap\Collider.h" />
     <ClInclude Include="Tilemap\TileMap.h" />
     <ClInclude Include="Utilities\define.h" />
     <ClInclude Include="Utilities\GameInit.h" />
@@ -152,7 +152,6 @@
   <ItemGroup>
     <ClCompile Include="Animation\Animation.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
-    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Models\Characters\Enemy.cpp" />
     <ClCompile Include="Models\Characters\Info.cpp" />
@@ -162,6 +161,7 @@
     <ClCompile Include="Models\Weapons\Weapon.cpp" />
     <ClCompile Include="Models\Weapons\Whip.cpp" />
     <ClCompile Include="Rended.cpp" />
+    <ClCompile Include="Tilemap\Collider.cpp" />
     <ClCompile Include="Tilemap\TileMap.cpp" />
     <ClCompile Include="Utilities\GameInit.cpp" />
     <ClCompile Include="Utilities\GameLoop.cpp" />
@@ -183,6 +183,9 @@
     <Image Include="Image\tileset.png" />
     <Image Include="Image\weapon.png" />
     <Image Include="Image\whip.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Image\tileset.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

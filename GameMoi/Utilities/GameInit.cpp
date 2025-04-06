@@ -2,6 +2,7 @@
 #include "DirectXHelpers.h" 
 #include "WICTextureLoader.h"
 
+
 HWND hwnd;
 Render renderer;
 std::unique_ptr<Player> player;
@@ -53,6 +54,25 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     string MapData = "Image/tileset.txt";
     if (!tileMap->LoadMapData(MapData)) return false;
     if (!tileMap->LoadTexture(renderer.GetDevice(), L"Image/tileset.png")) return false;
+
+
+    std::vector<std::vector<int>> rawMap = tileMap->GetMapData(); // thêm hàm này nếu chưa có
+
+    // Chuyển tile 23 thành 0 để dễ xử lý collider
+    for (auto& row : rawMap) {
+        for (auto& tile : row) {
+            if (tile == 23)
+                tile = 0;
+            else
+                tile = -1; // hoặc giá trị nào không phải tile gạch
+        }
+    }
+
+    std::vector<Collider> groundColliders = Collider::CreateCollisionObjects(rawMap, tileMap->GetTileSize());
+
+    // Gán collider cho Player
+    player->SetGroundColliders(groundColliders);
+   
 
     return true;
 }

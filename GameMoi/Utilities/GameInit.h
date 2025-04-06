@@ -9,6 +9,7 @@
 #include "GameLoop.h"
 #include "../Camera/Camera.h"
 #include "WICTextureLoader.h"
+#include "../Tilemap/Collider.h"
 
 extern HWND hwnd;
 extern Render renderer;

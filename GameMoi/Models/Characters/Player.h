@@ -7,6 +7,7 @@
 #include "../../Animation/Animation.h"
 #include "../Weapons/Weapon.h"
 #include "Info.h"
+#include "../../Tilemap/Collider.h"
 
 #include <unordered_map>
 enum class PlayerState {
@@ -57,12 +58,15 @@ private:
     bool isChangingStage;
 
     Info* _info;
+    std::vector<Collider> groundColliders;
+	//std::vector<Collider> stairColliders;
 
 public:
     void HandleWeaponUpdate(float elapsedTime);
     void HandleAxeUpdate();
 
     Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device);
+    void SetGroundColliders(const std::vector<Collider>& colliders);
 
     void onKeyPressed(WPARAM key);
     void onKeyReleased(WPARAM key);
