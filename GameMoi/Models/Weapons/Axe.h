@@ -14,7 +14,7 @@ private:
     float velocityX, velocityY, gravity;
     bool isThrown = false;
 private:
-    float attackDelay = 0.7f; 
+    float attackDelay = 0.9f; 
     float delayTimer = 0.0f;   // Biến đếm thời gian
 
     

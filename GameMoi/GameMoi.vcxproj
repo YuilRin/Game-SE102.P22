@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClInclude Include="Animation\Animation.h" />
     <ClInclude Include="Camera\Camera.h" />
+    <ClInclude Include="Collider.h" />
     <ClInclude Include="Models\Characters\Enemy.h" />
     <ClInclude Include="Models\Characters\Info.h" />
     <ClInclude Include="Models\Characters\Player.h" />
@@ -151,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="Animation\Animation.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
+    <ClCompile Include="Collider.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Models\Characters\Enemy.cpp" />
     <ClCompile Include="Models\Characters\Info.cpp" />
@@ -170,6 +172,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Image\frame2.png" />
+    <Image Include="Image\frame2tileset.png" />
+    <Image Include="Image\frame3.png" />
+    <Image Include="Image\frame3tileset.png" />
+    <Image Include="Image\map.png" />
+    <Image Include="Image\simon.jpg" />
+    <Image Include="Image\tileset.png" />
+    <Image Include="Image\weapon.png" />
+    <Image Include="Image\whip.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

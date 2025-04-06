@@ -22,6 +22,7 @@ public:
     bool IsAnimationFinished() const;
     void reset();
     void SetFrameTime(float time) { frameTime = time; }
+    int GetCurrentFrameIndex() const { return currentFrame; }
 
 private:
     ID3D11ShaderResourceView* spriteSheet;

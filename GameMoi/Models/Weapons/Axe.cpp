@@ -35,7 +35,8 @@ void Axe::Update(float elapsedTime) {
         // Nếu Axe rơi xuống đất, thì biến mất hoặc reset lại
         if (this->y > 360) {  
             this->isActive = false;
-            isThrown = false;  // Reset trạng thái ném
+            isThrown = false; 
+            // Reset trạng thái ném
         }
     }
 }

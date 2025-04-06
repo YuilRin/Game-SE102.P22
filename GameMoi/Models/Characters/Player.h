@@ -8,6 +8,7 @@
 #include "../Weapons/Weapon.h"
 #include "Info.h"
 
+#include <unordered_map>
 enum class PlayerState {
     Idle, Walking, Jumping, SitDown, Stand_Hit,
     Climbing, Attacking, TakingDamage, Dead, PickingUpItem, Falling
@@ -38,16 +39,19 @@ private:
     ID3D11Device* device;
     ID3D11DeviceContext* deviceContext;
 
+    
+
 
     PlayerState state;
 
     std::map<PlayerState, Animation> animations;
 
-    std::vector<Weapon*> weapons;
+    
+    std::unordered_map<WeaponType, Weapon*> weaponPool;
     Weapon* currentWeapon;
 
     float attackTimer = 0.0f;
-    const float attackDuration = 0.9f;
+    const float attackDuration = 0.91f;
 
     int currentStage;
     bool isChangingStage;

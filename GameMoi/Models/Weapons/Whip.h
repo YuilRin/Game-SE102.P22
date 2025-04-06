@@ -9,8 +9,15 @@ class Whip : public Weapon {
 private:
 	int whipLevel;
     Animation whipAnimation;
+
     float whipTimer = 0.0f;
     const float whipDuration = 0.9f;
+
+    ID3D11ShaderResourceView* texture;
+    // Các offset cho từng frame của roi
+    std::vector<std::pair<float, float>> frameOffsets;
+
+    void UpdateHitbox(); // xử lý va chạm
 
 public:
     Whip(float x, float y, int level, ID3D11Device* device);

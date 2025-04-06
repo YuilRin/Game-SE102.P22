@@ -55,6 +55,9 @@
     <Filter Include="Source Files\Camera">
       <UniqueIdentifier>{15fbb02b-9136-455e-9f48-65b26b4cc113}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Image">
+      <UniqueIdentifier>{075bc1a7-d5f7-4d06-8c74-5e4d9e12edca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Render.h">
@@ -111,6 +114,9 @@
     <ClInclude Include="Models\Characters\Info.h">
       <Filter>Header Files\Models\Characters</Filter>
     </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Header Files\Tilemap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -121,9 +127,6 @@
     </ClCompile>
     <ClCompile Include="Models\Weapons\Whip.cpp">
       <Filter>Source Files\Models\Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="Tilemap\TileMap.cpp">
-      <Filter>Source Files\Tilemap</Filter>
     </ClCompile>
     <ClCompile Include="Animation\Animation.cpp">
       <Filter>Source Files\Animation</Filter>
@@ -167,8 +170,43 @@
     <ClCompile Include="Models\Characters\Info.cpp">
       <Filter>Source Files\Models\Characters</Filter>
     </ClCompile>
+    <ClCompile Include="Tilemap\TileMap.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Source Files\Tilemap</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Image\frame2.png">
+      <Filter>Image</Filter>
+    </Image>
+    <Image Include="Image\frame2tileset.png">
+      <Filter>Image</Filter>
+    </Image>
+    <Image Include="Image\frame3.png">
+      <Filter>Image</Filter>
+    </Image>
+    <Image Include="Image\weapon.png">
+      <Filter>Image</Filter>
+    </Image>
+    <Image Include="Image\whip.jpg">
+      <Filter>Image</Filter>
+    </Image>
+    <Image Include="Image\frame3tileset.png">
+      <Filter>Image</Filter>
+    </Image>
+    <Image Include="Image\map.png">
+      <Filter>Image</Filter>
+    </Image>
+    <Image Include="Image\simon.jpg">
+      <Filter>Image</Filter>
+    </Image>
+    <Image Include="Image\tileset.png">
+      <Filter>Image</Filter>
+    </Image>
   </ItemGroup>
 </Project>

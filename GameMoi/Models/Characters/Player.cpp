@@ -8,8 +8,6 @@
 #include "../Weapons/Axe.h"
 #include <algorithm> 
 
-
-
 Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device)
     : GameObject(x, y), animations(std::move(anims)), state(PlayerState::Idle), facingLeft(false), velocityY(0), isOnGround(false), device(device)
 {
@@ -58,7 +56,8 @@ void Player::onKeyPressed(WPARAM key) {
     }
 }
 
-void Player::onKeyReleased(WPARAM key) {
+void Player::onKeyReleased(WPARAM key) 
+{
     switch (key) {
     case 'A': case VK_LEFT:
     case 'D': case VK_RIGHT:
@@ -74,7 +73,6 @@ void Player::onKeyReleased(WPARAM key) {
         break;
     }
 }
-
 
 void Player::MoveLeft() {
     if (state != PlayerState::Walking) {
@@ -129,7 +127,7 @@ void Player::HandleWeaponUpdate(float elapsedTime) {
     float weaponOffsetX = facingLeft ? -20.0f : 20.0f;
 
     if (auto whip = dynamic_cast<Whip*>(currentWeapon)) {
-        whip->SetPos(x + weaponOffsetX - 2, y);
+        whip->SetPos(x + weaponOffsetX - 2, y,facingLeft);
     }
     else {
         HandleAxeUpdate();
@@ -141,17 +139,19 @@ void Player::HandleWeaponUpdate(float elapsedTime) {
 void Player::HandleAxeUpdate() {
     if (auto axe = dynamic_cast<Axe*>(currentWeapon)) {
         if (!axe->IsThrown()) {
-            axe->SetPos(x, y - 10);
+            axe->SetPos(x, y - 10,facingLeft);
             axe->ResetVelocity();
             axe->SetThrown(true);
         }
     }
 }
+void Player::unhookinputevent() {
+	// Unhook input event
+}
 template<typename T>
 const T& myClamp(const T& v, const T& lo, const T& hi) {
     return (v < lo) ? lo : (hi < v) ? hi : v;
 }
-
 
 void Player::Update(float elapsedTime) {
     float ySan = (x >= 390) ? 290.0f : 340.0f;
@@ -182,15 +182,7 @@ void Player::Update(float elapsedTime) {
                 state = PlayerState::Idle;
                 currentWeapon->SetActive(false);
             }
-        }
-
-        if (state == PlayerState::SitDown) {
-            if (!(GetAsyncKeyState('S') & 0x8000 || GetAsyncKeyState(VK_DOWN) & 0x8000)) {
-                y -= 13.0f;
-                state = PlayerState::Idle;
-            }
-        }
-
+        }      
         HandleWeaponUpdate(elapsedTime);
     }
 
@@ -201,22 +193,36 @@ void Player::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
     animations[state].Render(spriteBatch, x, y, facingLeft);
     currentWeapon->Render(spriteBatch);
 }
-
 void Player::ChangeWeapon(WeaponType newType) {
-    delete currentWeapon;
+    // Nếu vũ khí chưa có trong pool, tạo mới
+    if (weaponPool.find(newType) == weaponPool.end()) {
+        Weapon* newWeapon = nullptr;
 
-    switch (newType) {
-    case WeaponType::WHIP:
-        currentWeapon = new Whip(x, y, whipLevel, device);
-        break;
-    case WeaponType::AXE:
-        currentWeapon = new Axe(x, y, device, facingLeft);
-        break;
-    case WeaponType::DAGGER:
-        // currentWeapon = new Dagger(...);
-        break;
+        switch (newType) {
+        case WeaponType::WHIP:
+            newWeapon = new Whip(x, y, whipLevel, device);
+            break;
+        case WeaponType::AXE:
+            newWeapon = new Axe(x, y, device, facingLeft);
+            break;
+        case WeaponType::DAGGER:
+           // newWeapon = new Dagger(x, y, device, facingLeft);
+            break;
+        case WeaponType::HOLYWATER:
+            //newWeapon = new HolyWater(x, y, device, facingLeft);
+            break;
+        default:
+            break;
+        }
+
+        if (newWeapon != nullptr)
+            weaponPool[newType] = newWeapon;
     }
+
+    // Gán weapon hiện tại
+    currentWeapon = weaponPool[newType];
 }
+
 
 void Player::UpgradeWhip() {
     whipLevel++;
