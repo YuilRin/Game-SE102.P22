@@ -49,6 +49,7 @@ using namespace std;
 // ============================
 enum eID
 {
+    UNKNOWN = -1,
     PLAYER = 0,
     MAIN_MENU = 1,
     FONTFULL = 2,
