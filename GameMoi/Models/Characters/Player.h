@@ -108,6 +108,8 @@ public:
 
     void UpgradeWhip();
 
+    void Release() override;
+
 };
 
 #endif

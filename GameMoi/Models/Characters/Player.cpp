@@ -276,3 +276,8 @@ void Player::UpgradeWhip() {
     if (currentWeapon->GetType() == WeaponType::WHIP)
         dynamic_cast<Whip*>(currentWeapon)->SetLevel(whipLevel);
 }
+
+void Player::Release()
+{
+
+}

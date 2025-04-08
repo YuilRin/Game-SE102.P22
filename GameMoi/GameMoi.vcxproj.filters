@@ -117,6 +117,12 @@
     <ClInclude Include="Tilemap\Collider.h">
       <Filter>Header Files\Tilemap</Filter>
     </ClInclude>
+    <ClInclude Include="Models\QuadTree.h">
+      <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\Utils.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -175,6 +181,12 @@
     </ClCompile>
     <ClCompile Include="Tilemap\Collider.cpp">
       <Filter>Source Files\Tilemap</Filter>
+    </ClCompile>
+    <ClCompile Include="Models\QuadTree.cpp">
+      <Filter>Source Files\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\Utils.cpp">
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

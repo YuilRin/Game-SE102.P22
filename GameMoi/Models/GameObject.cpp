@@ -21,6 +21,36 @@ void GameObject::SetPosition(float x, float& y)
     this->x = x;
     this->y = y;
 }
+RECT GameObject::GetBounding()
+{
+    if (!texture)
+        return { 0, 0, 0, 0 };
+
+    ID3D11Resource* resource = nullptr;
+    texture->GetResource(&resource);
+
+    ID3D11Texture2D* tex2D = nullptr;
+    resource->QueryInterface(&tex2D);
+
+    D3D11_TEXTURE2D_DESC desc;
+    tex2D->GetDesc(&desc);
+
+    tex2D->Release();
+    resource->Release();
+
+    RECT bounding;
+    bounding.left = static_cast<LONG>(x);
+    bounding.top = static_cast<LONG>(y);
+    bounding.right = static_cast<LONG>(x + desc.Width);
+    bounding.bottom = static_cast<LONG>(y - desc.Height); // Giả định y hướng lên
+
+    return bounding;
+}
+eStatus GameObject::getStatus()
+{
+    return this->_status;
+}
+
 /*
 #include "GameObject.h"
 

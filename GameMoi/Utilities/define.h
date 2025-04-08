@@ -83,6 +83,7 @@ enum eStatus
     JUMPING = (1 << 2),
     RUNNING = (1 << 3),
     DIE = (1 << 4),
+    DESTROY = (1 << 7),
     ATTACKING = (1 << 8),
 };
 
@@ -136,3 +137,6 @@ typedef XMFLOAT2 GVector2;
 #endif
 
 #endif // __GAMEUIT_FRAMEWORK__
+// MAX OBJECTS và MAX LEVELS cho quadTree
+#define MAX_OBJECTS 4
+#define MAX_LEVELS 32

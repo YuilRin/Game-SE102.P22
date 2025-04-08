@@ -63,3 +63,12 @@ void Axe::Attack() {
    // ResetVelocity(); 
     axeAnimation.reset();
 }
+void Axe::Release()
+{
+    if (texture)
+    {
+        texture->Release();
+        texture = nullptr;
+    }
+
+}

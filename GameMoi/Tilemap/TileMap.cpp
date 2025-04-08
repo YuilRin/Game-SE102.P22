@@ -66,28 +66,23 @@ void TileMap::Draw(Render* render,CCamera* camera) {
     spriteBatch->Begin();
 
     float camX = camera->GetLeft();
-    //float camY = camera->GetTop();
-    //float camH = camera->GetHeight();
-    //float camW = camera->GetWidth();
+    float camY = camera->GetTop();
+    float camH = camera->GetHeight();
+    float camW = camera->GetWidth();
 
     float scale = 3.125f;
-    //char message[50];
+    int tileWidthScaled = (int)(32 * scale);  
+    int tileHeightScaled = (int)(32 * scale); 
 
-    ////float camW = camera->GetWidth();
-    ////float camH = camera->GetHeight();
+    int startCol = (int)(floor(camX / tileWidthScaled));
+    int endCol = (int)(ceil((camX + camW) / tileWidthScaled));
 
-    //int yStart=0, yStop=0, xStart=0, xStop=0;
-    //yStart = (camY / 32) / scale;
-    //yStop = int(((camY+camH) / 32) / scale);
-    //sprintf_s(message, "Tọa độ nhân vật: X = %.2f, Y = %.2f", yStop, camW);
-    //MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);
-    //xStart = int((camX / 32) / scale);
-    //xStop = int(((camX + camW) / 32)/scale);
+    int startRow = (int)(floor(camY / tileHeightScaled));
+    int endRow = (int)(ceil((camY + camH) / tileHeightScaled));
 
 
-
-    for (int y = 0; y < mapHeight; y++) {
-        for (int x = 0; x < mapWidth; x++) {
+    for (int y = startRow; y < endRow; y++) {
+        for (int x = startCol; x < endCol; x++) {
             int tileID = mapData[y][x];
             if (tileID == -1) continue; // Không vẽ ô trống
             RECT srcRect = { tileID  *  tileWidth, 0, (tileID + 1)  * tileWidth  , tileHeight };

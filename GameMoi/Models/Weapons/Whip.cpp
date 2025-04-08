@@ -118,3 +118,14 @@ void Whip::UpdateHitbox() {
 	//hitbox.width = 16;  // Chiều rộng của roi
 	//hitbox.height = 48; // Chiều cao của roi
 }
+void Whip::Release()
+{
+    if (texture)
+    {
+        texture->Release();
+        texture = nullptr;
+    }
+
+    frameOffsets.clear();
+}
+

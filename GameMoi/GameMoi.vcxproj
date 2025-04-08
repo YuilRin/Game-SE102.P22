@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -135,6 +135,7 @@
     <ClInclude Include="Models\Characters\Info.h" />
     <ClInclude Include="Models\Characters\Player.h" />
     <ClInclude Include="Models\GameObject.h" />
+    <ClInclude Include="Models\QuadTree.h" />
     <ClInclude Include="Models\Weapons\Axe.h" />
     <ClInclude Include="Models\Weapons\Weapon.h" />
     <ClInclude Include="Models\Weapons\Whip.h" />
@@ -147,6 +148,7 @@
     <ClInclude Include="Utilities\StopWatch.h" />
     <ClInclude Include="Utilities\GameTime.h" />
     <ClInclude Include="Utilities\TimeSpan.h" />
+    <ClInclude Include="Utilities\Utils.h" />
     <ClInclude Include="Utilities\WindowProc.h" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +159,7 @@
     <ClCompile Include="Models\Characters\Info.cpp" />
     <ClCompile Include="Models\Characters\Player.cpp" />
     <ClCompile Include="Models\GameObject.cpp" />
+    <ClCompile Include="Models\QuadTree.cpp" />
     <ClCompile Include="Models\Weapons\Axe.cpp" />
     <ClCompile Include="Models\Weapons\Weapon.cpp" />
     <ClCompile Include="Models\Weapons\Whip.cpp" />
@@ -168,6 +171,7 @@
     <ClCompile Include="Utilities\StopWatch.cpp" />
     <ClCompile Include="Utilities\Time.cpp" />
     <ClCompile Include="Utilities\TimeSpan.cpp" />
+    <ClCompile Include="Utilities\Utils.cpp" />
     <ClCompile Include="Utilities\WindowProc.cpp" />
   </ItemGroup>
   <ItemGroup>

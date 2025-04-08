@@ -25,6 +25,7 @@ public:
     void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) override;
     void Attack() override;
     void ResetVelocity();
+    void Release();
     
     void SetThrown(bool thrown);
     bool IsThrown();

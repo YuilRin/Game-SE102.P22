@@ -5,9 +5,11 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include "SpriteBatch.h"
+#include "../Utilities/define.h"
 class GameObject {
 protected:
     float x, y;
+    eStatus _status;
     ID3D11ShaderResourceView* texture;
 
 public:
@@ -22,6 +24,9 @@ public:
     void SetPosition(float x, float& y);
     virtual void Update(float elapsedTime) = 0;
     virtual void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch);
+    RECT GetBounding();
+    eStatus getStatus();
+    virtual void Release() = 0;
 };
 
 

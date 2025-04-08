@@ -25,6 +25,7 @@ public:
     void Update(float elapsedTime) override;
     void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) override;
     void Attack() override;
+    void Release() override;
 };
 
 #endif
