@@ -117,6 +117,12 @@
     <ClInclude Include="Tilemap\Collider.h">
       <Filter>Header Files\Tilemap</Filter>
     </ClInclude>
+    <ClInclude Include="Animation\Sprite.h">
+      <Filter>Header Files\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\Vector2.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -175,6 +181,9 @@
     </ClCompile>
     <ClCompile Include="Tilemap\Collider.cpp">
       <Filter>Source Files\Tilemap</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\Sprite.cpp">
+      <Filter>Source Files\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

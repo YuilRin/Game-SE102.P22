@@ -8,21 +8,20 @@
 #include "../Weapons/Weapon.h"
 #include "Info.h"
 #include "../../Tilemap/Collider.h"
+#include "../../Utilities/Vector2.h"
 
 #include <unordered_map>
+
 enum class PlayerState {
     Idle, Walking, Jumping, SitDown, Stand_Hit,
     Climbing, Attacking, TakingDamage, Dead, PickingUpItem, Falling
-
 };
-
 
 class Player : public GameObject {
 private:
     float speed;
-    float velocityY,
-        velocityX;
     float _gravity = 9.8f;
+    Vector2 _velocity = { 0.0f, 0.0f };
 
     bool facingLeft;
 
@@ -30,24 +29,18 @@ private:
     bool isHolding, isAttacking, isJumping;
     bool _isDead;
 
-
     int health;
     int lives;
     int whipLevel = 1;
 
-    bool hasCross; ///??
+    bool hasCross;
 
     ID3D11Device* device;
     ID3D11DeviceContext* deviceContext;
 
-    
-
-
     PlayerState state;
-
     std::map<PlayerState, Animation> animations;
 
-    
     std::unordered_map<WeaponType, Weapon*> weaponPool;
     Weapon* currentWeapon;
 
@@ -58,15 +51,12 @@ private:
     bool isChangingStage;
 
     Info* _info;
-    std::vector<Collider> groundColliders;
-	//std::vector<Collider> stairColliders;
+    std::vector<Collider*> groundColliders;
 
 public:
-    void HandleWeaponUpdate(float elapsedTime);
-    void HandleAxeUpdate();
-
     Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device);
-    void SetGroundColliders(const std::vector<Collider>& colliders);
+
+    void SetGroundColliders(std::vector<Collider*> colliders);
 
     void onKeyPressed(WPARAM key);
     void onKeyReleased(WPARAM key);
@@ -75,7 +65,7 @@ public:
     void Update(float elapsedTime) override;
     void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) override;
 
-    /// Move
+    /// Movement
     void MoveLeft();
     void MoveRight();
     void Jump();
@@ -85,7 +75,7 @@ public:
     void ClimbUp();
     void ClimbDown();
 
-    /// Attack
+    /// Combat
     void Attack();
     void TakeDamage(int damage);
     void Revive();
@@ -97,18 +87,17 @@ public:
     void AddWeapon(Weapon* newWeapon);
     void RemoveWeapon(WeaponType type);
     void UseWeapon(WeaponType type);
+    void HandleWeaponUpdate(float elapsedTime);
+    void HandleAxeUpdate();
 
     /// Stage
     void SetStage(int stageID);
-    int GetStage();
+    int  GetStage();
     bool IsChangingStage();
     void TransitionToNextStage();
 
     void Reset();
-
     void UpgradeWhip();
-
 };
 
 #endif
-

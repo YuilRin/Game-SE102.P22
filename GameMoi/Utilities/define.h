@@ -14,7 +14,7 @@
 #define _USE_MATH_DEFINES
 
 // ============================
-//  Thay thế DirectX 9 bằng DirectX 11
+//  
 // ============================
 #include <d3d11.h>       // Direct3D 11
 #include <d3dcompiler.h> // Shader compiler

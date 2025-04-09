@@ -5,89 +5,68 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include "SpriteBatch.h"
+#include "../Utilities/define.h" // đường dẫn tương đối tùy dự án
+#include "../Tilemap/Collider.h"
+
 class GameObject {
 protected:
-    float x, y;
-    ID3D11ShaderResourceView* texture;
+    float x, y;                             // Vị trí logic
+    ID3D11ShaderResourceView* texture;     // Texture vẽ
+    Collider* collider = nullptr;          // Va chạm
+    GVector2 _velocity;                    // Vận tốc hiện tại
+    eID _id;                               // Định danh
+    eStatus _status;                       // Trạng thái
+    eDirection _physicsSide;              // Hướng vật lý
 
 public:
     GameObject(float x, float y, ID3D11ShaderResourceView* texture = nullptr)
-        : x(x), y(y), texture(texture) {
+        : x(x), y(y), texture(texture), _velocity(0, 0), _id(eID::UNKNOWN), _status(eStatus::NORMAL), _physicsSide(eDirection::NONE) {
+        //collider = new Collider(x, y, 32, 32); // Kích thước mặc định
     }
 
-    virtual ~GameObject() {}
+    virtual ~GameObject() {
+        //if (collider) delete collider;
+    }
+
+    // Vị trí
     float GetX();
     float GetY();
-    void GetPosition(float x, float& y);
-    void SetPosition(float x, float& y);
+    virtual void GetPosition(float& out_x, float& out_y);
+    virtual void SetPosition(float x, float y);
+
+    // Collider
+    //Collider* GetCollider() { return collider; }
+
+    // Vận tốc
+    virtual GVector2 getVelocity() { return _velocity; }
+    virtual void setVelocity(float vx, float vy) { _velocity = GVector2(vx, vy); }
+
+    // Trạng thái
+    virtual eStatus getStatus() { return _status; }
+    virtual void setStatus(eStatus status) { _status = status; }
+    virtual void addStatus(eStatus status) { _status = static_cast<eStatus>(_status | status); }
+    virtual void removeStatus(eStatus status) { _status = static_cast<eStatus>(_status & ~status); }
+    virtual bool isInStatus(eStatus status) { return (_status & status) == status; }
+
+    // Hướng vật lý
+    virtual void setPhysicsBodySide(eDirection side) { _physicsSide = side; }
+    virtual eDirection getPhysicsBodySide() { return _physicsSide; }
+
+    // Va chạm đơn giản (override nếu cần)
+    virtual float checkCollision(GameObject* object, float dt) { return 0.0f; }
+
+    // Bounding box (override nếu muốn custom)
+    //virtual RECT getBounding() {
+    //    float l, t, r, b;
+    //    //collider->GetBoundingBox(l, t, r, b);
+    //    return RECT{ (LONG)l, (LONG)t, (LONG)r, (LONG)b };
+    //}
+
+    // Logic game
     virtual void Update(float elapsedTime) = 0;
+
+    // Vẽ
     virtual void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch);
 };
 
-
-
-
-#endif
-/*
-#pragma once
-#ifndef GAMEOBJECT_H
-#define GAMEOBJECT_H
-
-#include <d3d11.h>
-#include <DirectXMath.h>
-#include "SpriteBatch.h"
-#include "Sprite.h"
-#include "define.h"
-
-class GameObject {
-protected:
-    float x, y;
-    GVector2 _velocity; // Vận tốc
-    ID3D11ShaderResourceView* texture;
-    Sprite* _sprite; // Hỗ trợ Animation
-    eID _id; // Định danh đối tượng
-    eStatus _status; // Trạng thái hiện tại
-    eDirection _physicsSide; // Hướng di chuyển vật lý
-
-public:
-    GameObject(float x, float y, ID3D11ShaderResourceView* texture = nullptr)
-        : x(x), y(y), texture(texture), _velocity(0, 0) {
-        _sprite = nullptr;
-        _id = eID::UNKNOWN;
-        _status = eStatus::NORMAL;
-        _physicsSide = eDirection::NONE;
-    }
-
-    virtual ~GameObject() {}
-
-    // Cập nhật và vẽ đối tượng
-    virtual void Update(float elapsedTime) = 0;
-    virtual void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch);
-
-    // Getter & Setter vị trí
-    virtual GVector2 getPosition();
-    virtual void setPosition(float x, float y);
-
-    // Quản lý vận tốc
-    virtual GVector2 getVelocity();
-    virtual void setVelocity(float vx, float vy);
-
-    // Quản lý trạng thái
-    virtual eStatus getStatus();
-    virtual void setStatus(eStatus status);
-    virtual void addStatus(eStatus status);
-    virtual void removeStatus(eStatus status);
-    virtual bool isInStatus(eStatus status);
-
-    // Quản lý hướng vật lý
-    virtual void setPhysicsBodySide(eDirection side);
-    virtual eDirection getPhysicsBodySide();
-
-    // Va chạm
-    virtual float checkCollision(GameObject* object, float dt);
-    virtual RECT getBounding();
-};
-
-#endif
-
-*/
+#endif // GAMEOBJECT_H
