@@ -40,8 +40,8 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     std::map<PlayerState, Animation> playerAnimations = {
         {PlayerState::Idle, Animation(spriteSheet, {{585, 0, 615, 64}}, 0.15f)},
         {PlayerState::Walking, Animation(spriteSheet, {{585, 0, 615, 64}, {618, 0, 640, 64}, {643, 0, 673, 64}}, 0.15f)},
-        {PlayerState::Jumping, Animation(spriteSheet, {{429, 0, 459, 48}}, 0.15f)},
-        {PlayerState::SitDown, Animation(spriteSheet, {{429, 0, 459, 48}}, 0.15f)},
+        {PlayerState::Jumping, Animation(spriteSheet, {{429, 0, 455, 48}}, 0.15f)},
+        {PlayerState::SitDown, Animation(spriteSheet, {{429, 0, 455, 48}}, 0.15f)},
         {PlayerState::Stand_Hit, Animation(spriteSheet,{{460, 0, 507, 64},{510, 0, 541, 64},{542, 0, 584, 64}},0.3f)}
     };
 
@@ -61,18 +61,18 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     // Chuyển tile 23 thành 0 để dễ xử lý collider
     for (auto& row : rawMap) {
         for (auto& tile : row) {
-            if (tile == 23)
+            if (tile>=20&&tile<=23)
                 tile = 0;
             else
                 tile = -1; // hoặc giá trị nào không phải tile gạch
         }
     }
 
-    std::vector<Collider> groundColliders = Collider::CreateCollisionObjects(rawMap, tileMap->GetTileSize());
+    std::vector<Collider*> groundColliders = CreateOptimizedCollidersFromTileMap(rawMap, tileMap->GetTileSize(),0);
 
     // Gán collider cho Player
     player->SetGroundColliders(groundColliders);
-   
+  
 
     return true;
 }

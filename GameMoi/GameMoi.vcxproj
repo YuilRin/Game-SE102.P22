@@ -130,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animation\Animation.h" />
+    <ClInclude Include="Animation\Sprite.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Models\Characters\Enemy.h" />
     <ClInclude Include="Models\Characters\Info.h" />
@@ -147,10 +148,12 @@
     <ClInclude Include="Utilities\StopWatch.h" />
     <ClInclude Include="Utilities\GameTime.h" />
     <ClInclude Include="Utilities\TimeSpan.h" />
+    <ClInclude Include="Utilities\Vector2.h" />
     <ClInclude Include="Utilities\WindowProc.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation\Animation.cpp" />
+    <ClCompile Include="Animation\Sprite.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Models\Characters\Enemy.cpp" />
