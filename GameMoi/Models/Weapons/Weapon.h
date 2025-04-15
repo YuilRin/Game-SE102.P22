@@ -21,7 +21,11 @@ public:
 
     void SetActive(bool active) { isActive = active; }
     bool IsActive() const { return isActive; }
-	bool IsFacingLeft() const { return facingLeft; } // Thêm hàm này để kiểm tra hướng vũ khí
+	bool IsFacingLeft() const { return facingLeft; }
+    void SetFacingLeft(bool fL)
+    {
+        facingLeft = fL;
+    };
 	void SetPos(float x, float y, bool facingLeft) { this->x = x; this->y = y; }
 
     WeaponType GetType() const { return type; }

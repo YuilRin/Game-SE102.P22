@@ -258,6 +258,7 @@ void Player::SetStairColliders(std::vector<Collider*> colliders)
 void Player::Attack() {
     if (currentWeapon->IsActive())
         return;
+    currentWeapon->SetFacingLeft(facingLeft);
 
     if (isOnGround)
         state = PlayerState::Stand_Hit;

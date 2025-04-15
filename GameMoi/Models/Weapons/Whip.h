@@ -5,8 +5,10 @@
 #include "Weapon.h"
 #include "../../Animation/Animation.h"
 
+
 class Whip : public Weapon {
 private:
+    std::vector<Frame> currentFrames;
 	int whipLevel;
     Animation whipAnimation;
 
@@ -15,7 +17,7 @@ private:
 
     ID3D11ShaderResourceView* texture;
     // Các offset cho từng frame của roi
-    std::vector<std::pair<float, float>> frameOffsets;
+    std::vector<std::pair<std::pair<float, float>, std::pair<float, float>>> frameOffsets;
 
     void UpdateHitbox(); // xử lý va chạm
 

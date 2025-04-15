@@ -37,36 +37,37 @@ Whip::Whip(float x, float y, int level, ID3D11Device* device)
 
     whipAnimation = Animation(texture, whipFrameData[level], 0.3f);
 	frameOffsets = {
-	  { -23.0f, 15.0f },   // Frame 0: Vị trí tay cầm roi
-	  { -45.0f, 0.0f },  // Frame 1: Vị trí tay cầm roi
-	  { 19.0f, 15.0f }, // Frame 2: Vị trí tay cầm roi
+      {{-23.0f, 15.0f}, {60.0f, 15.0f}},   // Frame 0: Vị trí tay cầm roi
+      {{-45.0f, 0.0f},  {55.0f, 0.0f}},      // Frame 1
+    {{19.0f, 15.0f},  {-30.0f, 15.0f}},  // Frame 2: Vị trí tay cầm roi
 
+    {{-23.0f, 15.0f}, {60.0f, 15.0f}},   // Frame 0: Vị trí tay cầm roi
+      {{-45.0f, 0.0f},  {55.0f, 0.0f}},      // Frame 1
+    {{19.0f, 15.0f},  {0.0f, 15.0f}},
 
-	  { 30.0f, 15.0f }, // Frame 3: Vị trí tay cầm roi
-	  { -10.0f, 5.0f }, // Frame 4: Vị trí tay cầm roi
-	  { -20.0f, 10.0f },// Frame 5: Vị trí tay cầm roi
+    {{-23.0f, 15.0f}, {60.0f, 15.0f}},   // Frame 0: Vị trí tay cầm roi
+      {{-45.0f, 0.0f},  {55.0f, 0.0f}},      // Frame 1
+    {{19.0f, 15.0f},  {0.0f, 15.0f}},
 
-	  { -30.0f, 15.0f },// Frame 6: Vị trí tay cầm roi
-	  { -5.0f, -5.0f }, // Frame 7: Vị trí tay cầm roi
-	  { -15.0f, 5.0f }, // Frame 8: Vị trí tay cầm roi
+  {{-23.0f, 15.0f}, {60.0f, 15.0f}},   // Frame 0: Vị trí tay cầm roi
+      {{-45.0f, 0.0f},  {55.0f, 0.0f}},      // Frame 1
+    {{19.0f, 15.0f},  {0.0f, 15.0f}},
 
-	  { -25.0f, 10.0f },// Frame 9: Vị trí tay cầm roi
-	  { -35.0f, 15.0f },// Frame 10: Vị trí tay cầm roi
-	  { -20.0f, -5.0f },// Frame 11: Vị trí tay cầm roi
+    {{-23.0f, 15.0f}, {60.0f, 15.0f}},   // Frame 0: Vị trí tay cầm roi
+      {{-45.0f, 0.0f},  {55.0f, 0.0f}},      // Frame 1
+    {{19.0f, 15.0f},  {0.0f, 15.0f}},
 
-	  { -30.0f, 5.0f }, // Frame 12: Vị trí tay cầm roi
-	  { -40.0f, 10.0f },// Frame 13: Vị trí tay cầm roi
-	  { -50.0f, 15.0f },// Frame 14: Vị trí tay cầm roi
-
-	  { -10.0f, -10.0f}, // Frame 15: Vị trí tay cầm roi
-	  { -20.0f, -5.0f}, // Frame 16: Vị trí tay cầm roi
-	  { -30.0f, 5.0f},   // Frame 17: Vị trí tay cầm roi
+     {{-23.0f, 15.0f}, {60.0f, 15.0f}},   // Frame 0: Vị trí tay cầm roi
+      {{-45.0f, 0.0f},  {55.0f, 0.0f}},      // Frame 1
+    {{19.0f, 15.0f},  {0.0f, 15.0f}},
 	  
     };
 }
 
 void Whip::SetLevel(int level) {
     whipLevel = level;
+    //currentFrames = whipFrameData[level];  // lưu frame để dùng sau
+    //whipAnimation = Animation(texture, currentFrames, 0.3f);
 
     // Cập nhật frame dựa trên cấp độ roi mới
     std::map<int, std::vector<Frame>> whipFrameData = {
@@ -97,11 +98,14 @@ void Whip::Update(float elapsedTime) {
 void Whip::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
     if (isActive) {
         int frameIndex = whipAnimation.GetCurrentFrameIndex(); // Lấy index của frame hiện tại
-        float offsetX = frameOffsets[frameIndex].first;
-        float offsetY = frameOffsets[frameIndex].second;
+        float offsetX = facingLeft ? frameOffsets[frameIndex].second.first
+            : frameOffsets[frameIndex].first.first;
+        float offsetY = facingLeft ? frameOffsets[frameIndex].second.second
+            : frameOffsets[frameIndex].first.second;
 
-        
-        whipAnimation.Render(spriteBatch, x + offsetX, y + offsetY, facingLeft);
+        whipAnimation.Render(spriteBatch, x + offsetX, y + offsetY, IsFacingLeft());
+    
+    
     }
 }
 
