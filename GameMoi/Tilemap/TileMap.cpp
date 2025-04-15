@@ -70,7 +70,7 @@ void TileMap::Draw(Render* render,CCamera* camera) {
     //float camH = camera->GetHeight();
     //float camW = camera->GetWidth();
 
-    float scale = 3.125f;
+    float scale = 3.125;// 3.125f;
     //char message[50];
 
     ////float camW = camera->GetWidth();

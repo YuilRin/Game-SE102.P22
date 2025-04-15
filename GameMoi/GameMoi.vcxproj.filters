@@ -123,6 +123,9 @@
     <ClInclude Include="Utilities\Vector2.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="Tilemap\StairCollider.h">
+      <Filter>Header Files\Tilemap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -217,9 +220,21 @@
     <Image Include="Image\tileset.png">
       <Filter>Image</Filter>
     </Image>
+    <Image Include="Image\frame0.png">
+      <Filter>Image</Filter>
+    </Image>
+    <Image Include="Image\frame0tileset.png">
+      <Filter>Image</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Image\tileset.txt">
+      <Filter>Image</Filter>
+    </Text>
+    <Text Include="Image\frame2tileset.txt">
+      <Filter>Image</Filter>
+    </Text>
+    <Text Include="Image\frame0.txt">
       <Filter>Image</Filter>
     </Text>
   </ItemGroup>

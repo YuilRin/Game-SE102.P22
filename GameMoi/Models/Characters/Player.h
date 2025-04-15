@@ -8,12 +8,13 @@
 #include "../Weapons/Weapon.h"
 #include "Info.h"
 #include "../../Tilemap/Collider.h"
+#include "../../Tilemap/StairCollider.h"
 #include "../../Utilities/Vector2.h"
 
 #include <unordered_map>
 
 enum class PlayerState {
-    Idle, Walking, Jumping, SitDown, Stand_Hit,
+    Idle, Walking, Jumping, SitDown, Stand_Hit,Up_Hit, Down_Hit,
     Climbing, Attacking, TakingDamage, Dead, PickingUpItem, Falling
 };
 
@@ -21,13 +22,20 @@ class Player : public GameObject {
 private:
     float speed;
     float _gravity = 9.8f;
+    float stairSpeed = 25.0f;
+
     Vector2 _velocity = { 0.0f, 0.0f };
 
     bool facingLeft;
 
-    bool isOnGround, isOnStair, isOnMovingPlatform;
+    bool isOnGround, isOnMovingPlatform;
     bool isHolding, isAttacking, isJumping;
     bool _isDead;
+
+    bool isOnStair = false;
+    bool isClimbing = false;
+    Vector2 stairDirection = Vector2(1, -1); // hoặc (-1, 1) nếu cầu thang ngược
+
 
     int health;
     int lives;
@@ -52,11 +60,14 @@ private:
 
     Info* _info;
     std::vector<Collider*> groundColliders;
+    std::vector<Collider*> stairColliders;
+    StairCollider* currentStair = nullptr;
 
 public:
     Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device);
 
     void SetGroundColliders(std::vector<Collider*> colliders);
+    void SetStairColliders(std::vector<Collider*> colliders);
 
     void onKeyPressed(WPARAM key);
     void onKeyReleased(WPARAM key);
@@ -74,6 +85,8 @@ public:
     void StandUp();
     void ClimbUp();
     void ClimbDown();
+    void HandleStairInteraction(float elapsedTime);
+    void MoveOneStairStep();
 
     /// Combat
     void Attack();

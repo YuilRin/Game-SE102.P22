@@ -8,6 +8,11 @@
 #include "../Weapons/Axe.h"
 #include <algorithm> 
 
+const float stairStepX = 250.f; // hoặc tileSize * 0.5 nếu muốn mượt
+const float stairStepY = 250.f; // giống trên
+bool stand=false;
+StairCollider* stairTopAsGround = nullptr;
+
 Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device)
     : GameObject(x, y), animations(std::move(anims)), state(PlayerState::Idle), facingLeft(false), device(device)
 {
@@ -15,7 +20,6 @@ Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11D
     collider = new Collider(x, y, 32, 64); // Ví dụ kích thước 32x64
 
     isOnGround = false;
-
     _info = new Info();
     _info->init();
     _info->SetHeart(50);
@@ -28,40 +32,48 @@ Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11D
 
     whipLevel = 1;
     currentWeapon = new Whip(x, y, whipLevel, device);
-    
 }
 
 void Player::onKeyPressed(WPARAM key) {
-    if (state == PlayerState::Jumping)
-        return;
-
     switch (key) {
     case 'A': case VK_LEFT:
-        MoveLeft();
+        if(isOnGround)
+            MoveLeft();
         break;
     case 'D': case VK_RIGHT:
-        MoveRight();
+        if (isOnGround)
+            MoveRight();
         break;
-    case 'S': case VK_DOWN:
-        SitDown();
+    case 'L': //case VK_DOWN:
+        if (isOnGround)
+            SitDown();
         break;
-    case 'W': case VK_UP:
+    case VK_UP: case 'W':
+        ClimbUp(); 
+        break;
+    case VK_DOWN: case 'S':
+        ClimbDown();
+        break;
+
+    case 'K': //case VK_UP:
         Jump();
         break;
     case 'J':
         Attack();
         break;
-    case 'K':
+    case 'I':
         ChangeWeapon(currentWeapon->GetType() == WeaponType::WHIP ? WeaponType::AXE : WeaponType::WHIP);
         break;
     case 'G':
     {
-        char message[50];
+        std::string msg = "Ground count: " + std::to_string(groundColliders.size());
+        MessageBoxA(nullptr, msg.c_str(), "Debug", MB_OK);
+      /*  char message[50];
         sprintf_s(message, "Tọa độ nhân vật: X = %.2f, Y = %.2f", x, y);
-        MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);
+        MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);*/
         break;
     }
-    case 'L':
+    case 'O':
         UpgradeWhip();
         break;
     }
@@ -70,21 +82,37 @@ void Player::onKeyPressed(WPARAM key) {
 void Player::onKeyReleased(WPARAM key) {
     switch (key) {
     case 'A': case VK_LEFT:
-        state = PlayerState::Idle;
         _velocity.x = 0;
+        state = PlayerState::Idle;
         break;
     case 'D': case VK_RIGHT:
         state = PlayerState::Idle;
         _velocity.x = 0;
-            
         break;
-    case 'S': case VK_DOWN:
-        if (state == PlayerState::SitDown) {
-            y -= 13.0f;
+    case VK_UP: case 'W':
+        _velocity = Vector2(0, 0);
+        if (isOnGround)
+        {
+            isClimbing = false;
             state = PlayerState::Idle;
         }
         break;
+    case VK_DOWN:     case 'S':
+        _velocity = Vector2(0, 0);
+        if (isOnGround)
+        {
+            isClimbing = false;
+            state = PlayerState::Idle;
+        }        
+        break;
+    case 'L':// case VK_DOWN:
+        if (state == PlayerState::SitDown) {
+            y -= 13.0f;
+          
+        }
+        break;
     }
+   
 }
 
 void Player::MoveLeft() {
@@ -113,6 +141,101 @@ void Player::SitDown() {
     }
 }
 
+void Player::ClimbUp()
+{
+    if (!isOnStair || currentStair == nullptr) {
+        state = PlayerState::Idle;
+        return;
+    }
+    StairDirection dir = currentStair->GetDirection();
+    stairDirection = (dir == StairDirection::LeftUp) ? Vector2(1, -1) : Vector2(-1, -1);
+    state = PlayerState::Climbing;
+        _velocity = stairDirection * stairSpeed*3.125;/// cần chỉnh để đi theo bước
+    isClimbing = true;
+  
+}
+
+
+void Player::ClimbDown()
+{
+    if (!isOnStair || currentStair == nullptr) {
+        state = PlayerState::Idle;
+        return;
+    }
+    StairDirection dir = currentStair->GetDirection();
+    stairDirection = (dir == StairDirection::LeftUp) ? Vector2(-1, 1) : Vector2(1, 1);
+    state = PlayerState::Climbing;
+    _velocity = stairDirection * stairSpeed * 3.125;/// cần chỉnh để đi theo bước _velocity = stairDirection.Normalized() * stepLength / elapsedTime;
+    isClimbing = true;
+}
+
+void Player::HandleStairInteraction(float elapsedTime)
+{
+    isOnStair = false;
+    currentStair = nullptr; // reset
+
+    float l1, t1, r1, b1;
+    collider->GetBoundingBox(l1, t1, r1, b1);// nhân vật
+
+    for (auto& stair : stairColliders) {
+        float l2, t2, r2, b2;
+        stair->GetBoundingBox(l2, t2, r2, b2);
+
+        if (r1 > l2 && l1 < r2 && b1 > t2 && t1 < b2) 
+        {
+            
+            StairCollider* stairCol = dynamic_cast<StairCollider*>(stair);
+            if (stairCol != nullptr)//&& !stairCol->IsTemporarilyDisabled()) 
+            {
+              
+                bool passedTop = false;
+                float stairTopY = t2; // t2 là top của cầu thang top
+                float playerBottomY = b1; // b1 là bottom của player
+
+                if (playerBottomY <= stairTopY + 1.0f) {
+                    passedTop = true; 
+                 
+                }
+                if (passedTop) {
+                    isClimbing = false; 
+                    float stairTopY = t2; // top của ô top
+                    float height = b1 - t1;
+                   // y = stairTopY + height ; // +0.5 để không bị float rounding
+                    state = PlayerState::Idle;
+                    collider->SetPosition(x+10.0f, y-10.0f); // cập nhật lại vị trí collider
+                    isOnGround = true;
+                    // Thêm ô top vào ground
+                    stairTopAsGround = stairCol;
+
+                    // 👉 Thêm vào groundColliders và hiện MessageBox ngay lập tức
+                    if (std::find(groundColliders.begin(), groundColliders.end(), stairCol) == groundColliders.end()) {
+                        groundColliders.push_back(stairCol);
+
+                        // ✅ THÔNG BÁO NGAY KHI THÊM
+                        MessageBoxA(nullptr, "✅ Đã thêm ô top vào groundColliders!", "Thông báo", MB_OK | MB_ICONINFORMATION);
+                    }
+
+
+                }
+              
+
+                currentStair = stairCol;
+                isOnStair = true;
+                break;
+             
+            }
+
+            
+        }
+    }
+    
+
+    if (!isOnStair && isClimbing) {
+        isClimbing = false;
+        _velocity = Vector2(0, 0);
+    }
+}
+
 void Player::Jump() {
     
     if (isOnGround) {
@@ -127,11 +250,23 @@ void Player::SetGroundColliders(std::vector<Collider*> colliders) {
     groundColliders = colliders;
 }
 
+void Player::SetStairColliders(std::vector<Collider*> colliders)
+{
+    stairColliders = colliders;
+}
+
 void Player::Attack() {
-    if (state == PlayerState::Stand_Hit || currentWeapon->IsActive())
+    if (currentWeapon->IsActive())
         return;
 
-    state = PlayerState::Stand_Hit;
+    if (isOnGround)
+        state = PlayerState::Stand_Hit;
+    else
+        if (_velocity.y < 0)
+            state = PlayerState::Up_Hit;
+        else
+            state = PlayerState::Down_Hit;
+
     animations[state].reset();
     attackTimer = 0.0f;
     currentWeapon->SetActive(true);
@@ -173,7 +308,8 @@ void Player::unhookinputevent() {
 }
 
 void Player::Update(float elapsedTime) {
-    _velocity.y += _gravity * elapsedTime+1.0f;
+    if(!isClimbing)
+        _velocity.y += _gravity * elapsedTime + 1.0f;
 
     collider->vx = _velocity.x;
     collider->vy = _velocity.y;
@@ -205,28 +341,32 @@ void Player::Update(float elapsedTime) {
             isOnGround = true;
             if (state == PlayerState::Jumping && _velocity.y > 0)
                 state = PlayerState::Idle;
+
+
             break;
         }
     }
-
+    if (state == PlayerState::Stand_Hit
+        || state == PlayerState::Up_Hit
+        || state == PlayerState::Down_Hit) {
+        attackTimer += elapsedTime;
+        if (attackTimer >= attackDuration) {
+            state = PlayerState::Idle;
+            if (currentWeapon)
+                currentWeapon->SetActive(false);
+        }
+    }
+    
     if (isOnGround) {
         if (state == PlayerState::Walking) {
             x += _velocity.x * elapsedTime;
-        }
-
-        if (state == PlayerState::Stand_Hit) {
-            attackTimer += elapsedTime;
-            if (attackTimer >= attackDuration) {
-                state = PlayerState::Idle;
-                if (currentWeapon)
-                    currentWeapon->SetActive(false);
-            }
-        }
-
-        HandleWeaponUpdate(elapsedTime);
+        }       
     }
 
+    HandleWeaponUpdate(elapsedTime);
     animations[state].Update(elapsedTime);
+    HandleStairInteraction(elapsedTime);
+
 }
 
 void Player::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {

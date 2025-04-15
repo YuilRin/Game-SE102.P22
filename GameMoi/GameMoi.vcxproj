@@ -141,6 +141,7 @@
     <ClInclude Include="Models\Weapons\Whip.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="Tilemap\Collider.h" />
+    <ClInclude Include="Tilemap\StairCollider.h" />
     <ClInclude Include="Tilemap\TileMap.h" />
     <ClInclude Include="Utilities\define.h" />
     <ClInclude Include="Utilities\GameInit.h" />
@@ -177,6 +178,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Image\frame0.png" />
+    <Image Include="Image\frame0tileset.png" />
     <Image Include="Image\frame2.png" />
     <Image Include="Image\frame2tileset.png" />
     <Image Include="Image\frame3.png" />
@@ -188,6 +191,8 @@
     <Image Include="Image\whip.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Image\frame0.txt" />
+    <Text Include="Image\frame2tileset.txt" />
     <Text Include="Image\tileset.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

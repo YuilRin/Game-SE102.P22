@@ -11,6 +11,7 @@ public:
     float width, height; // Kích thước
     float vx, vy;        // Vận tốc
     bool isBlocking;     // Có chặn vật khác hay không
+    virtual ~Collider() {};
 
     Collider(float x, float y, float width, float height, float vx = 0, float vy = 0, bool isBlocking = true);
 
@@ -64,5 +65,6 @@ public:
 };
 
 std::vector<Collider*> CreateOptimizedCollidersFromTileMap(std::vector<std::vector<int>>& tileMap, int tileSize, int solidTileValue = 0);
+std::vector<Collider*> CreateStairCollidersFromTileMap(const std::vector<std::vector<int>>& tileMap, int tileSize);
 
 #endif // COLLIDER_H

@@ -1,6 +1,5 @@
 ﻿// Collider.cpp
 #include "Collider.h"
-#include "StairCollider.h"
 #include <cmath>
 
 Collider::Collider(float x, float y, float width, float height, float vx, float vy, bool isBlocking)
@@ -84,7 +83,8 @@ std::vector<Collider*> CreateOptimizedCollidersFromTileMap(std::vector<std::vect
     return colliders;
 }
 
-std::vector<Collider*> CreateStairCollidersFromTileMap(const std::vector<std::vector<int>>& tileMap, int tileSize) {
+std::vector<Collider*> CreateStairCollidersFromTileMap(const std::vector<std::vector<int>>& tileMap, int tileSize)
+{
     std::vector<Collider*> colliders;
 
     int rows = tileMap.size();
@@ -93,24 +93,19 @@ std::vector<Collider*> CreateStairCollidersFromTileMap(const std::vector<std::ve
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {
             int tile = tileMap[row][col];
-            if (tile == 1 || tile == 2) {
+            if (tile == 1 || tile == 2) { // ddeer thanh tile-enum
                 float x = col * tileSize;
                 float y = row * tileSize;
                 float w = tileSize;
                 float h = tileSize;
 
-                // Giả sử bạn quy ước tile lẻ (1) là đi lên trái, tile chẵn (2) là đi lên phải
-                StairDirection dir = (tile == 1) ? StairDirection::LeftUp : StairDirection::RightUp;
-                bool isTop = (tile == 2); // tile == 2 là đỉnh cầu thang
-
-                colliders.push_back(new StairCollider(x, y, w, h, dir, isTop));
+                colliders.push_back(new Collider(x, y, w, h, 0.0f, 0.0f, false)); // false = non-solid
             }
         }
     }
 
     return colliders;
 }
-
 
 // ============================ Collision Event ============================
 
