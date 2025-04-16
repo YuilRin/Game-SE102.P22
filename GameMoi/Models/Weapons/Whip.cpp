@@ -37,30 +37,9 @@ Whip::Whip(float x, float y, int level, ID3D11Device* device)
 
     whipAnimation = Animation(texture, whipFrameData[level], 0.3f);
 	frameOffsets = {
-      {{-23.0f, 15.0f}, {60.0f, 15.0f}},   // Frame 0: Vị trí tay cầm roi
-      {{-45.0f, 0.0f},  {55.0f, 0.0f}},      // Frame 1
-    {{19.0f, 15.0f},  {-30.0f, 15.0f}},  // Frame 2: Vị trí tay cầm roi
-
-    {{-23.0f, 15.0f}, {60.0f, 15.0f}},   // Frame 0: Vị trí tay cầm roi
-      {{-45.0f, 0.0f},  {55.0f, 0.0f}},      // Frame 1
-    {{19.0f, 15.0f},  {0.0f, 15.0f}},
-
-    {{-23.0f, 15.0f}, {60.0f, 15.0f}},   // Frame 0: Vị trí tay cầm roi
-      {{-45.0f, 0.0f},  {55.0f, 0.0f}},      // Frame 1
-    {{19.0f, 15.0f},  {0.0f, 15.0f}},
-
-  {{-23.0f, 15.0f}, {60.0f, 15.0f}},   // Frame 0: Vị trí tay cầm roi
-      {{-45.0f, 0.0f},  {55.0f, 0.0f}},      // Frame 1
-    {{19.0f, 15.0f},  {0.0f, 15.0f}},
-
-    {{-23.0f, 15.0f}, {60.0f, 15.0f}},   // Frame 0: Vị trí tay cầm roi
-      {{-45.0f, 0.0f},  {55.0f, 0.0f}},      // Frame 1
-    {{19.0f, 15.0f},  {0.0f, 15.0f}},
-
-     {{-23.0f, 15.0f}, {60.0f, 15.0f}},   // Frame 0: Vị trí tay cầm roi
-      {{-45.0f, 0.0f},  {55.0f, 0.0f}},      // Frame 1
-    {{19.0f, 15.0f},  {0.0f, 15.0f}},
-	  
+      {{-23.0f, 15.0f}, { 60.0f, 15.0f}},   // Frame 0: Vị trí tay cầm roi
+      {{-45.0f,  0.0f}, { 55.0f,  0.0f}},      // Frame 1
+      {{ 19.0f, 15.0f}, {-30.0f, 16.0f}},  // Frame 2: Vị trí tay cầm roi	  
     };
 }
 
@@ -98,11 +77,20 @@ void Whip::Update(float elapsedTime) {
 void Whip::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
     if (isActive) {
         int frameIndex = whipAnimation.GetCurrentFrameIndex(); // Lấy index của frame hiện tại
-        float offsetX = facingLeft ? frameOffsets[frameIndex].second.first
-            : frameOffsets[frameIndex].first.first;
-        float offsetY = facingLeft ? frameOffsets[frameIndex].second.second
-            : frameOffsets[frameIndex].first.second;
+        float offsetX = 0.0f;
+        float offsetY = 0.0f;
 
+        if (facingLeft) {
+            offsetX = frameOffsets[frameIndex].second.first;
+            if (whipLevel > 1&&frameIndex==2) {
+                offsetX -= 25.0f; // Trừ thêm nếu roi cấp cao hơn
+            }
+            offsetY = frameOffsets[frameIndex].second.second;
+        }
+        else {
+            offsetX = frameOffsets[frameIndex].first.first;
+            offsetY = frameOffsets[frameIndex].first.second;
+        }
         whipAnimation.Render(spriteBatch, x + offsetX, y + offsetY, IsFacingLeft());
     
     

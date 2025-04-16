@@ -24,6 +24,9 @@ private:
 public:
     Whip(float x, float y, int level, ID3D11Device* device);
     void SetLevel(int level);
+    int GetLevel() {
+        return whipLevel;
+    };
     void Update(float elapsedTime) override;
     void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) override;
     void Attack() override;
