@@ -2,14 +2,14 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "../GameObject.h"
+#include "../../GameObject.h"
 #include <vector>
-#include "../../Animation/Animation.h"
-#include "../Weapons/Weapon.h"
-#include "Info.h"
-#include "../../Tilemap/Collider.h"
-#include "../../Tilemap/StairCollider.h"
-#include "../../Utilities/Vector2.h"
+#include "../../../Animation/Animation.h"
+#include "../../Weapons/Weapon.h"
+#include "../Info.h"
+#include "../../../Tilemap/Collider.h"
+#include "../../../Tilemap/StairCollider.h"
+#include "../../../Utilities/Vector2.h"
 
 #include <unordered_map>
 
@@ -68,6 +68,8 @@ public:
 
     void SetGroundColliders(std::vector<Collider*> colliders);
     void SetStairColliders(std::vector<Collider*> colliders);
+    void HandleCollision(float elapsedTime);
+    void HandleStateChange(float elapsedTime);
 
     void onKeyPressed(WPARAM key);
     void onKeyReleased(WPARAM key);
