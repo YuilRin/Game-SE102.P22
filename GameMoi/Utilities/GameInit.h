@@ -4,7 +4,7 @@
 
 #include <memory>
 #include "../Render.h"
-#include "../Models/Characters/Player.h"
+#include "../Models/Characters/Player/Player.h"
 #include "../TileMap/TileMap.h"
 #include "GameLoop.h"
 #include "../Camera/Camera.h"

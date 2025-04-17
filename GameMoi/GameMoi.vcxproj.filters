@@ -58,6 +58,12 @@
     <Filter Include="Image">
       <UniqueIdentifier>{075bc1a7-d5f7-4d06-8c74-5e4d9e12edca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Models\Characters\Player">
+      <UniqueIdentifier>{d7e0175a-aada-4e11-a88c-e20854b136aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Models\Characters\Player">
+      <UniqueIdentifier>{2cb323a8-f51b-44fd-97a5-b24902db71f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Render.h">
@@ -86,9 +92,6 @@
     </ClInclude>
     <ClInclude Include="Utilities\TimeSpan.h">
       <Filter>Header Files\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="Models\Characters\Player.h">
-      <Filter>Header Files\Models\Characters</Filter>
     </ClInclude>
     <ClInclude Include="Models\GameObject.h">
       <Filter>Header Files\Models</Filter>
@@ -126,6 +129,9 @@
     <ClInclude Include="Tilemap\StairCollider.h">
       <Filter>Header Files\Tilemap</Filter>
     </ClInclude>
+    <ClInclude Include="Models\Characters\Player\Player.h">
+      <Filter>Header Files\Models\Characters\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -145,9 +151,6 @@
     </ClCompile>
     <ClCompile Include="Utilities\TimeSpan.cpp">
       <Filter>Source Files\Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="Models\Characters\Player.cpp">
-      <Filter>Source Files\Models\Characters</Filter>
     </ClCompile>
     <ClCompile Include="Models\Weapons\Weapon.cpp">
       <Filter>Source Files\Models\Weapon</Filter>
@@ -187,6 +190,21 @@
     </ClCompile>
     <ClCompile Include="Animation\Sprite.cpp">
       <Filter>Source Files\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Models\Characters\Player\Player.cpp">
+      <Filter>Source Files\Models\Characters\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Models\Characters\Player\PlayerMove.cpp">
+      <Filter>Source Files\Models\Characters\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Models\Characters\Player\PlayerCombat.cpp">
+      <Filter>Source Files\Models\Characters\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Models\Characters\Player\PlayerStair.cpp">
+      <Filter>Source Files\Models\Characters\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Models\Characters\Player\PlayerUpdate.cpp">
+      <Filter>Source Files\Models\Characters\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

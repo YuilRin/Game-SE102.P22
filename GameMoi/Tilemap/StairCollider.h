@@ -4,7 +4,6 @@
 
 #include <vector>
 #include <algorithm>
-#include "./Collider.h"
 #pragma once
 #include "Collider.h"
 
