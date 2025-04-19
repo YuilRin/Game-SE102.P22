@@ -20,6 +20,7 @@ public:
     bool IsBlocking() const;
     void SetPosition(float newX, float newY);
     void GetPosition(float& out_x, float& out_y) const;
+    void SetBlocking(bool Block) { isBlocking = Block; };
 };
 
 struct CollisionEvent {

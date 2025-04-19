@@ -16,7 +16,7 @@ Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11D
     : GameObject(x, y), animations(std::move(anims)), state(PlayerState::Idle), facingLeft(false), device(device)
 {
     _velocity = { 0.0f, 0.0f };
-    collider = new Collider(x, y, 32, 64); // Ví dụ kích thước 32x64
+    collider = new Collider(x, y, 32, 64); // kích thước 32x64
 
     isOnGround = false;
     _info = new Info();
@@ -123,6 +123,11 @@ void Player::SetStairColliders(std::vector<Collider*> colliders)
     stairColliders = colliders;
 }
 
+void Player::SetItemList(std::vector<Item*>* itemList)
+{
+    items = itemList;
+}
+
 void Player::HandleWeaponUpdate(float elapsedTime) {
     if (!currentWeapon->IsActive())
         return;
@@ -137,6 +142,7 @@ void Player::HandleWeaponUpdate(float elapsedTime) {
     }
 
     currentWeapon->Update(elapsedTime);
+
 }
 
 void Player::HandleAxeUpdate() {
@@ -156,6 +162,14 @@ void Player::unhookinputevent() {
 void Player::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
     animations[state].Render(spriteBatch, x, y, facingLeft);
     currentWeapon->Render(spriteBatch);
+    // render items
+    for (auto item : *items) {
+        if (item != nullptr) {
+            item->Render(spriteBatch);
+        }
+    
+    }
+
 }
 
 void Player::ChangeWeapon(WeaponType newType) {

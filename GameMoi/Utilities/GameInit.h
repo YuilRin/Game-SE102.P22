@@ -16,6 +16,7 @@ extern Render renderer;
 extern std::unique_ptr<Player> player;
 extern std::unique_ptr<TileMap> tileMap;
 extern CCamera* camera;
+static std::vector<Item*> itemList; 
 
 const int WIDTH = 800;
 const int HEIGHT = 600;

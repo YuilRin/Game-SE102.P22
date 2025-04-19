@@ -64,6 +64,12 @@
     <Filter Include="Source Files\Models\Characters\Player">
       <UniqueIdentifier>{2cb323a8-f51b-44fd-97a5-b24902db71f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Models\Items">
+      <UniqueIdentifier>{953cdb1f-68f9-4e5d-9199-568cf0bacf64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Models\Items">
+      <UniqueIdentifier>{ba53df31-22bc-4b2c-8437-91fbcd1cc9aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Render.h">
@@ -131,6 +137,21 @@
     </ClInclude>
     <ClInclude Include="Models\Characters\Player\Player.h">
       <Filter>Header Files\Models\Characters\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\Items\BreakableItem.h">
+      <Filter>Header Files\Models\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\Items\Item.h">
+      <Filter>Header Files\Models\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\World.h">
+      <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\Items\ItemSpriteRects.h">
+      <Filter>Header Files\Models\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Header Files\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -206,6 +227,21 @@
     <ClCompile Include="Models\Characters\Player\PlayerUpdate.cpp">
       <Filter>Source Files\Models\Characters\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Models\Items\BreakableItem.cpp">
+      <Filter>Source Files\Models\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Models\Items\Item.cpp">
+      <Filter>Source Files\Models\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Models\World.cpp">
+      <Filter>Source Files\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="Models\Items\ItemSpriteRects.cpp">
+      <Filter>Source Files\Models\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -242,6 +278,9 @@
       <Filter>Image</Filter>
     </Image>
     <Image Include="Image\frame0tileset.png">
+      <Filter>Image</Filter>
+    </Image>
+    <Image Include="Image\items.png">
       <Filter>Image</Filter>
     </Image>
   </ItemGroup>
