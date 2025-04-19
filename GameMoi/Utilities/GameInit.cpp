@@ -42,6 +42,8 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     ID3D11ShaderResourceView* spriteSheet = nullptr;
     DirectX::CreateWICTextureFromFile(device, context, L"Image/simon.jpg", nullptr, &spriteSheet);
 
+    
+
     // Tạo danh sách animation của player
     std::map<PlayerState, Animation> playerAnimations = {
         {PlayerState::Idle     , Animation(spriteSheet, {{585, 0 , 615, 64}}, 0.3f)},
@@ -55,6 +57,7 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     };
 
     player = std::make_unique<Player>(30, 428, playerAnimations, device);
+
 
     camera = CCamera::GetInstance();
     camera->Init();
@@ -70,7 +73,7 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
    
     for (auto& row : rawMap) {
         for (auto& tile : row) {
-            if (tile == 0 || tile == 7 || tile == 8 || tile == 17 || tile == 18)
+            if (tile == 0 || tile == 7 || tile == 8 || tile == 17 || tile == 18 || tile == 9)
                 tile = 0;// tile gạch
             else
                 if (tile == 4 || tile == 14||tile==27)
@@ -89,6 +92,18 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
 
     std::vector<Collider*> stairColliders = CreateStairCollidersFromTileMap(rawMap, tileMap->GetTileSize());
     player->SetStairColliders(stairColliders);
+
+
+
+    ID3D11ShaderResourceView* itemTexture = nullptr;
+    DirectX::CreateWICTextureFromFile(device, context, L"Image/items.png", nullptr, &itemTexture);
+    
+    Item* heart = new Item(300.0f, 150.0f, ItemType::SMALL_HEART, itemTexture);
+    itemList.push_back(heart);  // ✅
+
+    player->SetItemList(&itemList);
+
+
   
 
     return true;

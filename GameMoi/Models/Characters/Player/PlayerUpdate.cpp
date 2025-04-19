@@ -1,4 +1,4 @@
-#include "Player.h"
+﻿#include "Player.h"
 
 
 void Player::HandleCollision(float elapsedTime) {
@@ -52,11 +52,33 @@ void Player::Update(float elapsedTime) {
 
     collider->vx = _velocity.x;
     collider->vy = _velocity.y;
+    if (!items) return;
+
+    for (auto& item : *items) {
+        if (!item) continue;
+        
+
+        float l1, t1, r1, b1;
+        collider->GetBoundingBox(l1, t1, r1, b1);
+        float l2, t2, r2, b2;
+        item->GetCollider()->GetBoundingBox(l2, t2, r2, b2);
+
+        if (r1 > l2 && l1 < r2 && b1 > t2 && t1 < b2) {
+            if (item->GetType() == ItemType::SMALL_HEART)
+            {
+            }//_info->AddHealth(1);
+            else if (item->GetType() == ItemType::POT_ROAST)
+                //_info->AddHealth(5);
+
+            item->MarkForDelete(); // hoặc flag bạn dùng để xóa
+        }
+    }
+
 
     HandleCollision(elapsedTime);
     HandleStateChange(elapsedTime);
     HandleWeaponUpdate(elapsedTime);
-    animations[state].Update(elapsedTime);
     HandleStairInteraction(elapsedTime);
+    animations[state].Update(elapsedTime);
 
 }

@@ -10,6 +10,7 @@
 #include "../../../Tilemap/Collider.h"
 #include "../../../Tilemap/StairCollider.h"
 #include "../../../Utilities/Vector2.h"
+#include "../../Items/BreakableItem.h"
 
 #include <unordered_map>
 
@@ -61,6 +62,8 @@ private:
     Info* _info;
     std::vector<Collider*> groundColliders;
     std::vector<Collider*> stairColliders;
+    std::vector<BreakableItem*> breakables;
+    std::vector<Item*>* items = nullptr;
     StairCollider* currentStair = nullptr;
 
 public:
@@ -68,6 +71,8 @@ public:
 
     void SetGroundColliders(std::vector<Collider*> colliders);
     void SetStairColliders(std::vector<Collider*> colliders);
+    void SetItemList(std::vector<Item*>* itemList);
+
     void HandleCollision(float elapsedTime);
     void HandleStateChange(float elapsedTime);
 

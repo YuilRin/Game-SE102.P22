@@ -32,8 +32,7 @@ void Player::ClimbDown()
 
 void Player::HandleStairInteraction(float elapsedTime)
 {
-    isOnStair = false;
-    currentStair = nullptr; // reset
+    isOnStair = false;    currentStair = nullptr; // reset
 
     float l1, t1, r1, b1;
     collider->GetBoundingBox(l1, t1, r1, b1);// nhân vật
@@ -44,7 +43,6 @@ void Player::HandleStairInteraction(float elapsedTime)
 
         if (r1 > l2 && l1 < r2 && b1 > t2 && t1 < b2)
         {
-
             StairCollider* stairCol = dynamic_cast<StairCollider*>(stair);
             if (stairCol != nullptr)//&& !stairCol->IsTemporarilyDisabled()) 
             {
@@ -57,6 +55,8 @@ void Player::HandleStairInteraction(float elapsedTime)
                     passedTop = true;
 
                 }
+                else
+                    passedTop = false;
                 if (passedTop) {
                     isClimbing = false;
                     float stairTopY = t2; // top của ô top
@@ -67,6 +67,7 @@ void Player::HandleStairInteraction(float elapsedTime)
                     isOnGround = true;
                     // Thêm ô top vào ground
                     stairTopAsGround = stairCol;
+                    stairTopAsGround->SetBlocking(true);
 
                     // 👉 Thêm vào groundColliders và hiện MessageBox ngay lập tức
                     if (std::find(groundColliders.begin(), groundColliders.end(), stairCol) == groundColliders.end()) {
