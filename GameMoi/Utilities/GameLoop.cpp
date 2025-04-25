@@ -1,6 +1,8 @@
-﻿#include "GameLoop.h"
-#include "GameInit.h"  // Để sử dụng player, renderer, camera
-#include <windows.h>    // Để dùng GetTickCount()
+﻿#define NOMINMAX 
+#include "GameLoop.h"
+#include "GameInit.h"
+#include <algorithm> 
+#include <Windows.h> 
 
 void GameLoop() {
     MSG msg = { 0 };
@@ -16,21 +18,25 @@ void GameLoop() {
         float deltaTime = (currentTime - prevTime) / 1000.0f;
         prevTime = currentTime;
 
-        // Cập nhật game
-        player->Update(deltaTime);
+        // Update game through World
+        if (world) {
+            world->Update(deltaTime);
+        }
 
-        float camX = player->GetX() - WIDTH / 3;
+        // Camera logic - SỬA DÒNG NÀY
+        if (world && world->GetPlayer()) {
+            float camX = world->GetPlayer()->GetX() - WIDTH / 3.0f;
+            camX = std::max(0.0f, std::min(camX,
+                static_cast<float>(tileMap->GetWidth()) - WIDTH / 3.0f));
+            camera->SetPosition(camX, 0);
+        }
 
-        // Giới hạn camera
-        float leftEdge = 0;
-        float rightEdge = tileMap->GetWidth() - WIDTH / 3;
-        camX = max(leftEdge, min(camX, rightEdge));
-        camera->SetPosition(camX, 0);
-
-        // Vẽ game
+        // Rendering
         renderer.BeginRender();
         tileMap->Draw(&renderer, camera);
-        player->Render(renderer.GetSpriteBatch());
+        if (world) {
+            world->Render(renderer.GetSpriteBatch());
+        }
         renderer.EndRender();
     }
 }

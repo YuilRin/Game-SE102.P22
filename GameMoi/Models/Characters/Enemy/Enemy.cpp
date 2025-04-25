@@ -1,11 +1,11 @@
 ﻿#include "Enemy.h"
-#include "../../Utilities/GameTime.h"
+#include "../../../Utilities/GameTime.h"
 
 Enemy::Enemy(float x, float y, ID3D11ShaderResourceView* texture)
     : GameObject(x, y, texture),
     _health(100),
     _damage(10),
-    _moveSpeed(50.0f),
+    _moveSpeed(75.0f),
     _isActive(true),
     _enemyType(eID::UNKNOWN),
     _status(eStatus::NORMAL),
@@ -74,7 +74,7 @@ void Enemy::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
     // Render animation hiện tại
     auto it = _animations.find(_status);
     if (it != _animations.end() && it->second) {
-        bool flip = (_direction == eDirection::LEFT);
+        bool flip = (_direction == eDirection::RIGHT);
         it->second->Render(spriteBatch, x, y, flip);
     }
     else {

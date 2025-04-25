@@ -2,10 +2,10 @@
 #ifndef __ENEMY_H__
 #define __ENEMY_H__
 
-#include "../GameObject.h"
-#include "../../Animation/Animation.h"
-#include "../../Utilities/StopWatch.h"
-#include "../../Utilities/define.h"
+#include "../../GameObject.h"
+#include "../../../Animation/Animation.h"
+#include "../../../Utilities/StopWatch.h"
+#include "../../../Utilities/define.h"
 #include <map>
 
 class Enemy : public GameObject

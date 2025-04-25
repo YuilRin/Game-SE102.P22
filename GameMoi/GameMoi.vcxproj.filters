@@ -70,6 +70,12 @@
     <Filter Include="Source Files\Models\Items">
       <UniqueIdentifier>{ba53df31-22bc-4b2c-8437-91fbcd1cc9aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Models\Characters\Enemy">
+      <UniqueIdentifier>{0666f5ff-b335-4f46-896b-34790d3fed47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Models\Characters\Enemy">
+      <UniqueIdentifier>{7763c887-744e-42a2-a153-c248c83c311e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Render.h">
@@ -104,9 +110,6 @@
     </ClInclude>
     <ClInclude Include="Utilities\define.h">
       <Filter>Header Files\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="Models\Characters\Enemy.h">
-      <Filter>Header Files\Models\Characters</Filter>
     </ClInclude>
     <ClInclude Include="Utilities\GameInit.h">
       <Filter>Header Files\Utilities</Filter>
@@ -153,6 +156,15 @@
     <ClInclude Include="TextureManager.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="Models\Characters\Enemy\Enemy.h">
+      <Filter>Header Files\Models\Characters\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\Characters\Enemy\EnemyManager.h">
+      <Filter>Header Files\Models\Characters\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Models\Characters\Enemy\Zombie.h">
+      <Filter>Header Files\Models\Characters\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -181,9 +193,6 @@
     </ClCompile>
     <ClCompile Include="Rended.cpp">
       <Filter>Source Files\Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="Models\Characters\Enemy.cpp">
-      <Filter>Source Files\Models\Characters</Filter>
     </ClCompile>
     <ClCompile Include="Camera\Camera.cpp">
       <Filter>Source Files\Camera</Filter>
@@ -242,6 +251,15 @@
     <ClCompile Include="TextureManager.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="Models\Characters\Enemy\Enemy.cpp">
+      <Filter>Source Files\Models\Characters\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Models\Characters\Enemy\EnemyManager.cpp">
+      <Filter>Source Files\Models\Characters\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Models\Characters\Enemy\Zombie.cpp">
+      <Filter>Source Files\Models\Characters\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -283,6 +301,9 @@
     <Image Include="Image\items.png">
       <Filter>Image</Filter>
     </Image>
+    <Image Include="Image\Zombie.png">
+      <Filter>Image</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Image\tileset.txt">
@@ -292,6 +313,9 @@
       <Filter>Image</Filter>
     </Text>
     <Text Include="Image\frame0.txt">
+      <Filter>Image</Filter>
+    </Text>
+    <Text Include="Image\Zombie.txt">
       <Filter>Image</Filter>
     </Text>
   </ItemGroup>

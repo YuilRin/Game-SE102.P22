@@ -132,7 +132,9 @@
     <ClInclude Include="Animation\Animation.h" />
     <ClInclude Include="Animation\Sprite.h" />
     <ClInclude Include="Camera\Camera.h" />
-    <ClInclude Include="Models\Characters\Enemy.h" />
+    <ClInclude Include="Models\Characters\Enemy\Enemy.h" />
+    <ClInclude Include="Models\Characters\Enemy\EnemyManager.h" />
+    <ClInclude Include="Models\Characters\Enemy\Zombie.h" />
     <ClInclude Include="Models\Characters\Info.h" />
     <ClInclude Include="Models\Characters\Player\Player.h" />
     <ClInclude Include="Models\GameObject.h" />
@@ -162,7 +164,9 @@
     <ClCompile Include="Animation\Sprite.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Models\Characters\Enemy.cpp" />
+    <ClCompile Include="Models\Characters\Enemy\Enemy.cpp" />
+    <ClCompile Include="Models\Characters\Enemy\EnemyManager.cpp" />
+    <ClCompile Include="Models\Characters\Enemy\Zombie.cpp" />
     <ClCompile Include="Models\Characters\Info.cpp" />
     <ClCompile Include="Models\Characters\Player\Player.cpp" />
     <ClCompile Include="Models\Characters\Player\PlayerCombat.cpp" />
@@ -204,11 +208,13 @@
     <Image Include="Image\tileset.png" />
     <Image Include="Image\weapon.png" />
     <Image Include="Image\whip.jpg" />
+    <Image Include="Image\Zombie.png" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Image\frame0.txt" />
     <Text Include="Image\frame2tileset.txt" />
     <Text Include="Image\tileset.txt" />
+    <Text Include="Image\Zombie.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
