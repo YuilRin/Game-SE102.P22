@@ -14,6 +14,8 @@
 
 #include <unordered_map>
 
+class World;
+
 enum class PlayerState {
     Idle, Walking, Jumping, SitDown, Stand_Hit,Up_Hit, Down_Hit,
     Climbing, Attacking, TakingDamage, Dead, PickingUpItem, Falling
@@ -21,6 +23,9 @@ enum class PlayerState {
 
 class Player : public GameObject {
 private:
+
+    World* world = nullptr;
+
     float speed;
     float _gravity = 9.8f;
     float stairSpeed = 25.0f;
@@ -60,13 +65,15 @@ private:
     bool isChangingStage;
 
     Info* _info;
-    std::vector<Collider*> groundColliders;
     std::vector<Collider*> stairColliders;
     std::vector<BreakableItem*> breakables;
-    std::vector<Item*>* items = nullptr;
+    //std::vector<Item*>* items = nullptr;
     StairCollider* currentStair = nullptr;
 
 public:
+
+    void SetWorld(World* w);
+
     Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device);
 
     void SetGroundColliders(std::vector<Collider*> colliders);

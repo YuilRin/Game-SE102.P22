@@ -34,6 +34,9 @@ public:
     virtual void GetPosition(float& out_x, float& out_y);
     virtual void SetPosition(float x, float y);
 
+    virtual void HandleCollision(float elapsedTime, std::vector<Collider*>& groundColliders);
+
+
     // Collider
     //Collider* GetCollider() { return collider; }
 

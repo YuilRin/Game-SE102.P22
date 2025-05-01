@@ -13,7 +13,6 @@ private:
     StopWatch* _movementTimer;
     float velocityY;
     bool isOnGround;
-    std::vector<Collider*> groundColliders;
 
 public:
     Zombie(float x, float y, ID3D11ShaderResourceView* texture = nullptr);

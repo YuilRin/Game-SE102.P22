@@ -86,7 +86,7 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
 
     // Tạo collider
     std::vector<Collider*> groundColliders = CreateOptimizedCollidersFromTileMap(rawMap, tileMap->GetTileSize(), 0);
-    world->GetPlayer()->SetGroundColliders(groundColliders);
+    world->SetGroundColliders(groundColliders);
 
     std::vector<Collider*> stairColliders = CreateStairCollidersFromTileMap(rawMap, tileMap->GetTileSize());
     world->GetPlayer()->SetStairColliders(stairColliders);

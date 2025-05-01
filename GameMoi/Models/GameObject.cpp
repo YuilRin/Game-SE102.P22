@@ -22,6 +22,18 @@ void GameObject::SetPosition(float x, float y)
     this->y = y;
     //if (collider) collider->SetPosition(x, y);
 }
+void GameObject::HandleCollision(float elapsedTime, std::vector<Collider*>& groundColliders)
+{
+    if (!collider) return;
+
+    CollisionManager::GetInstance()->Process(collider, elapsedTime, groundColliders);
+    float newX, newY;
+    collider->GetPosition(newX, newY);
+    x = newX;
+    y = newY;
+    collider->GetSpeed(_velocity.x, _velocity.y);
+}
+
 /*
 #include "GameObject.h"
 

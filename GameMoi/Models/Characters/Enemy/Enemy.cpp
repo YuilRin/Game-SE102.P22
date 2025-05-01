@@ -1,5 +1,27 @@
 ﻿#include "Enemy.h"
 #include "../../../Utilities/GameTime.h"
+#include "../../World.h"
+
+
+void Enemy::SetWorld(World* w)
+{
+    world = w;
+}
+
+void Enemy::HandleCollision(float elapsedTime)
+{
+    if (!world) return;
+
+    auto& ground = world->GetGroundColliders(); // lấy trực tiếp
+    CollisionManager::GetInstance()->Process(collider, elapsedTime, ground);
+
+    float newX, newY;
+    collider->GetPosition(newX, newY);
+    x = newX;
+    y = newY;
+
+    collider->GetSpeed(_velocity.x, _velocity.y);
+}
 
 Enemy::Enemy(float x, float y, ID3D11ShaderResourceView* texture)
     : GameObject(x, y, texture),
@@ -33,6 +55,7 @@ Enemy::~Enemy() {
 
 void Enemy::Update(float elapsedTime) {
     if (!_isActive) return;
+    
 
     if ((_status & eStatus::DIE) == eStatus::DIE) {
         // Nếu animation kết thúc thì deactivate enemy

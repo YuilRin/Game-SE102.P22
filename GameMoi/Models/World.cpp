@@ -6,6 +6,7 @@ World::~World() = default;
 
 // === Player ===
 void World::SetPlayer(std::unique_ptr<Player> p) {
+    p->SetWorld(this);
     player = std::move(p);
 }
 
@@ -15,6 +16,7 @@ Player* World::GetPlayer() const {
 
 // === Enemy ===
 void World::AddEnemy(std::unique_ptr<Enemy> enemy) {
+    enemy->SetWorld(this);
     enemies.push_back(std::move(enemy));
 }
 
@@ -33,6 +35,7 @@ const std::vector<Enemy*>& World::GetEnemies() const {
 
 // === Item ===
 void World::AddItem(std::unique_ptr<Item> item) {
+    item->SetWorld(this);
     items.push_back(std::move(item));
 }
 
@@ -44,7 +47,7 @@ void World::RemoveItem(Item* target) {
 
 const std::vector<Item*>& World::GetItems() const {
     static std::vector<Item*> result;
-    result.clear();
+    //result.clear();
     for (const auto& i : items) result.push_back(i.get());
     return result;
 }
@@ -62,7 +65,7 @@ void World::RemoveBreakable(BreakableItem* target) {
 
 const std::vector<BreakableItem*>& World::GetBreakables() const {
     static std::vector<BreakableItem*> result;
-    result.clear();
+    //result.clear();
     for (const auto& b : breakables) result.push_back(b.get());
     return result;
 }
@@ -80,17 +83,36 @@ void World::RemoveWeapon(Weapon* target) {
 
 const std::vector<Weapon*>& World::GetWeapons() const {
     static std::vector<Weapon*> result;
-    result.clear();
+    //result.clear();
     for (const auto& w : weapons) result.push_back(w.get());
     return result;
 }
 
+void World::SetGroundColliders(std::vector<Collider*> colliders)
+{
+    groundColliders = colliders;
+}
+
+std::vector<Collider*>& World::GetGroundColliders() 
+{
+    return groundColliders;
+}
+
 // === Update & Render ===
 void World::Update(float deltaTime) {
-    if (player) player->Update(deltaTime);
+    if (player) {
+        player->Update(deltaTime);
+    }
 
-    for (const auto& e : enemies) e->Update(deltaTime);
-    for (const auto& i : items) i->Update(deltaTime);
+    for (const auto& e : enemies) {
+        e->Update(deltaTime);
+    }
+
+    for (const auto& i : items)
+    {
+        i->Update(deltaTime);
+    }
+
     for (const auto& b : breakables) b->Update(deltaTime);
     for (const auto& w : weapons) w->Update(deltaTime);
 }

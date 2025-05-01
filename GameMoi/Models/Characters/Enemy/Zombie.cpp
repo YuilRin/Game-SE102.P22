@@ -8,6 +8,9 @@ Zombie::Zombie(float x, float y, ID3D11ShaderResourceView* texture)
     : Enemy(x, y, texture) {
 
     // Thiết lập thông số cho Zombie
+
+    collider = new Collider(x, y, 32, 64);
+
     _health = 50;
     _damage = 15;
     _moveSpeed = 30.0f;
@@ -28,35 +31,22 @@ Zombie::~Zombie() {
 
 void Zombie::Update(float elapsedTime) {
     Enemy::Update(elapsedTime);
-    if (!_isActive || IsDead()) return;
+    _velocity.y += 9.8f * elapsedTime + 1.0f;
 
-    // Vật lý rơi
-    if (!isOnGround) {
-        velocityY += 9.8f * elapsedTime;
-        y += velocityY;
-    }
-
-    // Xử lý va chạm mặt đất giống player
-    float ySan = (x >= 390) ? 290.0f : 340.0f;
-    if (y >= ySan) {
-        y = ySan;
-        velocityY = 0;
-        isOnGround = true;
-    }
-    else {
-        isOnGround = false;
-    }
-
+    collider->vx = _velocity.x;
+    collider->vy = _velocity.y;
+    HandleCollision(elapsedTime);
+    
     // Luôn dí theo player trên trục X
     float _playerX = _player->GetX();
     DetectPlayer(_playerX, 0);
 
     // Di chuyển ngang
     if (_status == eStatus::MOVING_LEFT) {
-        x -= _moveSpeed * elapsedTime;
+        _velocity.x -= _moveSpeed * elapsedTime;
     }
     else if (_status == eStatus::MOVING_RIGHT) {
-        x += _moveSpeed * elapsedTime;
+        _velocity.x += _moveSpeed * elapsedTime;
     }
 }
 
@@ -114,8 +104,4 @@ void Zombie::ChangeDirection() {
         _direction = eDirection::RIGHT;
         break;
     }
-}
-
-void Zombie::SetGroundColliders(const std::vector<Collider*>& colliders) {
-    groundColliders = colliders; // Now types match
 }

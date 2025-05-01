@@ -1,8 +1,13 @@
 ﻿#include "Player.h"
+#include "../../World.h"
 
 
-void Player::HandleCollision(float elapsedTime) {
-    CollisionManager::GetInstance()->Process(collider, elapsedTime, groundColliders);
+void Player::HandleCollision(float elapsedTime)
+{
+    if (!world) return;
+
+    auto& ground = world->GetGroundColliders(); // lấy trực tiếp
+    CollisionManager::GetInstance()->Process(collider, elapsedTime, ground);
 
     float newX, newY;
     collider->GetPosition(newX, newY);
@@ -14,7 +19,10 @@ void Player::HandleCollision(float elapsedTime) {
 
 void Player::HandleStateChange(float elapsedTime) {
     isOnGround = false;
-    for (auto& g : groundColliders) {
+
+    if (!world) return;
+
+    for (auto& g : world->GetGroundColliders()) {
         float l1, t1, r1, b1;
         collider->GetBoundingBox(l1, t1, r1, b1);
         float l2, t2, r2, b2;
@@ -52,8 +60,8 @@ void Player::Update(float elapsedTime) {
 
     collider->vx = _velocity.x;
     collider->vy = _velocity.y;
-    if (!items) return;
-
+    //if (!items) return;
+    /*
     for (auto& item : *items) {
         if (!item) continue;
         
@@ -72,7 +80,7 @@ void Player::Update(float elapsedTime) {
 
             item->MarkForDelete(); // hoặc flag bạn dùng để xóa
         }
-    }
+    }*/
 
 
     HandleCollision(elapsedTime);

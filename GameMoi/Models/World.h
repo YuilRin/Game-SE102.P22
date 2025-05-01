@@ -10,6 +10,7 @@
 #include "../Models/Items/BreakableItem.h"
 #include "../Models/Weapons/Weapon.h"
 
+
 class World {
 private:
     std::unique_ptr<Player> player;
@@ -17,6 +18,9 @@ private:
     std::vector<std::unique_ptr<Item>> items;
     std::vector<std::unique_ptr<BreakableItem>> breakables;
     std::vector<std::unique_ptr<Weapon>> weapons;
+    std::vector<Collider*> groundColliders;
+   
+
 
 public:
     World();
@@ -45,6 +49,10 @@ public:
     void AddWeapon(std::unique_ptr<Weapon> weapon);
     void RemoveWeapon(Weapon* weapon);
     const std::vector<Weapon*>& GetWeapons() const;
+
+    //GroundCollider
+    void SetGroundColliders(std::vector<Collider*> colliders);
+    std::vector<Collider*>& GetGroundColliders();
 
     void Update(float deltaTime);
     void Render(std::unique_ptr<SpriteBatch>& spriteBatch);

@@ -1,5 +1,13 @@
 ﻿#include "Item.h"
 #include <DirectXMath.h>
+#include "../World.h"
+
+
+
+void Item::SetWorld(World* w)
+{
+    world = w;
+}
 
 Item::Item(float x, float y, ItemType type, ID3D11ShaderResourceView* texture)
     : GameObject(x, y), type(type), texture(texture)
@@ -15,12 +23,35 @@ Item::Item(float x, float y, ItemType type, ID3D11ShaderResourceView* texture)
     }
 }
 
+void Item::HandleCollision(float elapsedTime)
+{
+    if (!world)
+    {
+        return;
+    }
+
+    auto& ground = world->GetGroundColliders(); // lấy trực tiếp
+    CollisionManager::GetInstance()->Process(collider, elapsedTime, ground);
+
+    float newX, newY;
+    collider->GetPosition(newX, newY);
+    x = newX;
+    y = newY;
+
+    collider->GetSpeed(_velocity.x, _velocity.y);
+}
+
+
 void Item::Update(float dt) {
+   
+    _velocity.y += 9.8f * dt + 1.0f;
+
+    collider->vx = _velocity.x;
+    collider->vy = _velocity.y;
     lifetime -= dt;
 
-    // gravity nhẹ
-    y += 40.0f * dt;
-    collider->SetPosition(x, y);
+    HandleCollision(dt);
+    
 }
 
 void Item::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
