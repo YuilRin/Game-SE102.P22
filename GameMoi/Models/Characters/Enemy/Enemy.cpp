@@ -1,11 +1,33 @@
 ﻿#include "Enemy.h"
-#include "../../Utilities/GameTime.h"
+#include "../../../Utilities/GameTime.h"
+#include "../../World.h"
+
+
+void Enemy::SetWorld(World* w)
+{
+    world = w;
+}
+
+void Enemy::HandleCollision(float elapsedTime)
+{
+    if (!world) return;
+
+    auto& ground = world->GetGroundColliders(); // lấy trực tiếp
+    CollisionManager::GetInstance()->Process(collider, elapsedTime, ground);
+
+    float newX, newY;
+    collider->GetPosition(newX, newY);
+    x = newX;
+    y = newY;
+
+    collider->GetSpeed(_velocity.x, _velocity.y);
+}
 
 Enemy::Enemy(float x, float y, ID3D11ShaderResourceView* texture)
     : GameObject(x, y, texture),
     _health(100),
     _damage(10),
-    _moveSpeed(50.0f),
+    _moveSpeed(75.0f),
     _isActive(true),
     _enemyType(eID::UNKNOWN),
     _status(eStatus::NORMAL),
@@ -33,6 +55,7 @@ Enemy::~Enemy() {
 
 void Enemy::Update(float elapsedTime) {
     if (!_isActive) return;
+    
 
     if ((_status & eStatus::DIE) == eStatus::DIE) {
         // Nếu animation kết thúc thì deactivate enemy
@@ -74,7 +97,7 @@ void Enemy::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
     // Render animation hiện tại
     auto it = _animations.find(_status);
     if (it != _animations.end() && it->second) {
-        bool flip = (_direction == eDirection::LEFT);
+        bool flip = (_direction == eDirection::RIGHT);
         it->second->Render(spriteBatch, x, y, flip);
     }
     else {

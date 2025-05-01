@@ -70,12 +70,12 @@ void Player::HandleStairInteraction(float elapsedTime)
                     stairTopAsGround->SetBlocking(true);
 
                     // 👉 Thêm vào groundColliders và hiện MessageBox ngay lập tức
-                    if (std::find(groundColliders.begin(), groundColliders.end(), stairCol) == groundColliders.end()) {
-                        groundColliders.push_back(stairCol);
+                    //if (std::find(groundColliders.begin(), groundColliders.end(), stairCol) == groundColliders.end()) {
+                    //    groundColliders.push_back(stairCol);
 
-                        // ✅ THÔNG BÁO NGAY KHI THÊM
-                        MessageBoxA(nullptr, "✅ Đã thêm ô top vào groundColliders!", "Thông báo", MB_OK | MB_ICONINFORMATION);
-                    }
+                    //    // ✅ THÔNG BÁO NGAY KHI THÊM
+                    //    MessageBoxA(nullptr, "✅ Đã thêm ô top vào groundColliders!", "Thông báo", MB_OK | MB_ICONINFORMATION);
+                    //}
 
 
                 }

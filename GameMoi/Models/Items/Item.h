@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include "../GameObject.h"
 #include "../../Tilemap/Collider.h"
+
+class World;
+
 enum class ItemType {
     SMALL_HEART,
     BIG_HEART,
@@ -35,17 +38,15 @@ private:
     ID3D11ShaderResourceView* texture;
     RECT sourceRect;
     float lifetime = 5.0f; // tự biến mất sau 5s
-
-
-
+    World* world = nullptr;
 
 public:
+    void SetWorld(World* w);
    // Item(float x, float y, ItemType type); dùng  TextureManager.h
     Item(float x, float y, ItemType type, ID3D11ShaderResourceView* tex);
-    //RECT sourceRect;
-    //ID3D11ShaderResourceView* texture= nullptr;
-
-
+    
+    void HandleCollision(float elapsedTime);
+    
     void Update(float dt) override;
     void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) override;
     ItemType GetType() const { return type; }

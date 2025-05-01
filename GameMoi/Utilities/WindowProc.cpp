@@ -2,11 +2,15 @@
 #include "GameInit.h"
 
 void HandleInput(WPARAM key) {
-    player->onKeyPressed(key);
+    if (world && world->GetPlayer()) {
+        world->GetPlayer()->onKeyPressed(key);
+    }
 }
 
 void HandleOutput(WPARAM key) {
-    player->onKeyReleased(key);
+    if (world && world->GetPlayer()) {
+        world->GetPlayer()->onKeyReleased(key);
+    }
 }
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

@@ -12,6 +12,11 @@ const float stairStepX = 250.f; // hoặc tileSize * 0.5 nếu muốn mượt
 const float stairStepY = 250.f; // giống trên
 bool stand=false;
 
+void Player::SetWorld(World* w)
+{
+    world = w;
+}
+
 Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device)
     : GameObject(x, y), animations(std::move(anims)), state(PlayerState::Idle), facingLeft(false), device(device)
 {
@@ -65,8 +70,8 @@ void Player::onKeyPressed(WPARAM key) {
         break;
     case 'G':
     {
-        std::string msg = "Ground count: " + std::to_string(groundColliders.size());
-        MessageBoxA(nullptr, msg.c_str(), "Debug", MB_OK);
+       // std::string msg = "Ground count: " + std::to_string(groundColliders.size());
+        //MessageBoxA(nullptr, msg.c_str(), "Debug", MB_OK);
       /*  char message[50];
         sprintf_s(message, "Tọa độ nhân vật: X = %.2f, Y = %.2f", x, y);
         MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);*/
@@ -114,9 +119,6 @@ void Player::onKeyReleased(WPARAM key) {
    
 }
 
-void Player::SetGroundColliders(std::vector<Collider*> colliders) {
-    groundColliders = colliders;
-}
 
 void Player::SetStairColliders(std::vector<Collider*> colliders)
 {
@@ -125,7 +127,7 @@ void Player::SetStairColliders(std::vector<Collider*> colliders)
 
 void Player::SetItemList(std::vector<Item*>* itemList)
 {
-    items = itemList;
+    //items = itemList;
 }
 
 void Player::HandleWeaponUpdate(float elapsedTime) {
@@ -163,12 +165,12 @@ void Player::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
     animations[state].Render(spriteBatch, x, y, facingLeft);
     currentWeapon->Render(spriteBatch);
     // render items
-    for (auto item : *items) {
+   /* for (auto item : *items) {
         if (item != nullptr) {
             item->Render(spriteBatch);
         }
     
-    }
+    }*/
 
 }
 

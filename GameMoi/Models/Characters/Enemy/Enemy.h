@@ -2,14 +2,18 @@
 #ifndef __ENEMY_H__
 #define __ENEMY_H__
 
-#include "../GameObject.h"
-#include "../../Animation/Animation.h"
-#include "../../Utilities/StopWatch.h"
-#include "../../Utilities/define.h"
+#include "../../GameObject.h"
+#include "../../../Animation/Animation.h"
+#include "../../../Utilities/StopWatch.h"
+#include "../../../Utilities/define.h"
 #include <map>
+class World;
+
 
 class Enemy : public GameObject
 {
+private:
+    World* world = nullptr;
 protected:
     int _health;
     int _damage;
@@ -30,6 +34,11 @@ protected:
     StopWatch* _stateTimer;
 
 public:
+
+    void SetWorld(World* w);
+
+    void HandleCollision(float elapsedTime);
+
     Enemy(float x, float y, ID3D11ShaderResourceView* texture = nullptr);
     virtual ~Enemy();
 
