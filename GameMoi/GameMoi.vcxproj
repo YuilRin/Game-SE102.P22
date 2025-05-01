@@ -153,6 +153,8 @@
     <ClInclude Include="Utilities\define.h" />
     <ClInclude Include="Utilities\GameInit.h" />
     <ClInclude Include="Utilities\GameLoop.h" />
+    <ClInclude Include="Utilities\LevelData.h" />
+    <ClInclude Include="Utilities\SceneBuilder.h" />
     <ClInclude Include="Utilities\StopWatch.h" />
     <ClInclude Include="Utilities\GameTime.h" />
     <ClInclude Include="Utilities\TimeSpan.h" />
@@ -187,6 +189,8 @@
     <ClCompile Include="Tilemap\TileMap.cpp" />
     <ClCompile Include="Utilities\GameInit.cpp" />
     <ClCompile Include="Utilities\GameLoop.cpp" />
+    <ClCompile Include="Utilities\LevelData.cpp" />
+    <ClCompile Include="Utilities\SceneBuilder.cpp" />
     <ClCompile Include="Utilities\StopWatch.cpp" />
     <ClCompile Include="Utilities\Time.cpp" />
     <ClCompile Include="Utilities\TimeSpan.cpp" />

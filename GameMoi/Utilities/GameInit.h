@@ -11,6 +11,9 @@
 #include "../Camera/Camera.h"
 #include "WICTextureLoader.h"
 #include "../Tilemap/Collider.h"
+#include "SceneBuilder.h"
+#include "LevelData.h"
+
 
 extern HWND hwnd;
 extern Render renderer;
