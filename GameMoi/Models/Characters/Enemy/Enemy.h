@@ -15,8 +15,8 @@ class Enemy : public GameObject
 private:
     World* world = nullptr;
 protected:
-    int _health;
-    int _damage;
+    int _health=0;
+    int _damage=0;
     float _moveSpeed;
     bool _isActive;
 
@@ -34,6 +34,7 @@ protected:
     StopWatch* _stateTimer;
 
 public:
+    Collider* GetCollider() const { return collider; }
 
     void SetWorld(World* w);
 
@@ -60,6 +61,7 @@ public:
     eStatus GetStatus() const { return _status; }
     int GetHealth() const { return _health; }
     int GetDamage() const { return _damage; }
+    bool IsExpired() const { return GetHealth() <= 0; }
 };
 
 #endif // __ENEMY_H__

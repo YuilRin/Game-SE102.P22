@@ -21,6 +21,8 @@ Item::Item(float x, float y, ItemType type, ID3D11ShaderResourceView* texture)
     case ItemType::AXE:          sourceRect = { 256, 0, 286, 28 }; break;
     default:                     sourceRect = { 0, 0, 16, 16 }; break;
     }
+
+    collider->SetOwner(this);
 }
 
 void Item::HandleCollision(float elapsedTime)
@@ -66,5 +68,5 @@ void Item::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
 }
 
 void Item::MarkForDelete() {
-    // tuỳ bạn triển khai hệ thống xoá object
+    lifetime = 0.0f;
 }

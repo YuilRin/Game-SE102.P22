@@ -20,5 +20,10 @@ void Player::Attack() {
 }
 
 void Player::TakeDamage(int damage) {
-    // TODO
+
+    int a = this->GetInfo()->GetHeart();
+    this->GetInfo()->SetLife(a - damage);
+    char message[50];
+    sprintf_s(message, "HeartNumber = %d", this->GetInfo()->GetHeart());
+    MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);
 }

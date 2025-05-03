@@ -2,9 +2,20 @@
 #include "Collider.h"
 #include "StairCollider.h"
 #include <cmath>
+#include "../Models/GameObject.h"
 
 Collider::Collider(float x, float y, float width, float height, float vx, float vy, bool isBlocking)
     : x(x), y(y), width(width), height(height), vx(vx), vy(vy), isBlocking(isBlocking) {
+}
+
+void Collider::SetOwner(GameObject* o)
+{
+    owner = o;
+}
+
+GameObject* Collider::GetOwner() const
+{
+    return owner;
 }
 
 void Collider::GetBoundingBox(float& left, float& top, float& right, float& bottom) const {

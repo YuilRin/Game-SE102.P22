@@ -73,10 +73,12 @@ private:
 public:
 
     void SetWorld(World* w);
+    Collider* GetCollider() const { return collider; }
+
 
     Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device);
-
-    void SetGroundColliders(std::vector<Collider*> colliders);
+    ~Player();
+    //void SetGroundColliders(std::vector<Collider*> colliders);
     void SetStairColliders(std::vector<Collider*> colliders);
     void SetItemList(std::vector<Item*>* itemList);
 
@@ -125,6 +127,9 @@ public:
 
     void Reset();
     void UpgradeWhip();
+
+    Info* GetInfo() const { return _info; }
+
 };
 
 #endif
