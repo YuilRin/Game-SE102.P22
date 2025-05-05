@@ -34,6 +34,23 @@ void GameObject::HandleCollision(float elapsedTime, std::vector<Collider*>& grou
     collider->GetSpeed(_velocity.x, _velocity.y);
 }
 
+
+void GameObject::Release()
+{
+    // Giải phóng bộ nhớ của collider 
+    if (collider != nullptr)
+    {
+        delete collider;
+        collider = nullptr;  // Đảm bảo rằng con trỏ không trỏ đến vùng bộ nhớ không hợp lệ
+    }
+
+    // Giải phóng texture nếu đã được tạo ra 
+    if (texture != nullptr)
+    {
+        texture->Release();  // Giải phóng tài nguyên của DirectX texture
+        texture = nullptr;
+    }
+}
 /*
 #include "GameObject.h"
 
