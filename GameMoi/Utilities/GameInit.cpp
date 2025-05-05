@@ -60,7 +60,7 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
 
     // Item positions
     level1.itemPositions = {
-        {300.0f, 150.0f, ItemType::SMALL_HEART}
+        {300.0f, 250.0f, ItemType::SMALL_HEART}
     };
 
     if (!SceneBuilder::LoadSceneWithData(world.get(), tileMap.get(), level1, device, context)) {

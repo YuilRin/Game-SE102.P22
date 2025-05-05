@@ -1,9 +1,12 @@
 ﻿// Collider.h
+#define NOMINMAX
 #ifndef COLLIDER_H
 #define COLLIDER_H
 
 #include <vector>
 #include <algorithm>
+
+class GameObject;
 
 class Collider {
 public:
@@ -15,12 +18,17 @@ public:
 
     Collider(float x, float y, float width, float height, float vx = 0, float vy = 0, bool isBlocking = true);
 
+    void SetOwner(GameObject* o);
+    GameObject* GetOwner() const;
+
     void GetBoundingBox(float& left, float& top, float& right, float& bottom) const;
     void GetSpeed(float& out_vx, float& out_vy) const;
     bool IsBlocking() const;
     void SetPosition(float newX, float newY);
     void GetPosition(float& out_x, float& out_y) const;
     void SetBlocking(bool Block) { isBlocking = Block; };
+private:
+    GameObject* owner = nullptr;
 };
 
 struct CollisionEvent {

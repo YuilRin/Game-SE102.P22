@@ -22,11 +22,14 @@ Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11D
 {
     _velocity = { 0.0f, 0.0f };
     collider = new Collider(x, y, 32, 64); // kích thước 32x64
-
+    collider->SetOwner(this);
     isOnGround = false;
     _info = new Info();
     _info->init();
+
+
     _info->SetHeart(50);
+
     _info->SetLife(3);
     _info->SetScore(0);
     _info->SetPlayerHitPoint(16);
@@ -34,8 +37,14 @@ Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11D
     _info->ActiveTime();
     _info->SetTime(300);
 
+    
     whipLevel = 1;
     currentWeapon = new Whip(x, y, whipLevel, device);
+}
+
+Player::~Player()
+{
+    delete _info;
 }
 
 void Player::onKeyPressed(WPARAM key) {
@@ -72,10 +81,18 @@ void Player::onKeyPressed(WPARAM key) {
     {
        // std::string msg = "Ground count: " + std::to_string(groundColliders.size());
         //MessageBoxA(nullptr, msg.c_str(), "Debug", MB_OK);
-      /*  char message[50];
+        char message[50];
         sprintf_s(message, "Tọa độ nhân vật: X = %.2f, Y = %.2f", x, y);
-        MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);*/
+        MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);
         break;
+    }
+    case 'Q':
+    {
+
+        char message[50];
+        sprintf_s(message, "HeartNumber = %d", this->GetInfo()->GetHeart());
+        MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);
+
     }
     case 'O':
         UpgradeWhip();

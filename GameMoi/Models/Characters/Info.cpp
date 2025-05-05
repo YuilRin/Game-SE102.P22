@@ -12,7 +12,13 @@ Info::~Info()
 
 void Info::init()
 {
-
+	_playerHitPointNumber = 0;
+	_enemyHitPointNumber = 0;
+	_heartNumber = 1;
+	_lifeNumber = 1;
+	_scoreNumber = 1;
+	_stageNumber = 1;
+	_timeNumber = 1;
 }
 
 void Info::SetPlayerHitPoint(int number)
@@ -47,6 +53,13 @@ void Info::SetHeart(int number)
 int Info::GetHeart()
 {
 	return _heartNumber;
+}
+
+void Info::AddHeart(int number)
+{
+	_heartNumber += number;
+	if (_heartNumber >= 100)
+		_heartNumber = 99;
 }
 
 void Info::SetLife(int number)

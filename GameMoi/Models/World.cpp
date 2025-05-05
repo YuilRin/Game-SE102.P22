@@ -100,6 +100,80 @@ std::vector<Collider*>& World::GetGroundColliders()
 
 // === Update & Render ===
 void World::Update(float deltaTime) {
+
+    auto* playerCollider = player->GetCollider();
+
+    std::vector<Collider*> enemyColliders;
+    for (const auto& enemy : enemies) {
+        if (!enemy->IsExpired()) {
+            enemyColliders.push_back(enemy->GetCollider());
+        }
+    }
+
+    std::vector<CollisionEvent*> enemyEvents;
+    CollisionEvent* colX = nullptr;
+    CollisionEvent* colY = nullptr;
+
+    CollisionManager::GetInstance()->Scan(playerCollider, deltaTime, enemyColliders, enemyEvents);
+    CollisionManager::GetInstance()->Filter(playerCollider, enemyEvents, colX, colY, 0, 1, 1);
+
+
+    for (auto& enemy : enemies) {
+        if (!enemy->IsActive()) continue;
+        CollisionEvent* chosen = colY ? colY : colX;
+
+        if (chosen && chosen->WasCollided()) {
+
+            Enemy* enemy = dynamic_cast<Enemy*>(chosen->dest->GetOwner());
+           
+                    player->TakeDamage(enemy->GetDamage());
+
+                
+                
+            
+        }
+    }
+
+    // === HANDLE ITEM COLLISION ===
+    std::vector<Collider*> itemColliders;
+    for (const auto& item : items) {
+        if (!item->IsExpired()) {
+            itemColliders.push_back(item->GetCollider());
+        }
+    }
+
+    std::vector<CollisionEvent*> itemEvents;
+    colX = nullptr;
+    colY = nullptr;
+
+
+    CollisionManager::GetInstance()->Scan(playerCollider, deltaTime, itemColliders, itemEvents);
+    CollisionManager::GetInstance()->Filter(playerCollider, itemEvents, colX, colY, 0, 1, 1);
+
+    // Ưu tiên va chạm trục Y (rơi vào item), sau đó trục X
+    CollisionEvent* chosen = colY ? colY : colX;
+
+    if (chosen && chosen->WasCollided()) {
+        
+        Item* item = dynamic_cast<Item*>(chosen->dest->GetOwner());
+        if (item) {
+            if (item->GetType() == ItemType::SMALL_HEART) {
+                player->GetInfo()->AddHeart(2);
+             
+            }
+            item->MarkForDelete();
+        }
+    }
+
+    // Cleanup sự kiện va chạm
+    for (auto& e : itemEvents) delete e;
+
+    // Xoá item đã expired hoặc bị ăn
+    items.erase(std::remove_if(items.begin(), items.end(),
+        [](const std::unique_ptr<Item>& i) {
+            return i->IsExpired(); // Hoặc flag isDeleted nếu bạn tách riêng
+        }), items.end());
+
     if (player) {
         player->Update(deltaTime);
     }
@@ -112,6 +186,8 @@ void World::Update(float deltaTime) {
     {
         i->Update(deltaTime);
     }
+
+
 
     for (const auto& b : breakables) b->Update(deltaTime);
     for (const auto& w : weapons) w->Update(deltaTime);

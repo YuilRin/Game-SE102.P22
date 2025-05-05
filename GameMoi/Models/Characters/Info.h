@@ -27,6 +27,8 @@ public:
 
 	void SetHeart(int number);
 	int GetHeart();
+	void AddHeart(int number);
+
 
 	void SetLife(int number);
 	int GetLife();

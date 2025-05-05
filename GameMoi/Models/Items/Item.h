@@ -42,7 +42,7 @@ private:
 
 public:
     void SetWorld(World* w);
-   // Item(float x, float y, ItemType type); dùng  TextureManager.h
+  
     Item(float x, float y, ItemType type, ID3D11ShaderResourceView* tex);
     
     void HandleCollision(float elapsedTime);
@@ -52,6 +52,6 @@ public:
     ItemType GetType() const { return type; }
     Collider* GetCollider() const { return collider; }
 
-    void MarkForDelete(); // nếu bạn có logic tự xóa
+    void MarkForDelete(); 
     bool IsExpired() const { return lifetime <= 0; }
 };
