@@ -12,6 +12,22 @@ const float stairStepX = 250.f; // hoặc tileSize * 0.5 nếu muốn mượt
 const float stairStepY = 250.f; // giống trên
 bool stand=false;
 
+void Player::ApplyKnockback(bool fromLeft, float strength)
+{
+    float knockbackDirection = fromLeft ? 1.0f : -1.0f;
+    _velocity.x = knockbackDirection * strength;
+
+    // Small vertical boost to make the knockback feel more natural
+    _velocity.y = -strength * 0.5f;
+
+    // Update collider velocity
+    collider->vx = _velocity.x;
+    collider->vy = _velocity.y;
+
+    // Change state to indicate damage
+    state = PlayerState::TakingDamage;
+}
+
 void Player::SetWorld(World* w)
 {
     world = w;

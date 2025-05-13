@@ -45,6 +45,7 @@ public:
 	void ActiveTime();
 	int GetTime();
 
+	void TakeDamage(int damage);
 	//void SetWeapon(eID id);
 	//eID GetCurrentWeapon();
 
@@ -52,8 +53,8 @@ public:
 	int GetMaxWeapon();
 private:
 	
-	int _playerHitPointNumber;
-	int _enemyHitPointNumber;
+	int _playerHitPointNumber=0;
+	int _enemyHitPointNumber=0;
 	int _heartNumber;
 	int _lifeNumber;
 	int _scoreNumber;

@@ -1,5 +1,5 @@
 ﻿#include "World.h"
-#include <algorithm> // Cho std::remove_if
+#include <algorithm> // For std::remove_if
 
 World::World() = default;
 World::~World() = default;
@@ -16,7 +16,11 @@ Player* World::GetPlayer() const {
 
 // === Enemy ===
 void World::AddEnemy(std::unique_ptr<Enemy> enemy) {
+    // Set the enemy's world and player reference
     enemy->SetWorld(this);
+    if (player) {
+        enemy->SetPlayer(player.get());
+    }
     enemies.push_back(std::move(enemy));
 }
 
@@ -47,7 +51,7 @@ void World::RemoveItem(Item* target) {
 
 const std::vector<Item*>& World::GetItems() const {
     static std::vector<Item*> result;
-    //result.clear();
+    result.clear(); // Clear previous results
     for (const auto& i : items) result.push_back(i.get());
     return result;
 }
@@ -65,7 +69,7 @@ void World::RemoveBreakable(BreakableItem* target) {
 
 const std::vector<BreakableItem*>& World::GetBreakables() const {
     static std::vector<BreakableItem*> result;
-    //result.clear();
+    result.clear(); // Clear previous results
     for (const auto& b : breakables) result.push_back(b.get());
     return result;
 }
@@ -83,7 +87,7 @@ void World::RemoveWeapon(Weapon* target) {
 
 const std::vector<Weapon*>& World::GetWeapons() const {
     static std::vector<Weapon*> result;
-    //result.clear();
+    result.clear(); // Clear previous results
     for (const auto& w : weapons) result.push_back(w.get());
     return result;
 }
@@ -93,7 +97,7 @@ void World::SetGroundColliders(std::vector<Collider*> colliders)
     groundColliders = colliders;
 }
 
-std::vector<Collider*>& World::GetGroundColliders() 
+std::vector<Collider*>& World::GetGroundColliders()
 {
     return groundColliders;
 }
@@ -103,9 +107,10 @@ void World::Update(float deltaTime) {
 
     auto* playerCollider = player->GetCollider();
 
+    // Collect active enemy colliders
     std::vector<Collider*> enemyColliders;
     for (const auto& enemy : enemies) {
-        if (!enemy->IsExpired()) {
+        if (enemy->IsActive() && enemy->GetInfo() && enemy->GetInfo()->GetHeart() > 0) {
             enemyColliders.push_back(enemy->GetCollider());
         }
     }
@@ -117,20 +122,25 @@ void World::Update(float deltaTime) {
     CollisionManager::GetInstance()->Scan(playerCollider, deltaTime, enemyColliders, enemyEvents);
     CollisionManager::GetInstance()->Filter(playerCollider, enemyEvents, colX, colY, 0, 1, 1);
 
-
+    // Process enemy collisions
     for (auto& enemy : enemies) {
-        if (!enemy->IsActive()) continue;
+        if (!enemy->IsActive() || enemy->GetInfo()->GetHeart() <= 0) continue;
         CollisionEvent* chosen = colY ? colY : colX;
 
         if (chosen && chosen->WasCollided()) {
+            // Determine if enemy is to the left or right of player
+            float playerX = player->GetX();
+            float enemyX = enemy->GetX();
+            bool enemyIsLeft = enemyX < playerX;
 
-            Enemy* enemy = dynamic_cast<Enemy*>(chosen->dest->GetOwner());
-           
-                    player->TakeDamage(enemy->GetDamage());
+            // Apply damage
+            player->TakeDamage(10);
 
-                
-                
-            
+            // Apply knockback (from left, strength)
+            player->ApplyKnockback(enemyIsLeft, 150.0f);
+
+            // Break after first collision to prevent multiple knockbacks at once
+            break;
         }
     }
 
@@ -146,34 +156,32 @@ void World::Update(float deltaTime) {
     colX = nullptr;
     colY = nullptr;
 
-
     CollisionManager::GetInstance()->Scan(playerCollider, deltaTime, itemColliders, itemEvents);
     CollisionManager::GetInstance()->Filter(playerCollider, itemEvents, colX, colY, 0, 1, 1);
 
-    // Ưu tiên va chạm trục Y (rơi vào item), sau đó trục X
+    // Prioritize Y-axis collision (falling onto an item), then X-axis
     CollisionEvent* chosen = colY ? colY : colX;
 
     if (chosen && chosen->WasCollided()) {
-        
         Item* item = dynamic_cast<Item*>(chosen->dest->GetOwner());
         if (item) {
             if (item->GetType() == ItemType::SMALL_HEART) {
                 player->GetInfo()->AddHeart(2);
-             
             }
             item->MarkForDelete();
         }
     }
 
-    // Cleanup sự kiện va chạm
+    // Clean up collision events
     for (auto& e : itemEvents) delete e;
 
-    // Xoá item đã expired hoặc bị ăn
+    // Remove expired or consumed items
     items.erase(std::remove_if(items.begin(), items.end(),
         [](const std::unique_ptr<Item>& i) {
-            return i->IsExpired(); // Hoặc flag isDeleted nếu bạn tách riêng
+            return i->IsExpired();
         }), items.end());
 
+    // Update game objects
     if (player) {
         player->Update(deltaTime);
     }
@@ -182,12 +190,9 @@ void World::Update(float deltaTime) {
         e->Update(deltaTime);
     }
 
-    for (const auto& i : items)
-    {
+    for (const auto& i : items) {
         i->Update(deltaTime);
     }
-
-
 
     for (const auto& b : breakables) b->Update(deltaTime);
     for (const auto& w : weapons) w->Update(deltaTime);

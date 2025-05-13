@@ -2,7 +2,6 @@
 #include "../../../Utilities/GameTime.h"
 #include "../../World.h"
 
-
 void Enemy::SetWorld(World* w)
 {
     world = w;
@@ -12,7 +11,7 @@ void Enemy::HandleCollision(float elapsedTime)
 {
     if (!world) return;
 
-    auto& ground = world->GetGroundColliders(); // lấy trực tiếp
+    auto& ground = world->GetGroundColliders(); // Get directly
     CollisionManager::GetInstance()->Process(collider, elapsedTime, ground);
 
     float newX, newY;
@@ -25,19 +24,23 @@ void Enemy::HandleCollision(float elapsedTime)
 
 Enemy::Enemy(float x, float y, ID3D11ShaderResourceView* texture)
     : GameObject(x, y, texture),
-    _health(100),
-    _damage(10),
     _moveSpeed(75.0f),
     _isActive(true),
     _enemyType(eID::UNKNOWN),
     _status(eStatus::NORMAL),
     _direction(eDirection::NONE),
-    _isBoss(false)
+    _isBoss(false),
+    _player(nullptr),
+    collider(nullptr),
+    world(nullptr)
 {
+    // Initialize _info in the base class constructor
+    _info = new Info();
+    _info->init();
+
     _attackCooldown = new StopWatch();
     _stateTimer = new StopWatch();
 }
-
 
 Enemy::~Enemy() {
     // Clean up animations
@@ -49,16 +52,19 @@ Enemy::~Enemy() {
     }
     _animations.clear();
 
+    // Clean up other allocated resources
+    SAFE_DELETE(_info);
+    SAFE_DELETE(collider);
     SAFE_DELETE(_attackCooldown);
     SAFE_DELETE(_stateTimer);
 }
 
 void Enemy::Update(float elapsedTime) {
     if (!_isActive) return;
-    
 
+    // Check if the enemy is dead
     if ((_status & eStatus::DIE) == eStatus::DIE) {
-        // Nếu animation kết thúc thì deactivate enemy
+        // If animation is finished, deactivate the enemy
         auto it = _animations.find(_status);
         if (it != _animations.end() && it->second && it->second->IsAnimationFinished()) {
             _isActive = false;
@@ -66,7 +72,7 @@ void Enemy::Update(float elapsedTime) {
         }
     }
 
-    // Update animation hiện tại
+    // Update current animation
     auto it = _animations.find(_status);
     if (it != _animations.end() && it->second) {
         it->second->Update(elapsedTime);
@@ -83,7 +89,7 @@ void Enemy::Update(float elapsedTime) {
     }
 
     if ((_status & eStatus::ATTACKING) == eStatus::ATTACKING) {
-        // Sau khi animation kết thúc, trở về trạng thái bình thường
+        // Return to normal state after animation finishes
         auto it = _animations.find(_status);
         if (it != _animations.end() && it->second && it->second->IsAnimationFinished()) {
             SetState(eStatus::NORMAL);
@@ -94,7 +100,7 @@ void Enemy::Update(float elapsedTime) {
 void Enemy::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
     if (!_isActive) return;
 
-    // Render animation hiện tại
+    // Render current animation
     auto it = _animations.find(_status);
     if (it != _animations.end() && it->second) {
         bool flip = (_direction == eDirection::RIGHT);
@@ -110,11 +116,13 @@ void Enemy::TakeDamage(int amount) {
     if ((_status & eStatus::DIE) == eStatus::DIE)
         return;
 
-    _health -= amount;
+    // Ensure _info is not null before using it
+    if (_info) {
+        _info->TakeDamage(amount);
 
-    if (_health <= 0) {
-        _health = 0;
-        SetState(eStatus::DIE);
+        if (_info->GetHeart() <= 0) {
+            SetState(eStatus::DIE);
+        }
     }
 }
 
@@ -122,7 +130,7 @@ void Enemy::SetState(eStatus newState) {
     if (_status != newState) {
         _status = newState;
 
-        // Reset animation khi đổi trạng thái
+        // Reset animation when changing state
         auto it = _animations.find(_status);
         if (it != _animations.end() && it->second) {
             it->second->reset();

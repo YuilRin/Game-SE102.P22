@@ -72,6 +72,8 @@ private:
 
 public:
 
+    void ApplyKnockback(bool fromLeft, float strength);
+
     void SetWorld(World* w);
     Collider* GetCollider() const { return collider; }
 

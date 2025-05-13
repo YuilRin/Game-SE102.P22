@@ -1,67 +1,59 @@
-﻿#pragma once
-#ifndef __ENEMY_H__
-#define __ENEMY_H__
+﻿// Enemy.h
+#pragma once
 
 #include "../../GameObject.h"
 #include "../../../Animation/Animation.h"
-#include "../../../Utilities/StopWatch.h"
-#include "../../../Utilities/define.h"
+#include "../Info.h"
 #include <map>
+#include <memory>
+#include "../../../Utilities/StopWatch.h"
+#include "../../../Tilemap/Collider.h"
+#include "../../../Utilities/Vector2.h"
+
 class World;
+class Player;
 
-
-class Enemy : public GameObject
-{
-private:
-    World* world = nullptr;
+class Enemy : public GameObject {
 protected:
-    int _health=0;
-    int _damage=0;
+    World* world;
+    Info* _info;  // The info object for this enemy
     float _moveSpeed;
     bool _isActive;
-
     eID _enemyType;
     eStatus _status;
     eDirection _direction;
-
     bool _isBoss;
+    Vector2 _velocity;
 
-    // Animations cho các trạng thái khác nhau
-    std::map<eStatus, Animation*> _animations;
+    Collider* collider;
+    Player* _player;  // Reference to player for detection
 
-    // Stopwatch cho cooldown hành động
     StopWatch* _attackCooldown;
     StopWatch* _stateTimer;
 
+    std::map<eStatus, Animation*> _animations;
+
 public:
-    Collider* GetCollider() const { return collider; }
-
-    void SetWorld(World* w);
-
-    void HandleCollision(float elapsedTime);
-
-    Enemy(float x, float y, ID3D11ShaderResourceView* texture = nullptr);
+    Enemy(float x, float y, ID3D11ShaderResourceView* texture);
     virtual ~Enemy();
 
-    // Override từ GameObject
-    virtual void Update(float elapsedTime) override;
-    virtual void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) override;
+    virtual void Update(float elapsedTime);
+    virtual void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch);
 
-    // Enemy specific methods
-    virtual void TakeDamage(int amount);
-    virtual void SetState(eStatus newState);
-    virtual void LoadAnimations(ID3D11Device* device) = 0; // Pure virtual
+    void SetWorld(World* w);
+    void SetPlayer(Player* player) { _player = player; }
 
-    // Getters và setters
-    bool IsDead() const { return (_status & eStatus::DIE) == eStatus::DIE; }
     bool IsActive() const { return _isActive; }
     void SetActive(bool active) { _isActive = active; }
-    bool IsBoss() const { return _isBoss; }
-    eID GetEnemyType() const { return _enemyType; }
-    eStatus GetStatus() const { return _status; }
-    int GetHealth() const { return _health; }
-    int GetDamage() const { return _damage; }
-    bool IsExpired() const { return GetHealth() <= 0; }
-};
 
-#endif // __ENEMY_H__
+    Info* GetInfo() const { return _info; }
+    Collider* GetCollider() const { return collider; }
+
+    void SetState(eStatus newState);
+    eStatus GetState() const { return _status; }
+
+    void TakeDamage(int amount);
+
+protected:
+    void HandleCollision(float elapsedTime);
+};

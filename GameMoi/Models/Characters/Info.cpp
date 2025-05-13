@@ -109,3 +109,8 @@ int Info::GetTime()
 {
 	return time;
 }
+
+void Info::TakeDamage(int damage)
+{
+	SetHeart(_heartNumber - damage);
+}

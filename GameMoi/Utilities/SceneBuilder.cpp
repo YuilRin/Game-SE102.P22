@@ -39,14 +39,18 @@ bool SceneBuilder::LoadSceneWithData(
     DirectX::CreateWICTextureFromFile(device, context, data.playerTexture.c_str(), nullptr, &playerTexture);
 
     std::map<PlayerState, Animation> animations = {
-        {PlayerState::Idle     , Animation(playerTexture, {{585, 0 , 615, 64}}, 0.3f)},
-        {PlayerState::Jumping  , Animation(playerTexture, {{429, 0 , 455, 48}}, 0.3f)},
-        {PlayerState::SitDown  , Animation(playerTexture, {{429, 0 , 455, 48}}, 0.3f)},
-        {PlayerState::Walking  , Animation(playerTexture, {{585, 0 , 615, 64} , {618, 0 , 640, 64 }, {643,  0, 673, 64 }}, 0.3f)},
-        {PlayerState::Stand_Hit, Animation(playerTexture, {{460, 0 , 507, 64} , {510, 0 , 541, 64 }, {542,  0, 584, 64 }}, 0.3f)},
-        {PlayerState::Climbing , Animation(playerTexture, {{421, 64, 453, 123}, {392, 64, 421, 123}, {365, 64, 394, 123}}, 0.3f)},
-        {PlayerState::Up_Hit   , Animation(playerTexture, {{96 , 0 , 144, 64} , {144, 0 , 176, 64 }, {176,  0, 216, 64 }}, 0.3f)},
-        {PlayerState::Down_Hit , Animation(playerTexture, {{216, 0 , 258, 64} , {258, 0 , 289, 64 }, {290,  0, 334, 64 }}, 0.3f)}
+        {PlayerState::Idle             , Animation(playerTexture, {{585, 0 , 615, 64}}, 0.3f)},
+        {PlayerState::TakingDamage     , Animation(playerTexture, {{585, 0 , 615, 64}}, 0.3f)},
+        {PlayerState::Dead             , Animation(playerTexture, {{585, 0 , 615, 64}}, 0.3f)},
+        {PlayerState::PickingUpItem    , Animation(playerTexture, {{585, 0 , 615, 64}}, 0.3f)},
+        {PlayerState::Falling          , Animation(playerTexture, {{585, 0 , 615, 64}}, 0.3f)},
+        {PlayerState::Jumping          , Animation(playerTexture, {{429, 0 , 455, 48}}, 0.3f)},
+        {PlayerState::SitDown          , Animation(playerTexture, {{429, 0 , 455, 48}}, 0.3f)},
+        {PlayerState::Walking          , Animation(playerTexture, {{585, 0 , 615, 64} , {618, 0 , 640, 64 }, {643,  0, 673, 64 }}, 0.3f)},
+        {PlayerState::Stand_Hit        , Animation(playerTexture, {{460, 0 , 507, 64} , {510, 0 , 541, 64 }, {542,  0, 584, 64 }}, 0.3f)},
+        {PlayerState::Climbing         , Animation(playerTexture, {{421, 64, 453, 123}, {392, 64, 421, 123}, {365, 64, 394, 123}}, 0.3f)},
+        {PlayerState::Up_Hit           , Animation(playerTexture, {{96 , 0 , 144, 64} , {144, 0 , 176, 64 }, {176,  0, 216, 64 }}, 0.3f)},
+        {PlayerState::Down_Hit         , Animation(playerTexture, {{216, 0 , 258, 64} , {258, 0 , 289, 64 }, {290,  0, 334, 64 }}, 0.3f)}
     };
 
     auto player = std::make_unique<Player>(30, 428, animations, device);
@@ -71,7 +75,7 @@ bool SceneBuilder::LoadSceneWithData(
         float y = pos.second;
         Zombie* z = new Zombie(x, y, enemyTexture);
         z->LoadAnimations(device);
-        z->SetPlayerReference(world->GetPlayer());
+        //z->SetPlayerReference(world->GetPlayer());
         world->AddEnemy(std::unique_ptr<Enemy>(z));
     }
 
