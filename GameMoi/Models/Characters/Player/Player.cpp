@@ -95,8 +95,6 @@ void Player::onKeyPressed(WPARAM key) {
         break;
     case 'G':
     {
-       // std::string msg = "Ground count: " + std::to_string(groundColliders.size());
-        //MessageBoxA(nullptr, msg.c_str(), "Debug", MB_OK);
         char message[50];
         sprintf_s(message, "Tọa độ nhân vật: X = %.2f, Y = %.2f", x, y);
         MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);
@@ -104,11 +102,9 @@ void Player::onKeyPressed(WPARAM key) {
     }
     case 'Q':
     {
-
         char message[50];
         sprintf_s(message, "HeartNumber = %d", this->GetInfo()->GetHeart());
         MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);
-
     }
     case 'O':
         UpgradeWhip();

@@ -235,7 +235,6 @@ void CollisionManager::Filter(Collider* src, std::vector<CollisionEvent*>& event
     if (min_ix >= 0) colX = events[min_ix];
     if (min_iy >= 0) colY = events[min_iy];
 }
-
 void CollisionManager::Process(Collider* src, float dt, std::vector<Collider*>& objects) {
     std::vector<CollisionEvent*> events;
     CollisionEvent* colX = nullptr;
@@ -254,8 +253,16 @@ void CollisionManager::Process(Collider* src, float dt, std::vector<Collider*>& 
     }
     else {
         Filter(src, events, colX, colY);
+
+        // ==== Bỏ qua va chạm từ dưới lên nếu là Player ====
+        GameObject* owner = src->GetOwner();
+        bool skipColY = false;
+        if (owner != nullptr) {
+             skipColY = (owner->GetTypeObject() == GameObjectType::PLAYER) && colY && colY->ny == 1;
+        }
+
         if (colX && colY) {
-            if (colY->t < colX->t) {
+            if (!skipColY && colY->t < colX->t) {
                 y += colY->t * dy + colY->ny * 0.01f;
                 src->SetPosition(x, y);
             }
@@ -269,7 +276,7 @@ void CollisionManager::Process(Collider* src, float dt, std::vector<Collider*>& 
             y += dy;
             src->SetPosition(x, y);
         }
-        else if (colY) {
+        else if (colY && !skipColY) {
             x += dx;
             y += colY->t * dy + colY->ny * 0.01f;
             src->SetPosition(x, y);

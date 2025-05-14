@@ -21,7 +21,7 @@ void Player::MoveRight() {
 void Player::Jump() {
 
     if (isOnGround) {
-        _velocity.y = -120.0f;
+        _velocity.y = -220.0f;
         isOnGround = false;
         state = PlayerState::Jumping;
         animations[state].reset();

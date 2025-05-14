@@ -8,6 +8,14 @@
 #include "../Utilities/define.h" // đường dẫn tương đối tùy dự án
 #include "../Tilemap/Collider.h"
 
+enum class GameObjectType {
+        PLAYER,
+        ENEMY,
+        ITEM,
+        WEAPON,
+        // ...
+};
+
 class GameObject {
 protected:
     float x, y;                             // Vị trí logic
@@ -70,6 +78,9 @@ public:
 
     // Vẽ
     virtual void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch);
+
+    virtual GameObjectType GetTypeObject() const { return GameObjectType::ITEM; }
+
 };
 
 #endif // GAMEOBJECT_H

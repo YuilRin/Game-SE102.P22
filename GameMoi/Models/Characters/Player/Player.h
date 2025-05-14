@@ -71,6 +71,8 @@ private:
     StairCollider* currentStair = nullptr;
 
 public:
+    GameObjectType GetTypeObject() const override { return GameObjectType::PLAYER; }
+
 
     void ApplyKnockback(bool fromLeft, float strength);
 
