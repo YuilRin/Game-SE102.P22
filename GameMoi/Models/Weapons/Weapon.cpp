@@ -1,9 +1,10 @@
 ﻿#include "Weapon.h"
 
 Weapon::Weapon(float x, float y, WeaponType type, ID3D11ShaderResourceView* texture)
-    : GameObject(x, y), type(type), isActive(false) {
+    : GameObject(x, y), type(type), isActive(false), facingLeft(false), damage(1.0f), collider(nullptr) {
     this->texture = texture;  // Gán texture từ tham số
 }
+
 void Weapon::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
     if (isActive && texture) {
         DirectX::SpriteEffects flipEffect = IsFacingLeft() ? DirectX::SpriteEffects_FlipHorizontally : DirectX::SpriteEffects_None;

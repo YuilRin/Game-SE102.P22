@@ -138,4 +138,4 @@ void Enemy::SetState(eStatus newState) {
 
         _stateTimer->restart();
     }
-}
+}   

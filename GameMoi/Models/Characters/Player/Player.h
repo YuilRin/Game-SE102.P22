@@ -122,6 +122,9 @@ public:
     void UseWeapon(WeaponType type);
     void HandleWeaponUpdate(float elapsedTime);
     void HandleAxeUpdate();
+    Weapon* GetCurrentWeapon() const {
+        return currentWeapon;
+    }
 
     /// Stage
     void SetStage(int stageID);

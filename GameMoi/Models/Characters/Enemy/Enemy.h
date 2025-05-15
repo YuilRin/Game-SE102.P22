@@ -19,6 +19,7 @@ protected:
     Info* _info;  // The info object for this enemy
     float _moveSpeed;
     bool _isActive;
+    bool _isDead;
     eID _enemyType;
     eStatus _status;
     eDirection _direction;
@@ -30,6 +31,7 @@ protected:
 
     StopWatch* _attackCooldown;
     StopWatch* _stateTimer;
+    float invincibleTime;
 
     std::map<eStatus, Animation*> _animations;
 
@@ -51,7 +53,7 @@ public:
 
     void SetState(eStatus newState);
     eStatus GetState() const { return _status; }
-
+    bool IsDead() const { return _isDead; }
     void TakeDamage(int amount);
 
 protected:

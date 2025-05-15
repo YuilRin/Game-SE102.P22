@@ -90,7 +90,59 @@ const std::vector<Weapon*>& World::GetWeapons() const {
     result.clear(); // Clear previous results
     for (const auto& w : weapons) result.push_back(w.get());
     return result;
+}void World::CheckWeaponEnemyCollision()
+{
+    Weapon* playerWeapon = player ? player->GetCurrentWeapon() : nullptr;
+
+    if (!playerWeapon || !playerWeapon->IsActive()) {
+        return;
+    }
+
+    auto weaponCollider = playerWeapon->GetCollider();
+    if (!weaponCollider || weaponCollider->width <= 0 || weaponCollider->height <= 0) {
+        return;
+    }
+
+    // Vòng qua tất cả enemy
+    for (const auto& enemy : enemies) {
+        if (!enemy->IsActive() || enemy->IsDead() || enemy->GetInfo()->GetHeart() <= 0) {
+            continue;
+        }
+
+        auto enemyCollider = enemy->GetCollider();
+        if (!enemyCollider || enemyCollider->width <= 0 || enemyCollider->height <= 0) {
+            continue;
+        }
+
+        // AABB đơn giản
+        float l1, t1, r1, b1;
+        float l2, t2, r2, b2;
+
+        weaponCollider->GetBoundingBox(l1, t1, r1, b1);
+        enemyCollider->GetBoundingBox(l2, t2, r2, b2);
+
+        bool isColliding =
+            !(l1 >= r2 || r1 <= l2 || t1 >= b2 || b1 <= t2);
+
+        if (isColliding) {
+            // Va chạm xảy ra → gây sát thương
+            char msg[200];
+            sprintf_s(msg, "AABB HIT! Enemy HP before: %d", enemy->GetInfo()->GetHeart());
+            MessageBoxA(NULL, msg, "AABB HIT", MB_OK);
+
+            enemy->TakeDamage(playerWeapon->GetDamage());
+
+            if (playerWeapon->GetType() != WeaponType::WHIP) {
+                playerWeapon->SetActive(false);
+            }
+
+            sprintf_s(msg, "Enemy HP after: %d", enemy->GetInfo()->GetHeart());
+            MessageBoxA(NULL, msg, "Enemy Status", MB_OK);
+        }
+    }
 }
+
+
 
 void World::SetGroundColliders(std::vector<Collider*> colliders)
 {
@@ -180,6 +232,9 @@ void World::Update(float deltaTime) {
         [](const std::unique_ptr<Item>& i) {
             return i->IsExpired();
         }), items.end());
+
+    // === HANDLE WEAPON-ENEMY COLLISION ===
+    CheckWeaponEnemyCollision();
 
     // Update game objects
     if (player) {

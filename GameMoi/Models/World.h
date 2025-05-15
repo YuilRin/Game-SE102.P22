@@ -49,6 +49,7 @@ public:
     void AddWeapon(std::unique_ptr<Weapon> weapon);
     void RemoveWeapon(Weapon* weapon);
     const std::vector<Weapon*>& GetWeapons() const;
+    void CheckWeaponEnemyCollision();
 
     //GroundCollider
     void SetGroundColliders(std::vector<Collider*> colliders);

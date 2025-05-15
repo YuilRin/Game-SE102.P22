@@ -1,35 +1,32 @@
 ﻿#pragma once
-#ifndef WHIP_H
-#define WHIP_H
-
 #include "Weapon.h"
 #include "../../Animation/Animation.h"
-
+#include <map>
+#include <vector>
 
 class Whip : public Weapon {
 private:
-    std::vector<Frame> currentFrames;
-	int whipLevel;
+    int whipLevel;
     Animation whipAnimation;
+    float whipTimer;
+    float whipDuration = 0.9f;  // Thời gian roi hoạt động
 
-    float whipTimer = 0.0f;
-    const float whipDuration = 0.9f;
-
-    ID3D11ShaderResourceView* texture;
-    // Các offset cho từng frame của roi
+    // Offset cho các frame của roi (cặp first:hướng phải, second:hướng trái)
     std::vector<std::pair<std::pair<float, float>, std::pair<float, float>>> frameOffsets;
-
-    void UpdateHitbox(); // xử lý va chạm
 
 public:
     Whip(float x, float y, int level, ID3D11Device* device);
     void SetLevel(int level);
-    int GetLevel() {
-        return whipLevel;
-    };
     void Update(float elapsedTime) override;
     void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) override;
     void Attack() override;
-};
 
-#endif
+    // Cập nhật hitbox dựa trên frame hiện tại của animation
+    void UpdateHitbox() override;
+
+    // Lấy kích thước hitbox hiện tại của roi
+    void GetHitboxSize(float& width, float& height) const;
+
+    // Lấy frame hiện tại để tính toán va chạm
+    int GetCurrentFrameIndex() const { return whipAnimation.GetCurrentFrameIndex(); }
+};

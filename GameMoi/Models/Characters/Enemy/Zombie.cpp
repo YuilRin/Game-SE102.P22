@@ -80,7 +80,7 @@ void Zombie::LoadAnimations(ID3D11Device* device) {
 }
 
 void Zombie::DetectPlayer(float playerX, float /*playerY*/) {
-    float distX = playerX - x;
+   /* float distX = playerX - x;
     if (distX < -5.0f) {
         SetState(eStatus::MOVING_LEFT);
         _direction = eDirection::LEFT;
@@ -91,7 +91,7 @@ void Zombie::DetectPlayer(float playerX, float /*playerY*/) {
     }
     else {
         SetState(eStatus::NORMAL);
-    }
+    }*/
 }
 
 void Zombie::ChangeDirection() {

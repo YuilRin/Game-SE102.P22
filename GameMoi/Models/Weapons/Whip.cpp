@@ -8,8 +8,8 @@ Whip::Whip(float x, float y, int level, ID3D11Device* device)
 
     isActive = false;
     facingLeft = false;
-	whipTimer = 0.0f;
-	//whipDuration = 0.9f; // Thời gian roi hoạt động
+    whipTimer = 0.0f;
+    //whipDuration = 0.9f; // Thời gian roi hoạt động
     std::wstring filePath = L"Image/whip.jpg";
     HRESULT hr = DirectX::CreateWICTextureFromFile(device, filePath.c_str(), nullptr, &texture);
 
@@ -19,10 +19,10 @@ Whip::Whip(float x, float y, int level, ID3D11Device* device)
         LPCTSTR errMsg = err.ErrorMessage();
 
         // Hiển thị thông báo lỗi chi tiết
-		if (!device) {
-			MessageBoxW(NULL, L"Device is null", L"Lỗi", MB_OK | MB_ICONERROR);
-		}
-        std::wstring errorMessage = L"Không thể load ảnh roi!\nLỗi: " + std::wstring(errMsg)+filePath.c_str();
+        if (!device) {
+            MessageBoxW(NULL, L"Device is null", L"Lỗi", MB_OK | MB_ICONERROR);
+        }
+        std::wstring errorMessage = L"Không thể load ảnh roi!\nLỗi: " + std::wstring(errMsg) + filePath.c_str();
         MessageBoxW(NULL, errorMessage.c_str(), L"Lỗi", MB_OK | MB_ICONERROR);
     }
 
@@ -36,11 +36,18 @@ Whip::Whip(float x, float y, int level, ID3D11Device* device)
     };
 
     whipAnimation = Animation(texture, whipFrameData[level], 0.3f);
-	frameOffsets = {
+    frameOffsets = {
       {{-23.0f, 15.0f}, { 60.0f, 15.0f}},   // Frame 0: Vị trí tay cầm roi
       {{-45.0f,  0.0f}, { 55.0f,  0.0f}},      // Frame 1
       {{ 19.0f, 15.0f}, {-30.0f, 16.0f}},  // Frame 2: Vị trí tay cầm roi	  
     };
+
+    // Tạo collider cho roi, kích thước ban đầu là 0
+    collider = new Collider(x, y, 0, 0, 16,48, false);
+    collider->SetOwner(this);
+
+    // Thiết lập sát thương theo cấp độ roi
+    damage = 1.0f + (level - 1) * 0.5f;
 }
 
 void Whip::SetLevel(int level) {
@@ -58,13 +65,19 @@ void Whip::SetLevel(int level) {
     };
 
     whipAnimation = Animation(texture, whipFrameData[level], 0.3f);
-   
+
+    // Cập nhật sát thương
+    damage = 1.0f + (level - 1) * 0.5f;
 }
+
 void Whip::Update(float elapsedTime) {
-    if (isActive) 
+    if (isActive)
     {
         whipTimer += elapsedTime;
         whipAnimation.Update(elapsedTime);
+
+        // Cập nhật hitbox theo frame hiện tại
+        UpdateHitbox();
 
         if (whipTimer >= whipDuration) {
             isActive = false;
@@ -72,7 +85,6 @@ void Whip::Update(float elapsedTime) {
         }
     }
 }
-
 
 void Whip::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
     if (isActive) {
@@ -82,7 +94,7 @@ void Whip::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
 
         if (facingLeft) {
             offsetX = frameOffsets[frameIndex].second.first;
-            if (whipLevel > 1&&frameIndex==2) {
+            if (whipLevel > 1 && frameIndex == 2) {
                 offsetX -= 25.0f; // Trừ thêm nếu roi cấp cao hơn
             }
             offsetY = frameOffsets[frameIndex].second.second;
@@ -92,8 +104,6 @@ void Whip::Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch) {
             offsetY = frameOffsets[frameIndex].first.second;
         }
         whipAnimation.Render(spriteBatch, x + offsetX, y + offsetY, IsFacingLeft());
-    
-    
     }
 }
 
@@ -102,11 +112,67 @@ void Whip::Attack() {
     whipTimer = 0.0f;
     whipAnimation.reset();
 }
+
 void Whip::UpdateHitbox() {
-	// Cập nhật hitbox dựa trên vị trí và kích thước của roi
-	// Ví dụ: nếu roi có kích thước 16x48, bạn có thể cập nhật hitbox như sau:
-	//hitbox.x = x;
-	//hitbox.y = y;
-	//hitbox.width = 16;  // Chiều rộng của roi
-	//hitbox.height = 48; // Chiều cao của roi
+    if (!isActive) {
+        // If whip is not active, set collider to 0
+        collider->SetPosition(x, y);
+        collider->width = 0;
+        collider->height = 0;
+        return;
+    }
+
+    int frameIndex = whipAnimation.GetCurrentFrameIndex();
+    float hitboxWidth = 0, hitboxHeight = 0;
+    float hitboxX = x, hitboxY = y;
+
+    char whipDebug[200];
+    sprintf_s(whipDebug, "Whip active: Timer=%.2f, Duration=%.2f, Frame=%d",
+        whipTimer, whipDuration, whipAnimation.GetCurrentFrameIndex());
+    //MessageBoxA(NULL, whipDebug, "Whip Status", MB_OK);
+
+    // Only create a hitbox for the extended whip (frame 2)
+    if (frameIndex == 2) {
+        // Hitbox width increases with whip level
+        hitboxWidth = 56 + (whipLevel - 1) * 10;
+        hitboxHeight = 15;
+
+        if (facingLeft) {
+            hitboxX = x - hitboxWidth + frameOffsets[frameIndex].second.first;
+            hitboxY = y + frameOffsets[frameIndex].second.second;
+        }
+        else {
+            hitboxX = x + frameOffsets[frameIndex].first.first;
+            hitboxY = y + frameOffsets[frameIndex].first.second;
+        }
+
+        // Debug hitbox details
+        char hitboxMsg[200];
+        sprintf_s(hitboxMsg, "Whip hitbox created: x=%.2f, y=%.2f, w=%.2f, h=%.2f, facing_left=%d",
+            hitboxX, hitboxY, hitboxWidth, hitboxHeight, facingLeft);
+        //MessageBoxA(NULL, hitboxMsg, "Whip Hitbox", MB_OK);
+    }
+    else {
+        // For other frames, use a very small hitbox or none at all
+        hitboxWidth = 0;
+        hitboxHeight = 0;
+
+       // MessageBoxA(NULL, "No hitbox for this frame", "Whip Hitbox", MB_OK);
+    }
+
+    // Update the collider with new position and dimensions
+    collider->SetPosition(hitboxX, hitboxY);
+    collider->width = hitboxWidth;
+    collider->height = hitboxHeight;
+}
+
+void Whip::GetHitboxSize(float& width, float& height) const {
+    if (isActive && whipAnimation.GetCurrentFrameIndex() == 2) {
+        width = collider->width;
+        height = collider->height;
+    }
+    else {
+        width = 0;
+        height = 0;
+    }
 }

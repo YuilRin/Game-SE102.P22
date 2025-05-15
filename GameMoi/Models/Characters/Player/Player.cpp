@@ -212,7 +212,7 @@ void Player::ChangeWeapon(WeaponType newType) {
             newWeapon = new Whip(x, y, whipLevel, device);
             break;
         case WeaponType::AXE:
-            newWeapon = new Axe(x, y, device, facingLeft);
+            //newWeapon = new Axe(x, y, device, facingLeft);
             break;
         default:
             break;
