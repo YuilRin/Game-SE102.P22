@@ -16,11 +16,14 @@ private:
     std::unique_ptr<Player> player;
     std::vector<std::unique_ptr<Enemy>> enemies;
     std::vector<std::unique_ptr<Item>> items;
-    std::vector<std::unique_ptr<BreakableItem>> breakables;
+    std::vector<std::unique_ptr<BreakableItem>> breakableItems;
     std::vector<std::unique_ptr<Weapon>> weapons;
     std::vector<Collider*> groundColliders;
    
-
+    ID3D11ShaderResourceView* itemTexture;
+	ID3D11ShaderResourceView* enemyTexture;
+    ID3D11ShaderResourceView* breakableItemTexture;
+	ID3D11ShaderResourceView* playerTexture;
 
 public:
     World();
@@ -50,6 +53,7 @@ public:
     void RemoveWeapon(Weapon* weapon);
     const std::vector<Weapon*>& GetWeapons() const;
     void CheckWeaponEnemyCollision();
+    void CheckWeaponBreakableCollision();
 
     //GroundCollider
     void SetGroundColliders(std::vector<Collider*> colliders);
@@ -58,4 +62,9 @@ public:
     void Update(float deltaTime);
     void Render(std::unique_ptr<SpriteBatch>& spriteBatch);
     void Clear();
+
+    void SetItemTexture(ID3D11ShaderResourceView* tex);
+    void SetBreakableItemTexture(ID3D11ShaderResourceView* tex);
+	void SetEnemyTexture(ID3D11ShaderResourceView* tex);
+	void SetPlayerTexture(ID3D11ShaderResourceView* tex);
 };

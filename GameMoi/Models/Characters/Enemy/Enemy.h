@@ -39,6 +39,9 @@ public:
     Enemy(float x, float y, ID3D11ShaderResourceView* texture);
     virtual ~Enemy();
 
+	void setIsDead(bool isDead) { _isDead = isDead; }
+	void setIsActive(bool isActive) { _isActive = isActive; }
+
     virtual void Update(float elapsedTime);
     virtual void Render(std::unique_ptr<DirectX::SpriteBatch>& spriteBatch);
 
@@ -48,7 +51,7 @@ public:
     bool IsActive() const { return _isActive; }
     void SetActive(bool active) { _isActive = active; }
 
-    Info* GetInfo() const { return _info; }
+    Info* GetInfo() { return _info; }
     Collider* GetCollider() const { return collider; }
 
     void SetState(eStatus newState);

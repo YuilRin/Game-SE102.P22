@@ -122,6 +122,7 @@ void Enemy::TakeDamage(int amount) {
 
         if (_info->GetHeart() <= 0) {
             SetState(eStatus::DIE);
+
         }
     }
 }

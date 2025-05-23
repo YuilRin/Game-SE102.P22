@@ -10,19 +10,33 @@
 #include "../../../Tilemap/Collider.h"
 #include "../../../Tilemap/StairCollider.h"
 #include "../../../Utilities/Vector2.h"
-#include "../../Items/BreakableItem.h"
+#include "../../Items/Item.h"
 
 #include <unordered_map>
 
 class World;
 
 enum class PlayerState {
+    Back,
+    Dead,
+    Down,
+    Up,
+    Be_Hit,
     Idle, Walking, Jumping, SitDown, Stand_Hit,Up_Hit, Down_Hit,
-    Climbing, Attacking, TakingDamage, Dead, PickingUpItem, Falling
+    Climbing, Attacking, TakingDamage,  PickingUpItem, Falling,
+    Stagte
 };
 
 class Player : public GameObject {
 private:
+
+    bool isSteppingOneStair = false;
+    float stepTimer = 0.0f;
+    const float stepDuration = 0.3f; // thời gian hoàn thành 1 bước
+    const float stairStepDistance = 32.0f; // khoảng cách 1 bậc thang (tileSize)
+
+    Vector2 targetPosition; // vị trí đích khi leo 1 bước
+    Vector2 startPosition;  // vị trí bắt đầu leo 1 bước
 
     World* world = nullptr;
 
@@ -66,8 +80,6 @@ private:
 
     Info* _info;
     std::vector<Collider*> stairColliders;
-    std::vector<BreakableItem*> breakables;
-    //std::vector<Item*>* items = nullptr;
     StairCollider* currentStair = nullptr;
 
 public:
@@ -136,7 +148,9 @@ public:
     void UpgradeWhip();
 
     Info* GetInfo() const { return _info; }
-
+    void SetAllStairTopsBlocking(bool shouldBlock);
+    void CheckStairTopTransition(const Vector2& nextPos);
+    bool IsClimbing() const { return isClimbing; }
 };
 
 #endif

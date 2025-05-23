@@ -4,7 +4,6 @@
 World::World() = default;
 World::~World() = default;
 
-// === Player ===
 void World::SetPlayer(std::unique_ptr<Player> p) {
     p->SetWorld(this);
     player = std::move(p);
@@ -14,7 +13,6 @@ Player* World::GetPlayer() const {
     return player.get();
 }
 
-// === Enemy ===
 void World::AddEnemy(std::unique_ptr<Enemy> enemy) {
     // Set the enemy's world and player reference
     enemy->SetWorld(this);
@@ -37,7 +35,6 @@ const std::vector<Enemy*>& World::GetEnemies() const {
     return result;
 }
 
-// === Item ===
 void World::AddItem(std::unique_ptr<Item> item) {
     item->SetWorld(this);
     items.push_back(std::move(item));
@@ -56,21 +53,21 @@ const std::vector<Item*>& World::GetItems() const {
     return result;
 }
 
-// === Breakable ===
-void World::AddBreakable(std::unique_ptr<BreakableItem> obj) {
-    breakables.push_back(std::move(obj));
+void World::AddBreakable(std::unique_ptr<BreakableItem> item) {
+	item->SetWorld(this);
+    breakableItems.push_back(std::move(item));
 }
 
 void World::RemoveBreakable(BreakableItem* target) {
-    auto it = std::remove_if(breakables.begin(), breakables.end(),
+    auto it = std::remove_if(breakableItems.begin(), breakableItems.end(),
         [target](const std::unique_ptr<BreakableItem>& b) { return b.get() == target; });
-    breakables.erase(it, breakables.end());
+    breakableItems.erase(it, breakableItems.end());
 }
 
 const std::vector<BreakableItem*>& World::GetBreakables() const {
     static std::vector<BreakableItem*> result;
     result.clear(); // Clear previous results
-    for (const auto& b : breakables) result.push_back(b.get());
+    for (const auto& b : breakableItems) result.push_back(b.get());
     return result;
 }
 
@@ -90,7 +87,9 @@ const std::vector<Weapon*>& World::GetWeapons() const {
     result.clear(); // Clear previous results
     for (const auto& w : weapons) result.push_back(w.get());
     return result;
-}void World::CheckWeaponEnemyCollision()
+}
+
+void World::CheckWeaponEnemyCollision()
 {
     Weapon* playerWeapon = player ? player->GetCurrentWeapon() : nullptr;
 
@@ -125,19 +124,55 @@ const std::vector<Weapon*>& World::GetWeapons() const {
             !(l1 >= r2 || r1 <= l2 || t1 >= b2 || b1 <= t2);
 
         if (isColliding) {
-            // Va chạm xảy ra → gây sát thương
-            char msg[200];
-            sprintf_s(msg, "AABB HIT! Enemy HP before: %d", enemy->GetInfo()->GetHeart());
-            MessageBoxA(NULL, msg, "AABB HIT", MB_OK);
-
             enemy->TakeDamage(playerWeapon->GetDamage());
-
             if (playerWeapon->GetType() != WeaponType::WHIP) {
                 playerWeapon->SetActive(false);
             }
+			
+            if (enemy->GetInfo()->GetHeart() == 0)
+            {
+                enemy->setIsDead(true);
+                enemy->setIsActive(false);
+                AddItem(std::make_unique<Item>(enemy->GetX(), enemy->GetY(), ItemType::SMALL_HEART, itemTexture));
+            }
+        }
+    }
+}
 
-            sprintf_s(msg, "Enemy HP after: %d", enemy->GetInfo()->GetHeart());
-            MessageBoxA(NULL, msg, "Enemy Status", MB_OK);
+void World::CheckWeaponBreakableCollision()
+{
+
+    Weapon* playerWeapon = player ? player->GetCurrentWeapon() : nullptr;
+
+    if (!playerWeapon || !playerWeapon->IsActive()) { return; }
+
+    auto weaponCollider = playerWeapon->GetCollider();
+    if (!weaponCollider || weaponCollider->width <= 0 || weaponCollider->height <= 0) { return; }
+   
+    for (const auto& item : breakableItems) {
+       
+        auto itemCollider = item->GetCollider();
+        if (!itemCollider || itemCollider->width <= 0 || itemCollider->height <= 0) {
+            continue;
+        }
+
+
+        float l1, t1, r1, b1;
+        float l2, t2, r2, b2;
+
+        weaponCollider->GetBoundingBox(l1, t1, r1, b1);
+        itemCollider->GetBoundingBox(l2, t2, r2, b2);
+
+        bool isColliding =
+            !(l1 >= r2 || r1 <= l2 || t1 >= b2 || b1 <= t2);
+
+        if (isColliding) {
+            if(item->GetBreakableType() == BreakableItemType::BIG_CANDLE1)
+                AddItem(std::make_unique<Item>(item->GetX(), item->GetY(), ItemType::SMALL_HEART, itemTexture));
+            else if (item->GetBreakableType() == BreakableItemType::STAIR)
+                AddItem(std::make_unique<Item>(item->GetX(), item->GetY(), ItemType::YELLOW_MONEY, itemTexture));
+            item->MarkForDelete();
+               
         }
     }
 }
@@ -185,13 +220,8 @@ void World::Update(float deltaTime) {
             float enemyX = enemy->GetX();
             bool enemyIsLeft = enemyX < playerX;
 
-            // Apply damage
             player->TakeDamage(10);
-
-            // Apply knockback (from left, strength)
             player->ApplyKnockback(enemyIsLeft, 150.0f);
-
-            // Break after first collision to prevent multiple knockbacks at once
             break;
         }
     }
@@ -235,6 +265,7 @@ void World::Update(float deltaTime) {
 
     // === HANDLE WEAPON-ENEMY COLLISION ===
     CheckWeaponEnemyCollision();
+    CheckWeaponBreakableCollision();
 
     // Update game objects
     if (player) {
@@ -249,7 +280,11 @@ void World::Update(float deltaTime) {
         i->Update(deltaTime);
     }
 
-    for (const auto& b : breakables) b->Update(deltaTime);
+    for (const auto& b : breakableItems)
+    {
+        b->Update(deltaTime);
+        
+    }
     for (const auto& w : weapons) w->Update(deltaTime);
 }
 
@@ -258,7 +293,7 @@ void World::Render(std::unique_ptr<SpriteBatch>& spriteBatch) {
 
     for (const auto& e : enemies) e->Render(spriteBatch);
     for (const auto& i : items) i->Render(spriteBatch);
-    for (const auto& b : breakables) b->Render(spriteBatch);
+    for (const auto& b : breakableItems) b->Render(spriteBatch);
     for (const auto& w : weapons) w->Render(spriteBatch);
 }
 
@@ -267,6 +302,26 @@ void World::Clear() {
     player.reset();
     enemies.clear();
     items.clear();
-    breakables.clear();
+    breakableItems.clear();
     weapons.clear();
+}
+
+void World::SetItemTexture(ID3D11ShaderResourceView* tex)
+{
+    itemTexture = tex;
+}
+
+void World::SetBreakableItemTexture(ID3D11ShaderResourceView* tex)
+{
+	breakableItemTexture = tex;
+}
+
+void World::SetEnemyTexture(ID3D11ShaderResourceView* tex)
+{
+	enemyTexture = tex;
+}
+
+void World::SetPlayerTexture(ID3D11ShaderResourceView* tex)
+{
+	playerTexture = tex;
 }

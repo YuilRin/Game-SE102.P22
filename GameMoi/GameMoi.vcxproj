@@ -186,6 +186,7 @@
     <ClCompile Include="Rended.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tilemap\Collider.cpp" />
+    <ClCompile Include="Tilemap\StairCollider.cpp" />
     <ClCompile Include="Tilemap\TileMap.cpp" />
     <ClCompile Include="Utilities\GameInit.cpp" />
     <ClCompile Include="Utilities\GameLoop.cpp" />
@@ -208,7 +209,9 @@
     <Image Include="Image\frame3tileset.png" />
     <Image Include="Image\items.png" />
     <Image Include="Image\map.png" />
+    <Image Include="Image\objects.png" />
     <Image Include="Image\simon.jpg" />
+    <Image Include="Image\simon.png" />
     <Image Include="Image\tileset.png" />
     <Image Include="Image\weapon.png" />
     <Image Include="Image\whip.jpg" />

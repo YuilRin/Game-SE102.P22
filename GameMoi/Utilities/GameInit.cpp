@@ -49,9 +49,10 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     LevelData level1;
     level1.mapFile = "Image/frame0.txt";
     level1.tileTexture = L"Image/frame0tileset.png";
-    level1.playerTexture = L"Image/simon.jpg";
+    level1.playerTexture = L"Image/simon.png";
     level1.itemTexture = L"Image/items.png";
     level1.enemyTexture = L"Image/zombie.png";
+    level1.breakableItemTexture = L"Image/objects.png";
 
     // Enemy positions
     level1.enemyPositions = {
@@ -61,6 +62,13 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     // Item positions
     level1.itemPositions = {
         {300.0f, 250.0f, ItemType::SMALL_HEART}
+    };
+
+	level1.breakableItemPositions = {
+		{700.0f, 200.0f, BreakableItemType::STAIR},
+
+        {400.0f, 350.0f, BreakableItemType::BIG_CANDLE1},
+        {300.0f, 350.0f, BreakableItemType::BIG_CANDLE1}
     };
 
     if (!SceneBuilder::LoadSceneWithData(world.get(), tileMap.get(), level1, device, context)) {

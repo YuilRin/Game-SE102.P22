@@ -13,19 +13,40 @@ enum class StairDirection {
 };
 
 class StairCollider : public Collider {
-public:
+private:
     StairDirection direction;
-    bool isTop; 
-    bool temporarilyDisabled = false; // mới thêm
-
-    StairCollider(float x, float y, float w, float h, StairDirection dir, bool top)
-        : Collider(x, y, w, h, 0.0f, 0.0f, false), direction(dir), isTop(top) {
-    }
+    bool isTop;
+    bool shouldBlockThisFrame;
+public:
 
     StairDirection GetDirection() const { return direction; }
     bool IsTop() const { return isTop; }
+
+    // Phương thức để set blocking cho frame hiện tại
+    void SetFrameBlocking(bool shouldBlock);
+
+    // Reset về trạng thái blocking mặc định
+    void ResetFrameBlocking();
+
+    bool IsBlocking() const;
+
+    void SetBlocking(bool shouldBlock);
+
+  
+
+    bool temporarilyDisabled = false; // mới thêm
+    StairCollider(float x, float y, float w, float h, StairDirection dir, bool top)
+        : Collider(x, y, w, h, 0.0f, 0.0f, true), direction(dir), isTop(top) 
+    {
+        shouldBlockThisFrame = top;
+    }
+
     void SetTemporarilyDisabled(bool value) { temporarilyDisabled = value; }
     bool IsTemporarilyDisabled() const { return temporarilyDisabled; }
+
+
+
+
 };
 
 #endif // STAIRCOLLIDER_H

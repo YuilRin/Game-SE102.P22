@@ -110,18 +110,18 @@ std::vector<Collider*> CreateStairCollidersFromTileMap(const std::vector<std::ve
                 float w = tileSize;
                 float h = tileSize;
 
-                // Giả sử bạn quy ước tile lẻ (1) là đi lên trái, tile chẵn (2) là đi lên phải
+                // Quy ước: tile 1 = LeftUp, tile 2 = RightUp và cũng là Top
                 StairDirection dir = (tile == 1) ? StairDirection::LeftUp : StairDirection::RightUp;
-                bool isTop = (tile == 2); // tile == 2 là đỉnh cầu thang
+                bool isTop = (tile == 2); // tile 2 là đỉnh cầu thang
 
-                colliders.push_back(new StairCollider(x, y, w, h, dir, isTop));
+                StairCollider* stairCol = new StairCollider(x, y, w, h, dir, isTop);
+                colliders.push_back(stairCol);
             }
         }
     }
 
     return colliders;
 }
-
 
 // ============================ Collision Event ============================
 
