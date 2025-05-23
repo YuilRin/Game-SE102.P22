@@ -52,7 +52,6 @@ Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11D
     _info->SetEnemyHitPoint(16);
     _info->ActiveTime();
     _info->SetTime(300);
-
     
     whipLevel = 1;
     currentWeapon = new Whip(x, y, whipLevel, device);
@@ -82,8 +81,10 @@ void Player::onKeyPressed(WPARAM key) {
         ClimbUp(); 
         break;
     case VK_DOWN: case 'S':
-        if(!isSteppingOneStair)
-        ClimbDown();
+       
+        if (!isSteppingOneStair)
+            ClimbDown();
+        
         break;
 
     case 'K': //case VK_UP:
@@ -151,12 +152,6 @@ void Player::onKeyReleased(WPARAM key) {
         break;
     }
    
-}
-
-
-void Player::SetStairColliders(std::vector<Collider*> colliders)
-{
-    stairColliders = colliders;
 }
 
 void Player::SetItemList(std::vector<Item*>* itemList)

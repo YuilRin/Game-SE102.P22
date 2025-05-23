@@ -19,6 +19,7 @@ private:
     std::vector<std::unique_ptr<BreakableItem>> breakableItems;
     std::vector<std::unique_ptr<Weapon>> weapons;
     std::vector<Collider*> groundColliders;
+	std::vector<Collider*> stairColliders;
    
     ID3D11ShaderResourceView* itemTexture;
 	ID3D11ShaderResourceView* enemyTexture;
@@ -58,6 +59,10 @@ public:
     //GroundCollider
     void SetGroundColliders(std::vector<Collider*> colliders);
     std::vector<Collider*>& GetGroundColliders();
+
+    //StairCollider
+    void SetStairColliders(std::vector<Collider*> colliders);
+    std::vector<Collider*>& GetStairColliders();
 
     void Update(float deltaTime);
     void Render(std::unique_ptr<SpriteBatch>& spriteBatch);

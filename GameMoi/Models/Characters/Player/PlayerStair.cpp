@@ -1,5 +1,6 @@
 ﻿#include "Player.h"
-
+#include "../../World.h"
+#include <sstream>
 StairCollider* stairTopAsGround = nullptr;
 
 void Player::ClimbUp()
@@ -18,18 +19,17 @@ void Player::ClimbUp()
 
     // Bắt đầu leo 1 bước
     startPosition = Vector2(x, y);
-    targetPosition = startPosition + stepDirection * stairStepDistance;
 
-    // Chỉ tắt blocking cho tile hiện tại, không phải tất cả
-    if (currentStair->IsTop()) {
-        currentStair->SetFrameBlocking(false);
-    }
+    // Điều chỉnh khoảng cách bước để phù hợp với tile size
+    float adjustedStepDistance = stairStepDistance;
+
+    // Tính toán target position và kiểm tra để tránh "dư" ra khỏi ground
+    targetPosition = startPosition + stepDirection * adjustedStepDistance;
+
+    // Kiểm tra và điều chỉnh target position nếu cần
+    ValidateTargetPosition();
 
     isClimbing = true;
-
-    // Kiểm tra xem có đang leo lên tile top không
-    CheckStairTopTransition(targetPosition);
-
     state = PlayerState::Up;
     isSteppingOneStair = true;
     stepTimer = 0.0f;
@@ -37,35 +37,62 @@ void Player::ClimbUp()
 
 void Player::ClimbDown()
 {
+    // Kiểm tra xem có thực sự đang trên cầu thang không
     if (!isOnStair || currentStair == nullptr) {
-        // Kiểm tra xem có đang đứng trên tile top không
-        if (stairTopAsGround != nullptr) {
-            // Đang đứng trên tile top, cho phép đi xuống
-            stairTopAsGround->SetFrameBlocking(false);
-            currentStair = stairTopAsGround;
-            isOnStair = true;
-        }
-        else {
-            return;
-        }
+        return;
     }
 
+    // Kiểm tra xem có đang trong quá trình stepping không
     if (isSteppingOneStair) {
         return;
     }
 
-    // Tính toán hướng và khoảng cách 1 bước xuống
+    // Nếu đang ở dưới đất, cần kiểm tra kỹ hơn
+    if (isOnGround) {
+        // Kiểm tra xem Simon có thực sự đang đứng trên stairTop không
+        // bằng cách kiểm tra ground collider mà Simon đang đứng trên
+        bool isStandingOnStairTop = false;
+
+        if (world != nullptr) {
+            float l1, t1, r1, b1;
+            collider->GetBoundingBox(l1, t1, r1, b1);
+            for (auto& g : world->GetStairColliders()) {
+                float l2, t2, r2, b2;
+                g->GetBoundingBox(l2, t2, r2, b2);
+
+                const float epsilon = 2.0f;
+                // Kiểm tra xem có đang đứng trên ground này không
+                if (abs(b1 - t2) < epsilon && r1 > l2 && l1 < r2) {
+                    StairCollider* stairCol = dynamic_cast<StairCollider*>(g);
+
+                    if (stairCol != nullptr && stairCol->IsTop()) {
+                        isStandingOnStairTop = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Nếu đang ở dưới đất nhưng không đứng trên stairTop thì không cho climb down
+        if (!isStandingOnStairTop) {
+            return;
+        }
+    }
+
+    // Tính toán hướng di chuyển dựa trên direction của stair
     StairDirection dir = currentStair->GetDirection();
     Vector2 stepDirection = (dir == StairDirection::LeftUp) ? Vector2(-1, 1) : Vector2(1, 1);
 
     // Bắt đầu leo 1 bước xuống
     startPosition = Vector2(x, y);
-    targetPosition = startPosition + stepDirection * stairStepDistance;
 
-    // Chỉ tắt blocking cho tile hiện tại
-    if (currentStair->IsTop()) {
-        currentStair->SetFrameBlocking(false);
-    }
+    // Điều chỉnh khoảng cách bước để phù hợp với tile size
+    float adjustedStepDistance = stairStepDistance;
+
+    targetPosition = startPosition + stepDirection * adjustedStepDistance;
+
+    // Kiểm tra và điều chỉnh target position nếu cần
+    ValidateTargetPosition();
 
     state = PlayerState::Down;
     isSteppingOneStair = true;
@@ -75,7 +102,7 @@ void Player::ClimbDown()
 
 void Player::SetAllStairTopsBlocking(bool shouldBlock)
 {
-    for (auto& stair : stairColliders) {
+    for (auto& stair : world->GetStairColliders()) {
         StairCollider* stairCol = dynamic_cast<StairCollider*>(stair);
         if (stairCol != nullptr && stairCol->IsTop()) {
             stairCol->SetFrameBlocking(shouldBlock);
@@ -83,126 +110,62 @@ void Player::SetAllStairTopsBlocking(bool shouldBlock)
     }
 }
 
-void Player::CheckStairTopTransition(const Vector2& nextPos)
-{
-    for (auto& stair : stairColliders) {
-        StairCollider* stairCol = dynamic_cast<StairCollider*>(stair);
-        if (stairCol != nullptr && stairCol->IsTop()) {
-            float l2, t2, r2, b2;
-            stair->GetBoundingBox(l2, t2, r2, b2);
-
-            // Expand the check area slightly to avoid edge cases
-            const float tolerance = 2.0f;
-
-            // Kiểm tra xem nextPos có nằm trong tile top không
-            if (nextPos.x >= (l2 - tolerance) && nextPos.x <= (r2 + tolerance) &&
-                nextPos.y >= (t2 - tolerance) && nextPos.y <= (b2 + tolerance)) {
-
-                // Chỉ tắt blocking nếu đang leo lên tile này
-                stairCol->SetFrameBlocking(false);
-                break;
-            }
-        }
-    }
-}
-
 void Player::HandleStairInteraction(float elapsedTime)
 {
     // Reset tất cả stair tops về trạng thái mặc định trước khi xử lý
-    for (auto& stair : stairColliders) {
+    for (auto& stair : world->GetStairColliders()) {
         StairCollider* stairCol = dynamic_cast<StairCollider*>(stair);
         if (stairCol != nullptr) {
             stairCol->ResetFrameBlocking();
         }
     }
 
+    // Lưu trạng thái cũ để so sánh
+    bool wasOnStair = isOnStair;
+    StairCollider* previousStair = currentStair;
+
     if (isSteppingOneStair) {
-        // Đang leo từng bước, vẫn cần kiểm tra stair collision
-        // nhưng không thay đổi trạng thái leo
         return;
     }
 
     isOnStair = false;
     currentStair = nullptr;
 
-    // Kiểm tra xem có còn đứng trên stair top không
-    if (stairTopAsGround != nullptr) {
-        float l2, t2, r2, b2;
-        stairTopAsGround->GetBoundingBox(l2, t2, r2, b2);
-        float l1, t1, r1, b1;
-        collider->GetBoundingBox(l1, t1, r1, b1);
-
-        const float tolerance = 5.0f; // Tăng tolerance để tránh bị mất connection
-
-        // Kiểm tra overlap với tolerance
-        bool stillOnTop = (r1 > (l2 - tolerance) && l1 < (r2 + tolerance) &&
-            b1 >(t2 - tolerance) && t1 < (b2 + tolerance));
-
-        if (!stillOnTop) {
-            stairTopAsGround = nullptr;
-        }
-        else {
-            // Vẫn đứng trên stair top
-            if (!isClimbing && state != PlayerState::Up && state != PlayerState::Down) {
-                stairTopAsGround->SetFrameBlocking(true);
-            }
-            else {
-                // Đang leo thì không block
-                stairTopAsGround->SetFrameBlocking(false);
-            }
-        }
-    }
-
     float l1, t1, r1, b1;
     collider->GetBoundingBox(l1, t1, r1, b1);
 
-    for (auto& stair : stairColliders) {
+    for (auto& stair : world->GetStairColliders()) {
         float l2, t2, r2, b2;
         stair->GetBoundingBox(l2, t2, r2, b2);
+        const float epsilon = 2.0f;
 
-        if (r1 > l2 && l1 < r2 && b1 > t2 && t1 < b2) {
+        if (r1 > l2 - epsilon && l1 < r2 + epsilon &&
+            b1 > t2 - epsilon && t1 < b2 + epsilon) {
+
             StairCollider* stairCol = dynamic_cast<StairCollider*>(stair);
             if (stairCol != nullptr) {
                 currentStair = stairCol;
                 isOnStair = true;
-
-                // Xử lý tile top
-                if (stairCol->IsTop()) {
-                    float playerBottomY = b1;
-                    float stairTopY = t2;
-                    const float groundTolerance = 3.0f;
-
-                    // Kiểm tra xem player có đang đứng trên tile top không
-                    bool standingOnTop = (playerBottomY <= stairTopY + groundTolerance &&
-                        playerBottomY >= stairTopY - groundTolerance);
-
-                    if (standingOnTop && !isClimbing &&
-                        state != PlayerState::Up && state != PlayerState::Down) {
-
-                        stairCol->SetFrameBlocking(true);
-                        stairTopAsGround = stairCol;
-                        isOnGround = true;
-
-                        // Chuyển về idle nếu đang trong trạng thái leo
-                        if (state == PlayerState::Up || state == PlayerState::Down) {
-                            state = PlayerState::Idle;
-                            isClimbing = false;
-                        }
-                    }
-                    else if (isClimbing || state == PlayerState::Up || state == PlayerState::Down) {
-                        // Đang leo thì không block
-                        stairCol->SetFrameBlocking(false);
-                    }
-                }
                 break;
             }
         }
     }
 
-    // Nếu không còn trên cầu thang và đang leo
-    if (!isOnStair && (state == PlayerState::Up || state == PlayerState::Down) && !isSteppingOneStair) {
+    // Nếu vừa rời khỏi cầu thang và đang leo
+    if (wasOnStair && !isOnStair &&
+        (state == PlayerState::Up || state == PlayerState::Down) &&
+        !isSteppingOneStair) {
+
+        // Điều chỉnh vị trí để đảm bảo đứng đúng trên ground
+        AdjustPositionToNearestGround();
+
+        // Chuyển về trạng thái bình thường
         state = PlayerState::Idle;
         isClimbing = false;
         _velocity = Vector2(0, 0);
+
+        // Cập nhật collider velocity
+        collider->vx = 0;
+        collider->vy = 0;
     }
 }

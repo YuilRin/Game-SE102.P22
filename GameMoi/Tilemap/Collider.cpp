@@ -49,34 +49,36 @@ std::vector<Collider*> CreateOptimizedCollidersFromTileMap(std::vector<std::vect
     int rows = tileMap.size();
     int cols = tileMap[0].size();
 
+    auto isSolid = [&](int val) {
+        return val == solidTileValue || val == 3; // 2 được coi như solid
+        };
+
     for (int row = 0; row < rows; ++row) {
         for (int col = 0; col < cols; ++col) {
-            if (tileMap[row][col] == solidTileValue) {
+            if (isSolid(tileMap[row][col])) {
                 int startCol = col;
                 int width = 0;
 
-                // Tìm chiều rộng của vùng liền nhau theo hàng
-                while (col < cols && tileMap[row][col] == solidTileValue) {
-                    tileMap[row][col] = -1; // đánh dấu đã xử lý
+                while (col < cols && isSolid(tileMap[row][col])) {
+                    tileMap[row][col] -=1;
                     width++;
                     col++;
                 }
 
-                // Tìm chiều cao tối đa có thể gộp
                 int height = 1;
                 bool canExpand;
                 do {
                     canExpand = true;
                     if (row + height >= rows) break;
                     for (int i = 0; i < width; ++i) {
-                        if (tileMap[row + height][startCol + i] != solidTileValue) {
+                        if (!isSolid(tileMap[row + height][startCol + i])) {
                             canExpand = false;
                             break;
                         }
                     }
                     if (canExpand) {
                         for (int i = 0; i < width; ++i)
-                            tileMap[row + height][startCol + i] = -1;
+                            tileMap[row + height][startCol + i]-=1;
                         height++;
                     }
                 } while (canExpand);
@@ -87,7 +89,7 @@ std::vector<Collider*> CreateOptimizedCollidersFromTileMap(std::vector<std::vect
                 float h = height * tileSize;
                 colliders.push_back(new Collider(x, y, w, h, 0.0f, 0.0f, true));
 
-                col--; // trừ lại vì vòng for sẽ tăng tiếp
+                col--;
             }
         }
     }
@@ -109,10 +111,28 @@ std::vector<Collider*> CreateStairCollidersFromTileMap(const std::vector<std::ve
                 float y = row * tileSize;
                 float w = tileSize;
                 float h = tileSize;
+                StairDirection dir;
+                bool isTop = false;
 
-                // Quy ước: tile 1 = LeftUp, tile 2 = RightUp và cũng là Top
-                StairDirection dir = (tile == 1) ? StairDirection::LeftUp : StairDirection::RightUp;
-                bool isTop = (tile == 2); // tile 2 là đỉnh cầu thang
+                switch (tile) {
+                case 1: // phần thân cầu thang đi lên từ trái qua phải
+                    dir = StairDirection::LeftUp;
+                    break;
+                case 4: // phần thân cầu thang đi lên từ phải qua trái
+                    dir = StairDirection::RightUp;
+                    break;
+                case 2:
+                    isTop = true;
+                    dir = StairDirection::LeftUp;
+                    break;
+                case 5: // ví dụ: tile top của hướng RightUp
+                    isTop = true;
+                    dir = StairDirection::RightUp;
+                    break;
+                default:
+                    
+                    continue; // bỏ qua tile không phải stair
+                }
 
                 StairCollider* stairCol = new StairCollider(x, y, w, h, dir, isTop);
                 colliders.push_back(stairCol);

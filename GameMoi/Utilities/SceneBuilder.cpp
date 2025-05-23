@@ -3,6 +3,7 @@
 #include "../Models/Characters/Player/Player.h"
 #include "../Models/Characters/Enemy/Zombie.h"
 #include <tuple>
+#include <fstream>
 
 bool SceneBuilder::LoadSceneWithData(
     World* world,
@@ -21,18 +22,21 @@ bool SceneBuilder::LoadSceneWithData(
             if (tile == 0 || tile == 7 || tile == 8 || tile == 17 || tile == 18 || tile == 9)
                 tile = 0; // Ground
             else if (tile == 27)
-                tile = 2; // Stair top
-            else if (tile == 4 || tile == 14 || tile == 27)
+                tile = 3; // Stair top
+            else if (tile == 4 || tile == 14)
                 tile = 1; // Stair
             else
                 tile = -1;
         }
     }
-
-    auto groundColliders = CreateOptimizedCollidersFromTileMap(rawMap, tileMap->GetTileSize(), 0);
+    
+    auto groundColliders = CreateOptimizedCollidersFromTileMap( rawMap, tileMap->GetTileSize(), 0);
     world->SetGroundColliders(groundColliders);
+   
 
     auto stairColliders = CreateStairCollidersFromTileMap(rawMap, tileMap->GetTileSize());
+	world->SetStairColliders(stairColliders);
+    
 
     // Load player
     ID3D11ShaderResourceView* playerTexture = nullptr;
@@ -57,7 +61,6 @@ bool SceneBuilder::LoadSceneWithData(
     };
 
     auto player = std::make_unique<Player>(30, 428, playerAnimations, device);
-    player->SetStairColliders(stairColliders);
     world->SetPlayer(std::move(player));
 
     // Load items

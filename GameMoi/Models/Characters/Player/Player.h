@@ -22,8 +22,8 @@ enum class PlayerState {
     Down,
     Up,
     Be_Hit,
-    Idle, Walking, Jumping, SitDown, Stand_Hit,Up_Hit, Down_Hit,
-    Climbing, Attacking, TakingDamage,  PickingUpItem, Falling,
+    Idle, Walking, Jumping, SitDown, Stand_Hit, Up_Hit, Down_Hit,
+    Climbing, Attacking, TakingDamage, PickingUpItem, Falling,
     Stagte
 };
 
@@ -33,7 +33,7 @@ private:
     bool isSteppingOneStair = false;
     float stepTimer = 0.0f;
     const float stepDuration = 0.3f; // thời gian hoàn thành 1 bước
-    const float stairStepDistance = 32.0f; // khoảng cách 1 bậc thang (tileSize)
+    const float stairStepDistance = 25.0f; // khoảng cách 1 bậc thang (tileSize)
 
     Vector2 targetPosition; // vị trí đích khi leo 1 bước
     Vector2 startPosition;  // vị trí bắt đầu leo 1 bước
@@ -55,7 +55,6 @@ private:
     bool isOnStair = false;
     bool isClimbing = false;
     Vector2 stairDirection = Vector2(1, -1); // hoặc (-1, 1) nếu cầu thang ngược
-
 
     int health;
     int lives;
@@ -79,27 +78,29 @@ private:
     bool isChangingStage;
 
     Info* _info;
-    std::vector<Collider*> stairColliders;
+    //std::vector<Collider*> stairColliders;
     StairCollider* currentStair = nullptr;
 
 public:
     GameObjectType GetTypeObject() const override { return GameObjectType::PLAYER; }
-
 
     void ApplyKnockback(bool fromLeft, float strength);
 
     void SetWorld(World* w);
     Collider* GetCollider() const { return collider; }
 
-
     Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device);
     ~Player();
-    //void SetGroundColliders(std::vector<Collider*> colliders);
-    void SetStairColliders(std::vector<Collider*> colliders);
+
+    //void SetStairColliders(std::vector<Collider*> colliders);
     void SetItemList(std::vector<Item*>* itemList);
 
     void HandleCollision(float elapsedTime);
     void HandleStateChange(float elapsedTime);
+
+    // Thêm hàm điều chỉnh vị trí
+    void AdjustPositionToNearestGround();
+    void ValidateTargetPosition();
 
     void onKeyPressed(WPARAM key);
     void onKeyReleased(WPARAM key);
@@ -116,6 +117,7 @@ public:
     void SitDown();
     void StandUp();
     void ClimbUp();
+    bool IsPositionOnStairTop(float x, float y, float width, float height);
     void ClimbDown();
     void HandleStairInteraction(float elapsedTime);
     void MoveOneStairStep();
@@ -149,7 +151,6 @@ public:
 
     Info* GetInfo() const { return _info; }
     void SetAllStairTopsBlocking(bool shouldBlock);
-    void CheckStairTopTransition(const Vector2& nextPos);
     bool IsClimbing() const { return isClimbing; }
 };
 

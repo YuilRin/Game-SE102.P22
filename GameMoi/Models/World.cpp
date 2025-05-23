@@ -184,9 +184,18 @@ void World::SetGroundColliders(std::vector<Collider*> colliders)
     groundColliders = colliders;
 }
 
+void World::SetStairColliders(std::vector<Collider*> colliders)
+{
+	stairColliders = colliders;
+}
+
 std::vector<Collider*>& World::GetGroundColliders()
 {
     return groundColliders;
+}
+std::vector<Collider*>& World::GetStairColliders()
+{
+	return stairColliders;
 }
 
 // === Update & Render ===

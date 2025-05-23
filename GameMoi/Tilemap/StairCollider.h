@@ -36,9 +36,10 @@ public:
 
     bool temporarilyDisabled = false; // mới thêm
     StairCollider(float x, float y, float w, float h, StairDirection dir, bool top)
-        : Collider(x, y, w, h, 0.0f, 0.0f, true), direction(dir), isTop(top) 
+        : Collider(x, y, w, h, 0.0f, 0.0f, isTop), direction(dir), isTop(top) 
     {
         shouldBlockThisFrame = top;
+        this->isTop = top;
     }
 
     void SetTemporarilyDisabled(bool value) { temporarilyDisabled = value; }
