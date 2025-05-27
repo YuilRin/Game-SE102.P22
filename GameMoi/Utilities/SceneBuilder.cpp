@@ -60,7 +60,7 @@ bool SceneBuilder::LoadSceneWithData(
         {PlayerState::Down_Hit         , Animation(playerTexture, {{216, 0 , 258, 64} , {258, 0 , 289, 64 }, {290,  0, 334, 64 }}, 0.3f)}
     };
 
-    auto player = std::make_unique<Player>(30, 428, playerAnimations, device);
+    auto player = std::make_unique<Player>(30, 200, playerAnimations, device);
     world->SetPlayer(std::move(player));
 
     // Load items

@@ -35,7 +35,7 @@ public:
     int GetHeight();
 
     ////////////////////////////////////////////////
-    int GetTileSize() { return 50.0f; };
+    int GetTileSize() { return 32; };
     std::vector<std::vector<int>> GetMapData() { return mapData; }
 
 	

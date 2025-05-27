@@ -8,8 +8,8 @@
 #include "../../Weapons/Axe.h"
 #include <algorithm> 
 
-const float stairStepX = 250.f; // hoặc tileSize * 0.5 nếu muốn mượt
-const float stairStepY = 250.f; // giống trên
+const float stairStepX = 8; // hoặc tileSize * 0.5 nếu muốn mượt
+const float stairStepY = 8; // giống trên
 bool stand=false;
 
 void Player::ApplyKnockback(bool fromLeft, float strength)
@@ -232,4 +232,9 @@ void Player::UpgradeWhip() {
 
     if (currentWeapon->GetType() == WeaponType::WHIP)
         dynamic_cast<Whip*>(currentWeapon)->SetLevel(whipLevel);
+}
+
+int Player::GetStage()
+{
+    return currentStage;
 }

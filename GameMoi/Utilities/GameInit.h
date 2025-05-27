@@ -21,8 +21,8 @@ extern std::unique_ptr<World> world;
 extern std::unique_ptr<TileMap> tileMap;
 extern CCamera* camera;
 
-const int WIDTH = 800;
-const int HEIGHT = 600;
+const int WIDTH = 512;
+const int HEIGHT = 450;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 bool InitGame(HINSTANCE hInstance, int nCmdShow);

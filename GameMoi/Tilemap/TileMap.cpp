@@ -66,23 +66,10 @@ void TileMap::Draw(Render* render,CCamera* camera) {
     spriteBatch->Begin();
 
     float camX = camera->GetLeft();
-    //float camY = camera->GetTop();
-    //float camH = camera->GetHeight();
-    //float camW = camera->GetWidth();
 
-    float scale = 3.125;// 3.125f;
-    //char message[50];
 
-    ////float camW = camera->GetWidth();
-    ////float camH = camera->GetHeight();
+    float scale = 2;// 3.125f;
 
-    //int yStart=0, yStop=0, xStart=0, xStop=0;
-    //yStart = (camY / 32) / scale;
-    //yStop = int(((camY+camH) / 32) / scale);
-    //sprintf_s(message, "Tọa độ nhân vật: X = %.2f, Y = %.2f", yStop, camW);
-    //MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);
-    //xStart = int((camX / 32) / scale);
-    //xStop = int(((camX + camW) / 32)/scale);
 
 
 

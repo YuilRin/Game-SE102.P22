@@ -76,6 +76,9 @@
     <Filter Include="Header Files\Models\Characters\Enemy">
       <UniqueIdentifier>{7763c887-744e-42a2-a153-c248c83c311e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Scene">
+      <UniqueIdentifier>{9b090ec6-d903-4760-909f-9e1886c540c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Render.h">
