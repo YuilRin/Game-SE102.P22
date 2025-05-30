@@ -145,6 +145,7 @@
     <ClInclude Include="Models\Weapons\Weapon.h" />
     <ClInclude Include="Models\Weapons\Whip.h" />
     <ClInclude Include="Models\World.h" />
+    <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tilemap\Collider.h" />

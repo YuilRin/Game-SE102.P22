@@ -11,7 +11,8 @@ struct LevelData {
     std::wstring itemTexture;                    // Texture item
     std::wstring enemyTexture;                   // Texture enemy
 	std::wstring breakableItemTexture;           // Texture item vỡ
-    
+    std::string startPos;                         // File .txt chứa vị trí khởi đầu
+
     std::vector<std::pair<float, float>> enemyPositions;
     std::vector<std::tuple<float, float, ItemType>> itemPositions;
 	std::vector<std::tuple<float, float, BreakableItemType>> breakableItemPositions;

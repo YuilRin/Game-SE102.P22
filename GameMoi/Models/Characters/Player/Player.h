@@ -89,7 +89,7 @@ public:
     void SetWorld(World* w);
     Collider* GetCollider() const { return collider; }
 
-    Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device);
+    Player(string pos, std::map<PlayerState, Animation> anims, ID3D11Device* device);
     ~Player();
 
     //void SetStairColliders(std::vector<Collider*> colliders);

@@ -30,6 +30,8 @@ void GameLoop() {
                 static_cast<float>(tileMap->GetWidth()) - WIDTH / 3.0f));
             camera->SetPosition(camX, 0);
         }
+
+        //Thử chuyển màn theo tọa độ
         if (world->GetPlayer()->GetX() >= 255&&world->GetPlayer()->GetY()<=-36)
         {
             ID3D11Device* device = renderer.GetDevice();
@@ -42,15 +44,16 @@ void GameLoop() {
             level1.itemTexture = L"Image/items.png";
             level1.enemyTexture = L"Image/zombie.png";
             level1.breakableItemTexture = L"Image/objects.png";
+            level1.startPos = "Image/StartPos/stage22.txt";
 
             // Enemy positions
             level1.enemyPositions = {
-                {200.0f, 300.0f}
+                {100.0f, 100.0f}
             };
 
             // Item positions
             level1.itemPositions = {
-                {300.0f, 250.0f, ItemType::SMALL_HEART}
+                {200.0f, 250.0f, ItemType::SMALL_HEART}
             };
 
             level1.breakableItemPositions = {

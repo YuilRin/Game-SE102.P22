@@ -53,6 +53,7 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     level1.itemTexture = L"Image/items.png";
     level1.enemyTexture = L"Image/zombie.png";
     level1.breakableItemTexture = L"Image/objects.png";
+    level1.startPos = "Image/StartPos/stage21.txt";
 
     // Enemy positions
     level1.enemyPositions = {

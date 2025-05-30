@@ -2,6 +2,8 @@
 #include <Windows.h>
 #include <map>
 #include <string>
+#include <iostream>
+#include <fstream>
 #include <SpriteBatch.h>
 #include <WICTextureLoader.h>
 #include "../../Weapons/Whip.h"
@@ -33,16 +35,24 @@ void Player::SetWorld(World* w)
     world = w;
 }
 
-Player::Player(float x, float y, std::map<PlayerState, Animation> anims, ID3D11Device* device)
+Player::Player(string startPos, std::map<PlayerState, Animation> anims, ID3D11Device* device)
     : GameObject(x, y), animations(std::move(anims)), state(PlayerState::Idle), facingLeft(false), device(device)
 {
+#pragma region startPos
+
+    std::ifstream file(startPos);
+    std::string dummy;
+    std::getline(file, dummy);
+    file >> x >> y;
+#pragma endregion
+
+
     _velocity = { 0.0f, 0.0f };
     collider = new Collider(x, y, 32, 64); // kích thước 32x64
     collider->SetOwner(this);
     isOnGround = false;
     _info = new Info();
     _info->init();
-
 
     _info->SetHeart(50);
 
