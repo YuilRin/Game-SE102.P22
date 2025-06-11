@@ -3,6 +3,7 @@
 #include <vector>
 #include "../Models/Items/Item.h"
 #include "../Models/Items/BreakableItem.h"
+#include "../Models/Items/Object.h"
 
 struct LevelData {
     std::string mapFile;                         // File .txt tile map

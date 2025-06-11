@@ -1,20 +1,20 @@
-﻿
-#include "GameInit.h"
+﻿#include "GameInit.h"
 #include "DirectXHelpers.h"
 #include "WICTextureLoader.h"
 #include "../Models/Characters/Enemy/Zombie.h"
-#include "../Models/Characters/Info.h" // Thêm include
+#include "../Models/Characters/Info.h"
 
 HWND hwnd;
 Render renderer;
 std::unique_ptr<World> world;
 std::unique_ptr<TileMap> tileMap;
-std::unique_ptr<Info> gameUI; // Thêm UI
+std::unique_ptr<Info> gameUI;
+std::unique_ptr<LevelManager> levelManager; // Thêm LevelManager
 CCamera* camera;
-
 
 std::function<void(int)> OnEnemyKilled = nullptr;
 std::function<void(int)> OnItemCollected = nullptr;
+
 enum TileType {
     TILE_EMPTY = -1,
     TILE_SOLID = 0,
@@ -40,9 +40,10 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     // Khởi tạo DirectX
     if (!renderer.Init(hwnd, WIDTH, HEIGHT)) return false;
 
-    // Khởi tạo World
+    // Khởi tạo World và LevelManager
     world = std::make_unique<World>();
     tileMap = std::make_unique<TileMap>(&renderer, 16, 16);
+    levelManager = std::make_unique<LevelManager>(); // Khởi tạo LevelManager
 
     // ===== KHỞI TẠO UI =====
     gameUI = std::make_unique<Info>();
@@ -52,7 +53,7 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     // Setup initial UI values
     gameUI->SetScore(0);
     gameUI->SetTime(300); // 5 minutes
-    gameUI->SetStage(1);
+    gameUI->SetStage(levelManager->GetCurrentLevelNumber()); // Sử dụng level number từ manager
     gameUI->SetLife(3);
     gameUI->SetHeart(16); // Player starting hearts
     // =====================
@@ -65,37 +66,10 @@ bool InitGame(HINSTANCE hInstance, int nCmdShow) {
     camera->Init();
     camera->SetSize(WIDTH, HEIGHT);
 
-    LevelData level1;
-    level1.mapFile = "Image/frame0.txt";
-    level1.tileTexture = L"Image/frame0tileset.png";
-    level1.playerTexture = L"Image/simon.png";
-    level1.itemTexture = L"Image/items.png";
-    level1.enemyTexture = L"Image/zombie.png";
-    level1.breakableItemTexture = L"Image/objects.png";
-    level1.startPos = "Image/StartPos/stage21.txt";
+    // Load level đầu tiên từ LevelManager
+    const LevelData& currentLevel = levelManager->GetCurrentLevel();
 
-    //// Enemy positions
-    //level1.enemyPositions = {
-    //    {200.0f, 100.0f}
-    //};
-
-    //// Item positions
-    //level1.itemPositions = {
-    //    {300.0f, 150.0f, ItemType::SMALL_HEART}
-    //};
-
-    //level1.breakableItemPositions = {
-    //   // {700.0f, 100.0f, BreakableItemType::STAIR},
-    //    {400.0f, 150.0f, BreakableItemType::BIG_CANDLE1},
-    //    {300.0f, 150.0f, BreakableItemType::BIG_CANDLE1}
-    //};
-
-    level1.objectPositions = {
-         {370.0f, 127.1f, ObjectType::MOVING_STAIR},
-         {300.0f, 150.0f, ObjectType::TRIDENT}
-    };
-
-    if (!SceneBuilder::LoadSceneWithData(world.get(), tileMap.get(), level1, device, context)) {
+    if (!SceneBuilder::LoadSceneWithData(world.get(), tileMap.get(), currentLevel, device, context)) {
         return false;
     }
 

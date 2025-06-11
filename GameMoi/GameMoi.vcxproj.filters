@@ -180,6 +180,9 @@
     <ClInclude Include="Models\Items\Object.h">
       <Filter>Header Files\Models\Items</Filter>
     </ClInclude>
+    <ClInclude Include="Utilities\LevelManager.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -286,6 +289,9 @@
     </ClCompile>
     <ClCompile Include="Models\Items\Object.cpp">
       <Filter>Source Files\Models\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Utilities\LevelManager.cpp">
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

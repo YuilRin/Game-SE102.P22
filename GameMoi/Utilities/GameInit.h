@@ -13,14 +13,16 @@
 #include "../Tilemap/Collider.h"
 #include "SceneBuilder.h"
 #include "LevelData.h"
+#include "LevelManager.h"
 #include "../Models/Characters/Info.h" 
 
 extern std::unique_ptr<Info> gameUI;
+extern std::unique_ptr<LevelManager> levelManager;
 extern std::function<void(int)> OnEnemyKilled;
 extern std::function<void(int)> OnItemCollected;
 extern HWND hwnd;
 extern Render renderer;
-extern std::unique_ptr<World> world; 
+extern std::unique_ptr<World> world;
 extern std::unique_ptr<TileMap> tileMap;
 extern CCamera* camera;
 

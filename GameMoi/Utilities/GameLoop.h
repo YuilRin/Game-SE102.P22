@@ -3,3 +3,4 @@
 void GameLoop();
 void LoadNextLevel();
 void CheckEnemyHealthBar();
+bool CheckLevelCompleteCondition();
