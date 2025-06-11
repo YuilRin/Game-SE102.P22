@@ -19,7 +19,7 @@ bool SceneBuilder::LoadSceneWithData(
     auto rawMap = tileMap->GetMapData();
     for (auto& row : rawMap) {
         for (auto& tile : row) {
-            if (tile == 0 || tile == 7 || tile == 8 || tile == 17 || tile == 18 || tile == 9)
+            if (tile == 0 )
                 tile = 0; // Ground
             else if (tile == 27)
                 tile = 3; // Stair top

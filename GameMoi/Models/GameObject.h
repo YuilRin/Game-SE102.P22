@@ -19,6 +19,7 @@ enum class GameObjectType {
 class GameObject {
 protected:
     float x, y;                             // Vị trí logic
+    float wx, wy;                           //Vị trí thế giới
     ID3D11ShaderResourceView* texture;     // Texture vẽ
     Collider* collider = nullptr;          // Va chạm
     GVector2 _velocity;                    // Vận tốc hiện tại
@@ -39,6 +40,8 @@ public:
     // Vị trí
     float GetX();
     float GetY();
+    float GetWX();
+    float GetWY();
     virtual void GetPosition(float& out_x, float& out_y);
     virtual void SetPosition(float x, float y);
 

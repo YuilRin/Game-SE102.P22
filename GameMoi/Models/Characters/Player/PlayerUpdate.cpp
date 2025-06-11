@@ -303,10 +303,12 @@ void Player::Update(float elapsedTime) {
         state != PlayerState::Up && state != PlayerState::Down &&
         !isOnMovingStair && !isOnMovingPlatform) {
         _velocity.y += _gravity * elapsedTime + 1.0f;
+        UpdatePosition(elapsedTime);
     }
 
     collider->vx = _velocity.x;
     collider->vy = _velocity.y;
+
 
     // Handle collision only when not in special states AND not on moving stair/platform
     if (!isClimbing && state != PlayerState::TakingDamage && !isSteppingOneStair &&
@@ -314,7 +316,6 @@ void Player::Update(float elapsedTime) {
         !isOnMovingStair && !isOnMovingPlatform) {
         HandleCollision(elapsedTime);
     }
-
     HandleStateChange(elapsedTime);
     HandleWeaponUpdate(elapsedTime);
     animations[state].Update(elapsedTime);

@@ -44,6 +44,11 @@ private:
     float _gravity = 9.8f;
     float stairSpeed = 25.0f;
 
+    float worldX; // vị trí thực trong bản đồ
+    float worldY;
+
+
+
     Vector2 _velocity = { 0.0f, 0.0f };
 
     bool facingLeft;
@@ -126,7 +131,8 @@ public:
     void ClimbDown();
     void HandleStairInteraction(float elapsedTime);
     void MoveOneStairStep();
-
+    float GetWX() { return worldX; }
+    float GetWY() { return worldY; }
     /// Combat
     void Attack();
     void TakeDamage(int damage);
@@ -170,6 +176,7 @@ public:
     Vector2 GetVelocity() const { return _velocity; }
     PlayerState GetState() const { return state; }
     void SetOnMovingPlatform(bool onPlatform) { isOnMovingPlatform = onPlatform; }
+    void UpdatePosition(float dt);
 };
 
 #endif
