@@ -80,19 +80,71 @@ void Player::AdjustPositionToNearestGround() {
     }
 }
 
-void Player::HandleCollision(float elapsedTime)
-{
+void Player::HandleMovingStairInteraction(float elapsedTime) {
     if (!world) return;
 
-    auto& ground = world->GetGroundColliders();
-    CollisionManager::GetInstance()->Process(collider, elapsedTime, ground);
+    // Reset moving stair state first
+    bool wasOnMovingStair = isOnMovingStair;
+    isOnMovingStair = false;
+    currentMovingStair = nullptr;
 
-    float newX, newY;
-    collider->GetPosition(newX, newY);
-    x = newX;
-    y = newY;
+    // Check collision with moving stairs
+    for (const auto& obj : world->GetObjects()) {
+        if (obj->GetType() == ObjectType::MOVING_STAIR) {
+            auto playerCollider = collider;
+            auto stairCollider = obj->GetCollider();
 
-    collider->GetSpeed(_velocity.x, _velocity.y);
+            if (!playerCollider || !stairCollider) continue;
+
+            float pl1, pt1, pr1, pb1;
+            float sl1, st1, sr1, sb1;
+
+            playerCollider->GetBoundingBox(pl1, pt1, pr1, pb1);
+            stairCollider->GetBoundingBox(sl1, st1, sr1, sb1);
+
+            // Check if player is standing on this moving stair
+            const float epsilon = 1.0f; // Increased tolerance for better detection
+            bool playerOnStair = (abs(pb1 - st1) <= epsilon && pr1 > sl1 && pl1 < sr1);
+
+            if (playerOnStair) {
+                isOnMovingStair = true;
+                currentMovingStair = obj;
+
+                // Get the actual stair velocity
+                Vector2 stairVelocity = obj->GetVelocity();
+
+                // Position player exactly on top of the stair
+                float stairTopY = st1 - 32; // 32 is half of player collider height
+
+                // Only adjust Y position if player is close to the stair surface
+                if (abs(y - stairTopY) <= epsilon) {
+                    y = stairTopY;
+                    collider->SetPosition(x, y);
+                }
+
+                // Move player horizontally with the stair
+                if (!IsJumpingUp() && (state != PlayerState::Walking || _velocity.x == 0)) {
+                    float stairMovement = stairVelocity.x * elapsedTime;
+                    x += stairMovement;
+                    collider->SetPosition(x, y);
+                }
+
+                // Reset vertical velocity when on moving stair
+                _velocity.y = 0;
+                collider->vy = 0;
+
+                break;
+            }
+        }
+    }
+
+    // Handle transition off moving stair
+    if (wasOnMovingStair && !isOnMovingStair) {
+        // Player just left moving stair, apply gravity again
+        if (!isOnGround) {
+            state = PlayerState::Falling;
+        }
+    }
 }
 
 void Player::HandleStateChange(float elapsedTime) {
@@ -100,27 +152,57 @@ void Player::HandleStateChange(float elapsedTime) {
 
     if (!world) return;
 
-    // Kiểm tra ground colliders
-    for (auto& g : world->GetGroundColliders()) {
-        float l1, t1, r1, b1;
-        collider->GetBoundingBox(l1, t1, r1, b1);
-        float l2, t2, r2, b2;
-        g->GetBoundingBox(l2, t2, r2, b2);
+    // First check for moving stair interaction
+    HandleMovingStairInteraction(elapsedTime);
 
-        const float epsilon = 1.0f;
-        float verticalOffset = (state == PlayerState::SitDown || state == PlayerState::Jumping) ? 3.0f : 0.0f;
+    // If on moving stair, treat it as being on ground
+    if (isOnMovingStair) {
+        isOnGround = true;
+        isOnMovingPlatform = true; // Set this flag for consistency
 
-        if (abs((b1 + verticalOffset) - t2) < epsilon && r1 > l2 && l1 < r2) {
-            isOnGround = true;
-            if (state == PlayerState::Jumping && _velocity.y > 0)
-                state = PlayerState::Idle;
-            break;
+        // Handle state transitions when landing on moving stair
+        if (state == PlayerState::Jumping && _velocity.y > 0) {
+            state = PlayerState::Idle;
+        }
+        if (state == PlayerState::Falling) {
+            state = PlayerState::Idle;
+        }
+    }
+    else {
+        isOnMovingPlatform = false;
+
+        // Check regular ground colliders only if not on moving stair
+        for (auto& g : world->GetGroundColliders()) {
+            float l1, t1, r1, b1;
+            collider->GetBoundingBox(l1, t1, r1, b1);
+            float l2, t2, r2, b2;
+            g->GetBoundingBox(l2, t2, r2, b2);
+
+            const float epsilon = 1.0f;
+            float verticalOffset = (state == PlayerState::SitDown || state == PlayerState::Jumping) ? 3.0f : 0.0f;
+
+            if (abs((b1 + verticalOffset) - t2) < epsilon && r1 > l2 && l1 < r2) {
+                isOnGround = true;
+                if (state == PlayerState::Jumping && _velocity.y > 0)
+                    state = PlayerState::Idle;
+                if (state == PlayerState::Falling)
+                    state = PlayerState::Idle;
+                break;
+            }
+        }
+    }
+
+    // Handle falling state when not on ground and not on moving stair
+    if (!isOnGround && !isOnMovingStair && state != PlayerState::Jumping &&
+        state != PlayerState::TakingDamage && !isClimbing && !isSteppingOneStair) {
+        if (state != PlayerState::Falling) {
+            state = PlayerState::Falling;
         }
     }
 
     // Xử lý chuyển đổi state sau khi leo cầu thang
     if ((state == PlayerState::Up || state == PlayerState::Down) &&
-        !isSteppingOneStair && !isClimbing && isOnGround) {
+        !isSteppingOneStair && !isClimbing && (isOnGround || isOnMovingStair)) {
         state = PlayerState::Idle;
         _velocity = Vector2(0, 0);
     }
@@ -149,7 +231,7 @@ void Player::HandleStateChange(float elapsedTime) {
 
         if (damageTimer >= 0.5f || abs(_velocity.x) < 5.0f) {
             _velocity.x = 0;
-            if (isOnGround) {
+            if (isOnGround || isOnMovingStair) {
                 state = PlayerState::Idle;
             }
             else {
@@ -159,9 +241,11 @@ void Player::HandleStateChange(float elapsedTime) {
         }
     }
 
-    // Di chuyển ngang
-    if (isOnGround && state == PlayerState::Walking && !isClimbing && !isSteppingOneStair)
+    // Di chuyển ngang - Allow movement on both ground and moving stair
+    if ((isOnGround || isOnMovingStair) && state == PlayerState::Walking &&
+        !isClimbing && !isSteppingOneStair) {
         x += _velocity.x * elapsedTime;
+    }
 }
 
 void Player::Update(float elapsedTime) {
@@ -214,22 +298,39 @@ void Player::Update(float elapsedTime) {
         HandleStairInteraction(elapsedTime);
     }
 
-    // Chỉ áp dụng trọng lực khi không đang leo và không đang nhận damage và không đang stepping
+    // Apply gravity only when NOT climbing, NOT taking damage, NOT stepping, AND NOT on moving stair/platform
     if (!isClimbing && state != PlayerState::TakingDamage && !isSteppingOneStair &&
-        state != PlayerState::Up && state != PlayerState::Down) {
+        state != PlayerState::Up && state != PlayerState::Down &&
+        !isOnMovingStair && !isOnMovingPlatform) {
         _velocity.y += _gravity * elapsedTime + 1.0f;
     }
 
     collider->vx = _velocity.x;
     collider->vy = _velocity.y;
 
-    // Chỉ xử lý collision khi không đang stepping để tránh conflict
+    // Handle collision only when not in special states AND not on moving stair/platform
     if (!isClimbing && state != PlayerState::TakingDamage && !isSteppingOneStair &&
-        state != PlayerState::Up && state != PlayerState::Down) {
+        state != PlayerState::Up && state != PlayerState::Down &&
+        !isOnMovingStair && !isOnMovingPlatform) {
         HandleCollision(elapsedTime);
     }
 
     HandleStateChange(elapsedTime);
     HandleWeaponUpdate(elapsedTime);
     animations[state].Update(elapsedTime);
+}
+
+void Player::HandleCollision(float elapsedTime)
+{
+    if (!world) return;
+
+    auto& ground = world->GetGroundColliders();
+    CollisionManager::GetInstance()->Process(collider, elapsedTime, ground);
+
+    float newX, newY;
+    collider->GetPosition(newX, newY);
+    x = newX;
+    y = newY;
+
+    collider->GetSpeed(_velocity.x, _velocity.y);
 }

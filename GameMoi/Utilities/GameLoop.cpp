@@ -18,12 +18,44 @@ void GameLoop() {
         float deltaTime = (currentTime - prevTime) / 1000.0f;
         prevTime = currentTime;
 
-        // Update game through World
+        // ===== UPDATE GAME =====
         if (world) {
             world->Update(deltaTime);
         }
 
-        // Camera logic - SỬA DÒNG NÀY
+        // ===== UPDATE UI =====
+        if (gameUI && world && world->GetPlayer()) {
+            // FIX: Cập nhật UI trực tiếp từ player data
+            Player* player = world->GetPlayer();
+            Info* playerInfo = player->GetInfo();
+
+            if (playerInfo) {
+                // Cập nhật heart/HP từ player
+                gameUI->SetHeart(playerInfo->GetHeart());
+
+                // Cập nhật các thông tin khác
+                gameUI->SetLife(playerInfo->GetLife());
+                gameUI->SetScore(playerInfo->GetScore());
+                gameUI->SetStage(playerInfo->GetStage());
+                gameUI->SetTime(playerInfo->GetTime());
+                gameUI->SetMaxWeapon(playerInfo->GetMaxWeapon());
+
+                // Debug: In ra để kiểm tra
+                char message[100];
+                sprintf_s(message, "Player HP: %d, UI HP: %d",
+                    playerInfo->GetHeart(), gameUI->GetPlayerHitPoint());
+                // Uncomment dòng dưới để debug
+                // MessageBoxA(NULL, message, "Debug HP", MB_OK | MB_ICONINFORMATION);
+            }
+
+            // Update UI time, score, etc.
+            gameUI->update(deltaTime);
+
+            // Check for boss/enemy health bar
+            CheckEnemyHealthBar();
+        }
+
+        // Camera logic
         if (world && world->GetPlayer()) {
             float camX = world->GetPlayer()->GetX() - WIDTH / 3.0f;
             camX = std::max(0.0f, std::min(camX,
@@ -31,46 +63,85 @@ void GameLoop() {
             camera->SetPosition(camX, 0);
         }
 
-        //Thử chuyển màn theo tọa độ
-        if (world->GetPlayer()->GetX() >= 255&&world->GetPlayer()->GetY()<=-36)
-        {
-            ID3D11Device* device = renderer.GetDevice();
-            ID3D11DeviceContext* context = renderer.GetDeviceContext();
-
-            LevelData level1;
-            level1.mapFile = "Image/frame3.txt";
-            level1.tileTexture = L"Image/frame3tileset.png";
-            level1.playerTexture = L"Image/simon.png";
-            level1.itemTexture = L"Image/items.png";
-            level1.enemyTexture = L"Image/zombie.png";
-            level1.breakableItemTexture = L"Image/objects.png";
-            level1.startPos = "Image/StartPos/stage22.txt";
-
-            // Enemy positions
-            level1.enemyPositions = {
-                {100.0f, 100.0f}
-            };
-
-            // Item positions
-            level1.itemPositions = {
-                {200.0f, 250.0f, ItemType::SMALL_HEART}
-            };
-
-            level1.breakableItemPositions = {
-                {700.0f, 200.0f, BreakableItemType::STAIR},
-
-                {400.0f, 350.0f, BreakableItemType::BIG_CANDLE1},
-                {300.0f, 350.0f, BreakableItemType::BIG_CANDLE1}
-            };
-            !SceneBuilder::LoadSceneWithData(world.get(), tileMap.get(), level1, device, context);
-             
+        // Level transition logic
+        if (world->GetPlayer()->GetX() >= 255 && world->GetPlayer()->GetY() <= -36) {
+            LoadNextLevel();
         }
-        // Rendering
+
+        // ===== RENDERING =====
         renderer.BeginRender();
+
+        // Render game world
         tileMap->Draw(&renderer, camera);
         if (world) {
             world->Render(renderer.GetSpriteBatch());
         }
+
+        // Render UI (always last to appear on top)
+        if (gameUI) {
+            gameUI->draw(renderer.GetSpriteBatch(), renderer.GetDeviceContext());
+        }
+
         renderer.EndRender();
+    }
+}
+
+// ===== HELPER FUNCTIONS =====
+void CheckEnemyHealthBar() {
+    if (!gameUI || !world) return;
+
+    auto enemies = world->GetEnemies();
+    bool hasBoss = false;
+
+    // Check if there's a boss (enemy with high HP)
+    for (auto* enemy : enemies) {
+        if (enemy && enemy->GetInfo() && enemy->GetInfo()->GetHeart() > 16) {
+            // This is a boss
+            hasBoss = true;
+            gameUI->SetMaxEnemyHP(32); // Assume boss max HP is 32
+            gameUI->SetEnemyHitPoint(enemy->GetInfo()->GetHeart());
+            gameUI->ShowEnemyBar(true);
+            break;
+        }
+    }
+
+    if (!hasBoss) {
+        gameUI->ShowEnemyBar(false);
+    }
+}
+
+void LoadNextLevel() {
+    ID3D11Device* device = renderer.GetDevice();
+    ID3D11DeviceContext* context = renderer.GetDeviceContext();
+
+    LevelData level2;
+    level2.mapFile = "Image/frame3.txt";
+    level2.tileTexture = L"Image/frame3tileset.png";
+    level2.playerTexture = L"Image/simon.png";
+    level2.itemTexture = L"Image/items.png";
+    level2.enemyTexture = L"Image/zombie.png";
+    level2.breakableItemTexture = L"Image/objects.png";
+    level2.startPos = "Image/StartPos/stage22.txt";
+
+    level2.enemyPositions = {
+        {100.0f, 100.0f}
+    };
+
+    level2.itemPositions = {
+        {200.0f, 250.0f, ItemType::SMALL_HEART}
+    };
+
+    level2.breakableItemPositions = {
+        {700.0f, 200.0f, BreakableItemType::STAIR},
+        {400.0f, 350.0f, BreakableItemType::BIG_CANDLE1},
+        {300.0f, 350.0f, BreakableItemType::BIG_CANDLE1}
+    };
+
+    SceneBuilder::LoadSceneWithData(world.get(), tileMap.get(), level2, device, context);
+
+    // Update UI for new stage
+    if (gameUI) {
+        gameUI->SetStage(2);
+        gameUI->AddScore(1000); // Stage completion bonus
     }
 }

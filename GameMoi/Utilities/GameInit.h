@@ -13,8 +13,11 @@
 #include "../Tilemap/Collider.h"
 #include "SceneBuilder.h"
 #include "LevelData.h"
+#include "../Models/Characters/Info.h" 
 
-
+extern std::unique_ptr<Info> gameUI;
+extern std::function<void(int)> OnEnemyKilled;
+extern std::function<void(int)> OnItemCollected;
 extern HWND hwnd;
 extern Render renderer;
 extern std::unique_ptr<World> world; 

@@ -141,6 +141,7 @@
     <ClInclude Include="Models\Items\BreakableItem.h" />
     <ClInclude Include="Models\Items\Item.h" />
     <ClInclude Include="Models\Items\ItemSpriteRects.h" />
+    <ClInclude Include="Models\Items\Object.h" />
     <ClInclude Include="Models\Weapons\Axe.h" />
     <ClInclude Include="Models\Weapons\Weapon.h" />
     <ClInclude Include="Models\Weapons\Whip.h" />
@@ -180,6 +181,7 @@
     <ClCompile Include="Models\Items\BreakableItem.cpp" />
     <ClCompile Include="Models\Items\Item.cpp" />
     <ClCompile Include="Models\Items\ItemSpriteRects.cpp" />
+    <ClCompile Include="Models\Items\Object.cpp" />
     <ClCompile Include="Models\Weapons\Axe.cpp" />
     <ClCompile Include="Models\Weapons\Weapon.cpp" />
     <ClCompile Include="Models\Weapons\Whip.cpp" />
@@ -202,12 +204,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Image\fontEx.png" />
+    <Image Include="Image\fontFull.png" />
     <Image Include="Image\frame0.png" />
     <Image Include="Image\frame0tileset.png" />
     <Image Include="Image\frame2.png" />
     <Image Include="Image\frame2tileset.png" />
     <Image Include="Image\frame3.png" />
     <Image Include="Image\frame3tileset.png" />
+    <Image Include="Image\heal.png" />
     <Image Include="Image\items.png" />
     <Image Include="Image\map.png" />
     <Image Include="Image\objects.png" />

@@ -8,6 +8,7 @@
 #include "../Models/Characters/Enemy/Enemy.h"
 #include "../Models/Items/Item.h"
 #include "../Models/Items/BreakableItem.h"
+#include "../Models/Items/Object.h"
 #include "../Models/Weapons/Weapon.h"
 
 
@@ -17,6 +18,7 @@ private:
     std::vector<std::unique_ptr<Enemy>> enemies;
     std::vector<std::unique_ptr<Item>> items;
     std::vector<std::unique_ptr<BreakableItem>> breakableItems;
+    std::vector<std::unique_ptr<Object>> objects;
     std::vector<std::unique_ptr<Weapon>> weapons;
     std::vector<Collider*> groundColliders;
 	std::vector<Collider*> stairColliders;
@@ -49,11 +51,17 @@ public:
     void RemoveBreakable(BreakableItem* obj);
     const std::vector<BreakableItem*>& GetBreakables() const;
 
+	// Object
+	void AddObject(std::unique_ptr<Object> obj);
+	void RemoveObject(Object* obj);
+	const std::vector<Object*>& GetObjects() const;
+
     // Weapon
     void AddWeapon(std::unique_ptr<Weapon> weapon);
     void RemoveWeapon(Weapon* weapon);
     const std::vector<Weapon*>& GetWeapons() const;
     void CheckWeaponEnemyCollision();
+    void CheckPlayerObjectCollision();
     void CheckWeaponBreakableCollision();
 
     //GroundCollider

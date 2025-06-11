@@ -16,4 +16,6 @@ struct LevelData {
     std::vector<std::pair<float, float>> enemyPositions;
     std::vector<std::tuple<float, float, ItemType>> itemPositions;
 	std::vector<std::tuple<float, float, BreakableItemType>> breakableItemPositions;
+	std::vector<std::tuple<float, float, ObjectType>> objectPositions; // Vị trí của các Object
+	//std::vector<std::pair<float, float>> stairPositions; // Vị trí của các cầu thang
 };

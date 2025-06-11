@@ -56,6 +56,10 @@ private:
     bool isClimbing = false;
     Vector2 stairDirection = Vector2(1, -1); // hoặc (-1, 1) nếu cầu thang ngược
 
+    // Moving stair support
+    bool isOnMovingStair = false;
+    class Object* currentMovingStair = nullptr;
+
     int health;
     int lives;
     int whipLevel = 1;
@@ -97,6 +101,7 @@ public:
 
     void HandleCollision(float elapsedTime);
     void HandleStateChange(float elapsedTime);
+    void HandleMovingStairInteraction(float elapsedTime); // New function for moving stair logic
 
     // Thêm hàm điều chỉnh vị trí
     void AdjustPositionToNearestGround();
@@ -152,6 +157,19 @@ public:
     Info* GetInfo() const { return _info; }
     void SetAllStairTopsBlocking(bool shouldBlock);
     bool IsClimbing() const { return isClimbing; }
+
+    // Moving stair support
+    bool IsOnMovingStair() const { return isOnMovingStair; }
+    void SetPosition(float newX, float newY) { x = newX; y = newY; collider->SetPosition(x, y); }
+    void GetPosition(float& outX, float& outY) const { outX = x; outY = y; }
+
+
+    // Additional methods for moving platform interaction
+    bool IsJumpingUp() const { return state == PlayerState::Jumping && _velocity.y < 0; }
+    bool IsInAir() const { return !isOnGround && !isOnMovingPlatform; }
+    Vector2 GetVelocity() const { return _velocity; }
+    PlayerState GetState() const { return state; }
+    void SetOnMovingPlatform(bool onPlatform) { isOnMovingPlatform = onPlatform; }
 };
 
 #endif

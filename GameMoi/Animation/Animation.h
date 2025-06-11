@@ -24,6 +24,7 @@ public:
     void SetFrameTime(float time) { frameTime = time; }
     int GetCurrentFrameIndex() const { return currentFrame; }
 	int GetFrameCount() const { return frames.size(); }
+    const Frame& GetCurrentFrame() const { return frames[currentFrame]; }
 
 private:
     ID3D11ShaderResourceView* spriteSheet;

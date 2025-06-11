@@ -80,16 +80,23 @@ bool SceneBuilder::LoadSceneWithData(
     DirectX::CreateWICTextureFromFile(device, context, data.breakableItemTexture.c_str(), nullptr, &breakableItemTexture);
     world->SetBreakableItemTexture(breakableItemTexture);
 
-    // Kiểm tra xem texture đã load thành công chưa
     if (breakableItemTexture != nullptr) {
-        // Create animations for breakable items
-        // Define animations for each breakable item type
         Animation bigCandleIdle = Animation(breakableItemTexture, { { 0, 0, 32, 64 }, { 32, 0, 64, 64 } }, 0.3f);
         Animation bigCandleBreak = Animation(breakableItemTexture, { { 0, 0, 32, 64 }, { 32, 0, 64, 64 } }, 0.2f);
 
         Animation candleIdle = Animation(breakableItemTexture, { { 64, 0, 80, 32 }, { 80, 0, 96, 32 } }, 0.3f);
         Animation candleBreak = Animation(breakableItemTexture, { { 64, 0, 80, 32 }, { 80, 0, 96, 32 } }, 0.2f);
 
+       
+		Animation trident = Animation(breakableItemTexture, { 
+                {0, 160, 64, 196},      // Frame 0: matches animation frame exactly
+                    {64, 160, 128, 213},    // Frame 1: matches animation frame exactly  
+                    {128, 160, 192, 228},   // Frame 2: matches animation frame exactly
+                    {192, 160, 256, 244},   // Frame 3: matches animation frame exactly
+                    {256, 160, 320, 260},   // Frame 4: matches animation frame exactly
+                    {320, 160, 384, 278},   // Frame 5: matches animation frame exactly
+                    {384, 160, 448, 292}
+            }, 0.5f);
         for (const auto& item : data.breakableItemPositions) {
             float x = std::get<0>(item);
             float y = std::get<1>(item);
@@ -99,7 +106,6 @@ bool SceneBuilder::LoadSceneWithData(
 
             // Set appropriate animations based on item type
             switch (type) {
-            case BreakableItemType::BIG_CANDLE1:
             case BreakableItemType::BIG_CANDLE:
                 breakableItem->SetIdleAnimation(bigCandleIdle);
                 breakableItem->SetBreakAnimation(bigCandleBreak);
@@ -112,11 +118,38 @@ bool SceneBuilder::LoadSceneWithData(
                 break;
 
             case BreakableItemType::STAIR:
-                // No animations for stairs
                 break;
             }
-
             world->AddBreakable(std::move(breakableItem));
+        }
+
+        for (const auto& item : data.objectPositions) {
+            float x = std::get<0>(item);
+            float y = std::get<1>(item);
+            ObjectType type = std::get<2>(item);
+
+            auto object = std::make_unique<Object>(x, y, type, breakableItemTexture);
+
+            switch (type) {
+            case ObjectType::TRIDENT:
+                object->SetIdleAnimation(trident);
+
+                // Collider frames match exactly with animation frames:
+                // Animation: { 0, 160, 64, 132 }, { 64, 160, 128, 292 }, { 128, 160, 192, 292 }, etc.
+                object->SetColliderFrames({
+                    {0, 160, 64, 196},      // Frame 0: matches animation frame exactly
+                    {64, 160, 128, 213},    // Frame 1: matches animation frame exactly  
+                    {128, 160, 192, 228},   // Frame 2: matches animation frame exactly
+                    {192, 160, 256, 244},   // Frame 3: matches animation frame exactly
+                    {256, 160, 320, 260},   // Frame 4: matches animation frame exactly
+                    {320, 160, 384, 278},   // Frame 5: matches animation frame exactly
+                    {384, 160, 448, 292}    // Frame 6: matches animation frame exactly
+                    });
+                break;
+            case ObjectType::MOVING_STAIR:
+                break;
+            }
+            world->AddObject(std::move(object));
         }
     }
     else {

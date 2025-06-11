@@ -71,6 +71,24 @@ const std::vector<BreakableItem*>& World::GetBreakables() const {
     return result;
 }
 
+void World::AddObject(std::unique_ptr<Object> obj)
+{
+	obj->SetWorld(this);
+	objects.push_back(std::move(obj));
+}
+void World::RemoveObject(Object* target)
+{
+	auto it = std::remove_if(objects.begin(), objects.end(),
+		[target](const std::unique_ptr<Object>& o) { return o.get() == target; });
+	objects.erase(it, objects.end());
+}
+const std::vector<Object*>& World::GetObjects() const {
+    static std::vector<Object*> result;
+    result.clear(); // Clear previous results
+    for (const auto& o : objects) result.push_back(o.get());
+    return result;
+}
+
 // === Weapon ===
 void World::AddWeapon(std::unique_ptr<Weapon> weapon) {
     weapons.push_back(std::move(weapon));
@@ -134,6 +152,56 @@ void World::CheckWeaponEnemyCollision()
                 enemy->setIsDead(true);
                 enemy->setIsActive(false);
                 AddItem(std::make_unique<Item>(enemy->GetX(), enemy->GetY(), ItemType::SMALL_HEART, itemTexture));
+            }
+        }
+    }
+}
+
+
+void World::CheckPlayerObjectCollision()
+{
+    if (!player) return;
+
+
+    
+
+    for (const auto& obj : objects) {
+        char message[50];
+
+        auto playerCollider = player->GetCollider();
+        if (!playerCollider) return;
+        //if (!obj->IsActivated()) continue;
+
+        auto objCollider = obj->GetCollider();
+        if (!objCollider) continue;
+
+        // AABB collision detection
+        float l1, t1, r1, b1;
+        float l2, t2, r2, b2;
+
+        playerCollider->GetBoundingBox(l1, t1, r1, b1);
+        objCollider->GetBoundingBox(l2, t2, r2, b2);
+       
+        
+        bool isColliding = !(l1 >= r2 || r1 <= l2 || t1 >= b2 || b1 <= t2);
+		
+
+
+        if (isColliding) {
+           
+            if (obj->GetType() == ObjectType::TRIDENT) {
+                // Trident gây 100 damage
+                player->TakeDamage(100);
+
+                // Determine knockback direction
+                float playerX = player->GetX();
+                float tridentX = obj->GetX();
+                bool tridentIsLeft = tridentX < playerX;
+
+                player->ApplyKnockback(tridentIsLeft, 200.0f);
+
+                // Mark trident for deletion after hitting player
+                obj->MarkForDelete();
             }
         }
     }
@@ -276,6 +344,8 @@ void World::Update(float deltaTime) {
     CheckWeaponEnemyCollision();
     CheckWeaponBreakableCollision();
 
+    CheckPlayerObjectCollision();
+
     // Update game objects
     if (player) {
         player->Update(deltaTime);
@@ -291,9 +361,13 @@ void World::Update(float deltaTime) {
 
     for (const auto& b : breakableItems)
     {
-        b->Update(deltaTime);
-        
+        b->Update(deltaTime);   
     }
+
+	for (const auto& o : objects) {
+		o->Update(deltaTime);
+	}
+
     for (const auto& w : weapons) w->Update(deltaTime);
 }
 
@@ -303,6 +377,7 @@ void World::Render(std::unique_ptr<SpriteBatch>& spriteBatch) {
     for (const auto& e : enemies) e->Render(spriteBatch);
     for (const auto& i : items) i->Render(spriteBatch);
     for (const auto& b : breakableItems) b->Render(spriteBatch);
+	for (const auto& o : objects) o->Render(spriteBatch);
     for (const auto& w : weapons) w->Render(spriteBatch);
 }
 
@@ -312,6 +387,7 @@ void World::Clear() {
     enemies.clear();
     items.clear();
     breakableItems.clear();
+	objects.clear();
     weapons.clear();
 }
 
