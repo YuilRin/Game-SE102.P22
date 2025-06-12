@@ -32,6 +32,5 @@ void Player::SitDown() {
     if (isOnGround && state != PlayerState::SitDown) {
         state = PlayerState::SitDown;
         animations[state].reset();
-
     }
 }

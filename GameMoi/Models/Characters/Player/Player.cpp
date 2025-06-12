@@ -14,21 +14,6 @@ const float stairStepX = 8; // hoặc tileSize * 0.5 nếu muốn mượt
 const float stairStepY = 8; // giống trên
 bool stand=false;
 
-void Player::ApplyKnockback(bool fromLeft, float strength)
-{
-    float knockbackDirection = fromLeft ? 1.0f : -1.0f;
-    _velocity.x = knockbackDirection * strength;
-
-    // Small vertical boost to make the knockback feel more natural
-    _velocity.y = -strength * 0.5f;
-
-    // Update collider velocity
-    collider->vx = _velocity.x;
-    collider->vy = _velocity.y;
-
-    // Change state to indicate damage
-    state = PlayerState::TakingDamage;
-}
 
 void Player::SetWorld(World* w)
 {
@@ -45,7 +30,6 @@ Player::Player(string startPos, std::map<PlayerState, Animation> anims, ID3D11De
     std::getline(file, dummy);
     file >> x >> y;
 #pragma endregion
-
 
     _velocity = { 0.0f, 0.0f };
     collider = new Collider(x, y, 32, 64); // kích thước 32x64
@@ -75,35 +59,35 @@ Player::~Player()
 void Player::onKeyPressed(WPARAM key) {
     switch (key) {
     case 'A': case VK_LEFT:
-        if(isOnGround && !isSteppingOneStair)
+        if(isOnGround && !isSteppingOneStair && state != PlayerState::Dead)
             MoveLeft();
         break;
     case 'D': case VK_RIGHT:
-        if (isOnGround && !isSteppingOneStair)
+        if (isOnGround && !isSteppingOneStair && state != PlayerState::Dead)
             MoveRight();
         break;
-    case 'L': //case VK_DOWN:
-        if (isOnGround && !isSteppingOneStair)
+    case 'L':
+        if (isOnGround && !isSteppingOneStair && state != PlayerState::Dead)
             SitDown();
         break;
     case VK_UP: case 'W':
-        if(!isSteppingOneStair)
+        if(!isSteppingOneStair && state != PlayerState::Dead)
         ClimbUp(); 
         break;
     case VK_DOWN: case 'S':
        
-        if (!isSteppingOneStair)
+        if (!isSteppingOneStair && state != PlayerState::Dead)
             ClimbDown();
         
         break;
 
     case 'K': //case VK_UP:
-        if( !isSteppingOneStair)
+        if( !isSteppingOneStair && state != PlayerState::Dead)
         Jump();
         break;
     case 'J':
 
-        if (!isSteppingOneStair)
+        if (!isSteppingOneStair && state != PlayerState::Dead)
         Attack();
         break;
     case 'I':
@@ -130,32 +114,24 @@ void Player::onKeyPressed(WPARAM key) {
 
 void Player::onKeyReleased(WPARAM key) {
     switch (key) {
-    case 'A': case VK_LEFT:
+    case 'A': case VK_LEFT: case 'D': case VK_RIGHT:
+        if (isOnGround && !isSteppingOneStair && state != PlayerState::Dead)
+        {
         _velocity.x = 0;
         state = PlayerState::Idle;
+    }
         break;
-    case 'D': case VK_RIGHT:
-        state = PlayerState::Idle;
-        _velocity.x = 0;
-        break;
-    case VK_UP: case 'W':
+       
+    case VK_UP: case 'W': case VK_DOWN:     case 'S':
         _velocity = Vector2(0, 0);
-        if (isOnGround)
+        if (isOnGround && state != PlayerState::Dead)
         {
             isClimbing = false;
             state = PlayerState::Idle;
         }
         break;
-    case VK_DOWN:     case 'S':
-        _velocity = Vector2(0, 0);
-        if (isOnGround)
-        {
-            isClimbing = false;
-            state = PlayerState::Idle;
-        }        
-        break;
-    case 'L':// case VK_DOWN:
-        if (state == PlayerState::SitDown) {
+    case 'L':
+        if (state == PlayerState::SitDown && state != PlayerState::Dead) {
             y -= 13.0f;
           
         }

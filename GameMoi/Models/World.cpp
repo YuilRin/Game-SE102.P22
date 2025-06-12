@@ -162,9 +162,6 @@ void World::CheckPlayerObjectCollision()
 {
     if (!player) return;
 
-
-    
-
     for (const auto& obj : objects) {
         char message[50];
 
@@ -185,20 +182,20 @@ void World::CheckPlayerObjectCollision()
         
         bool isColliding = !(l1 >= r2 || r1 <= l2 || t1 >= b2 || b1 <= t2);
 		
-
-
         if (isColliding) {
-           
             if (obj->GetType() == ObjectType::TRIDENT) {
                 // Trident gây 100 damage
                 player->TakeDamage(100);
 
-                // Determine knockback direction
-                float playerX = player->GetX();
-                float tridentX = obj->GetX();
-                bool tridentIsLeft = tridentX < playerX;
+                // Only apply knockback if player is still alive
+                if (player->GetInfo()->GetHeart() > 0) {
+                    // Determine knockback direction
+                    float playerX = player->GetX();
+                    float tridentX = obj->GetX();
+                    bool tridentIsLeft = tridentX < playerX;
 
-                player->ApplyKnockback(tridentIsLeft, 200.0f);
+                    player->ApplyKnockback(tridentIsLeft, 200.0f);
+                }
 
                 // Mark trident for deletion after hitting player
                 obj->MarkForDelete();
@@ -289,6 +286,10 @@ void World::Update(float deltaTime) {
     // Process enemy collisions
     for (auto& enemy : enemies) {
         if (!enemy->IsActive() || enemy->GetInfo()->GetHeart() <= 0) continue;
+
+        // Check if player is already dead - don't process collisions
+        if (player->GetInfo()->GetHeart() <= 0) continue;
+
         CollisionEvent* chosen = colY ? colY : colX;
 
         if (chosen && chosen->WasCollided()) {
@@ -297,8 +298,13 @@ void World::Update(float deltaTime) {
             float enemyX = enemy->GetX();
             bool enemyIsLeft = enemyX < playerX;
 
+            // Take damage first
             player->TakeDamage(10);
-            player->ApplyKnockback(enemyIsLeft, 150.0f);
+
+            // Only apply knockback if player is still alive
+            if (player->GetInfo()->GetHeart() > 0) {
+                player->ApplyKnockback(enemyIsLeft, 150.0f);
+            }
             break;
         }
     }

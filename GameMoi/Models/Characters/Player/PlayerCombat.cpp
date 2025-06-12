@@ -21,23 +21,48 @@ void Player::Attack() {
 
 void Player::TakeDamage(int damage) {
     // Check if already in damaged state (to prevent multiple hits at once)
-    if (state == PlayerState::TakingDamage) {
+    if (state == PlayerState::TakingDamage || state == PlayerState::Dead) {
         return;
     }
 
     // Apply damage to player's heart
     _info->SetHeart(_info->GetHeart() - damage);
 
-    // If no knockback was applied, still transition to damage state
-    if (state != PlayerState::TakingDamage) {
-        state = PlayerState::TakingDamage;
-    }
-
-    // Add invincibility frames logic here if needed
-
-    // Check if player is dead
+    // Check if player is dead FIRST
     if (_info->GetHeart() <= 0) {
         state = PlayerState::Dead;
         _isDead = true;
+        _velocity = Vector2(0, 0); // Stop all movement when dead
+        collider->vx = 0;
+        collider->vy = 0;
+        return; // Exit immediately when dead
+    }
+
+    // Only apply knockback and damage state if not dead
+    state = PlayerState::TakingDamage;
+
+    // Add invincibility frames logic here if needed
+}
+
+void Player::ApplyKnockback(bool fromLeft, float strength)
+{
+    // Don't apply knockback if player is dead
+    if (state == PlayerState::Dead || _isDead) {
+        return;
+    }
+
+    float knockbackDirection = fromLeft ? 1.0f : -1.0f;
+    _velocity.x = knockbackDirection * strength;
+
+    // Small vertical boost to make the knockback feel more natural
+    _velocity.y = -strength * 0.5f;
+
+    // Update collider velocity
+    collider->vx = _velocity.x;
+    collider->vy = _velocity.y;
+
+    // Only change state to TakingDamage if not already dead
+    if (state != PlayerState::Dead) {
+        state = PlayerState::TakingDamage;
     }
 }

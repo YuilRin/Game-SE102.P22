@@ -107,6 +107,8 @@ void Player::HandleMovingStairInteraction(float elapsedTime) {
             bool playerOnStair = (abs(pb1 - st1) <= epsilon && pr1 > sl1 && pl1 < sr1);
 
             if (playerOnStair) {
+                if(state == PlayerState::Jumping)
+                state = PlayerState::Idle;
                 isOnMovingStair = true;
                 currentMovingStair = obj;
 
@@ -179,7 +181,7 @@ void Player::HandleStateChange(float elapsedTime) {
             g->GetBoundingBox(l2, t2, r2, b2);
 
             const float epsilon = 1.0f;
-            float verticalOffset = (state == PlayerState::SitDown || state == PlayerState::Jumping) ? 3.0f : 0.0f;
+            float verticalOffset = (state == PlayerState::SitDown || state == PlayerState::Jumping) ? 5.0f : 0.0f;
 
             if (abs((b1 + verticalOffset) - t2) < epsilon && r1 > l2 && l1 < r2) {
                 isOnGround = true;
@@ -249,6 +251,49 @@ void Player::HandleStateChange(float elapsedTime) {
 }
 
 void Player::Update(float elapsedTime) {
+
+    // Handle dead state first - no other updates if dead
+    if (state == PlayerState::Dead || _isDead) {
+        // Stop all movement
+        _velocity = Vector2(0, 0);
+        collider->vx = 0;
+        collider->vy = 0;
+
+        animations[PlayerState::Dead].Update(elapsedTime);
+
+        return;
+    }
+
+    // Handle damage state
+    if (state == PlayerState::TakingDamage) {
+        // Add damage state timer to transition back to normal state
+        static float damageTimer = 0.0f;
+        const float DAMAGE_DURATION = 0.5f; // 0.5 seconds of damage state
+
+        damageTimer += elapsedTime;
+
+        if (damageTimer >= DAMAGE_DURATION) {
+            damageTimer = 0.0f;
+
+            // Check if still alive before transitioning
+            if (_info->GetHeart() > 0) {
+                state = PlayerState::Idle;
+                _velocity.x = 0; // Stop horizontal movement
+            }
+            else {
+                state = PlayerState::Dead;
+                _isDead = true;
+                return;
+            }
+        }
+
+        // Update velocity during damage (for knockback effect)
+        // Apply friction to gradually reduce knockback
+        _velocity.x *= 0.9f;
+        if (abs(_velocity.x) < 10.0f) {
+            _velocity.x = 0;
+        }
+    }
     // Xử lý leo cầu thang từng bước
     if (isSteppingOneStair) {
         stepTimer += elapsedTime;
