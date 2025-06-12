@@ -11,6 +11,12 @@ float GameObject::GetX() {
 float GameObject::GetY() {
     return this->y;
 }
+float GameObject::GetWX() {
+    return this->wx;
+}
+float GameObject::GetWY() {
+    return this->wy;
+}
 void GameObject::GetPosition(float &x, float& y)
 {
     x = this->x;

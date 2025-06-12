@@ -112,7 +112,7 @@ void Player::onKeyPressed(WPARAM key) {
     case 'G':
     {
         char message[50];
-        sprintf_s(message, "Tọa độ nhân vật: X = %.2f, Y = %.2f", x, y);
+        sprintf_s(message, "Tọa độ trong thế giới: X = %.2f, Y = %.2f", worldX, worldY);
         MessageBoxA(NULL, message, "Thông báo", MB_OK | MB_ICONINFORMATION);
         break;
     }
@@ -248,3 +248,19 @@ int Player::GetStage()
 {
     return currentStage;
 }
+void Player::UpdatePosition(float dt) {
+    float nextX = worldX + _velocity.x * dt;
+    //float nextY = worldY + _velocity.y * dt;
+
+    // Chặn trái màn hình
+    if (nextX < 0) nextX = 0;
+
+    // TODO: Chặn theo tile map nếu có
+    // if (IsBlockedAt(nextX, worldY)) nextX = worldX;
+    // if (IsBlockedAt(worldX, nextY)) nextY = worldY;
+
+    worldX = nextX;
+    //worldY = nextY;
+
+}
+

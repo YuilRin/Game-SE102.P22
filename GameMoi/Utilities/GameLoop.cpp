@@ -21,6 +21,7 @@ void GameLoop() {
         // ===== UPDATE GAME =====
         if (world) {
             world->Update(deltaTime);
+
         }
 
         // ===== UPDATE UI =====
@@ -28,7 +29,7 @@ void GameLoop() {
             // FIX: Cập nhật UI trực tiếp từ player data
             Player* player = world->GetPlayer();
             Info* playerInfo = player->GetInfo();
-
+            player->UpdatePosition(deltaTime);
             if (playerInfo) {
                 // Cập nhật heart/HP từ player
                 gameUI->SetHeart(playerInfo->GetHeart());
@@ -48,12 +49,25 @@ void GameLoop() {
             CheckEnemyHealthBar();
         }
 
-        // Camera logic
         if (world && world->GetPlayer()) {
-            float camX = world->GetPlayer()->GetX() - WIDTH / 3.0f;
-            camX = std::max(0.0f, std::min(camX,
-                static_cast<float>(tileMap->GetWidth()) - WIDTH / 3.0f));
-            camera->SetPosition(camX, 0);
+            float playerX = world->GetPlayer()->GetWX();  // Tọa độ thế giới
+            float playerY = world->GetPlayer()->GetWY();
+
+            float halfScreenWidth = camera->GetWidth() / 2.0f;
+            float halfScreenHeight = camera->GetHeight() / 2.0f;
+
+            float mapWidthInPixel = tileMap->GetWidth() * 16;
+            float mapHeightInPixel = tileMap->GetHeight() * 16;
+
+            // ✅ Đặt camera sao cho player nằm giữa màn hình
+            float camX = playerX - halfScreenWidth;
+            float camY = playerY - halfScreenHeight;
+
+            // ✅ Giới hạn camera trong map
+            camX = std::max(0.0f, std::min(camX, mapWidthInPixel - camera->GetWidth()));
+            camY = std::max(0.0f, std::min(camY, mapHeightInPixel - camera->GetHeight()));
+
+            camera->SetPosition(camX, camY);
         }
 
         // Level transition logic - sử dụng điều kiện chung hơn
