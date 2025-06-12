@@ -40,9 +40,12 @@ LevelData LevelManager::CreateLevel1() {
     level1.breakableItemTexture = L"Image/objects.png";
     level1.startPos = "Image/StartPos/stage21.txt";
 
+    level1.enemyPositions = {
+       {300.0f, 200.0f}
+    };
     level1.objectPositions = {
         {370.0f, 127.1f, ObjectType::MOVING_STAIR},
-        {300.0f, 150.0f, ObjectType::TRIDENT}
+       // {300.0f, 150.0f, ObjectType::TRIDENT}
     };
 
     return level1;

@@ -45,7 +45,7 @@ bool SceneBuilder::LoadSceneWithData(
 
     std::map<PlayerState, Animation> playerAnimations = {
         {PlayerState::Idle             , Animation(playerTexture, {{585, 0 , 615, 64}}, 0.3f)},
-        {PlayerState::TakingDamage     , Animation(playerTexture, {{395,	0,	425,	64}}, 0.3f)},
+        {PlayerState::TakingDamage     , Animation(playerTexture, {{395,	0,	425,	64},{0,0,0,0},{395,	0,	425,	64}}, 0.3f)},
         {PlayerState::Dead             , Animation(playerTexture, {{32,	0,	96,	64  }}, 0.3f)},
         {PlayerState::PickingUpItem    , Animation(playerTexture, {{585, 0 , 615, 64}}, 0.3f)},
         {PlayerState::Falling          , Animation(playerTexture, {{585, 0 , 615, 64}}, 0.3f)},

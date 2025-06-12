@@ -33,7 +33,7 @@ private:
     bool isSteppingOneStair = false;
     float stepTimer = 0.0f;
     const float stepDuration = 0.3f; // thời gian hoàn thành 1 bước
-    const float stairStepDistance = 25.0f; // khoảng cách 1 bậc thang (tileSize)
+    const float stairStepDistance = 17.0f; // khoảng cách 1 bậc thang (tileSize)
 
     Vector2 targetPosition; // vị trí đích khi leo 1 bước
     Vector2 startPosition;  // vị trí bắt đầu leo 1 bước
