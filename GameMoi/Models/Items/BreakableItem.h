@@ -42,6 +42,7 @@ public:
     void OnHit(); // ← Gọi khi bị vũ khí chạm
     bool IsBroken() const { return isBroken; }
     void MarkForDelete(); // Đánh dấu để xóa
+	bool IsMarkedForDelete() const { return isBroken; }
 
     // Set animations directly for the item
     void SetIdleAnimation(const Animation& anim) { idleAnim = anim; hasIdleAnim = true; }

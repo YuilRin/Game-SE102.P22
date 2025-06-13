@@ -54,8 +54,8 @@ bool SceneBuilder::LoadSceneWithData(
         {PlayerState::Walking          , Animation(playerTexture, {{585, 0 , 615, 64} , {618, 0 , 640, 64 }, {643,  0, 673, 64 }}, 0.3f)},
         {PlayerState::Stand_Hit        , Animation(playerTexture, {{460, 0 , 507, 64} , {510, 0 , 541, 64 }, {542,  0, 584, 64 }}, 0.3f)},
         {PlayerState::Climbing         , Animation(playerTexture, {{364,	0,	392,	64}}, 0.3f)},
-         {PlayerState::Up         , Animation(playerTexture, {{364,	0,	392,	64}}, 0.3f)},
-          {PlayerState::Down        , Animation(playerTexture, {{334,	0,	364,	64	}}, 0.3f)},
+        {PlayerState::Up         , Animation(playerTexture, {{364,	0,	392,	64}}, 0.3f)},
+        {PlayerState::Down        , Animation(playerTexture, {{334,	0,	364,	64	}}, 0.3f)},
         {PlayerState::Up_Hit           , Animation(playerTexture, {{96 , 0 , 144, 64} , {144, 0 , 176, 64 }, {176,  0, 216, 64 }}, 0.3f)},
         {PlayerState::Down_Hit         , Animation(playerTexture, {{216, 0 , 258, 64} , {258, 0 , 289, 64 }, {290,  0, 334, 64 }}, 0.3f)}
     };

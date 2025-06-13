@@ -49,6 +49,7 @@ using namespace std;
 // ============================
 enum eID
 {
+    COLLIDER_WRAPPER=100,
     UNKNOWN = -1,
     PLAYER = 0,
     MAIN_MENU = 1,

@@ -181,7 +181,7 @@ void Player::HandleStateChange(float elapsedTime) {
             g->GetBoundingBox(l2, t2, r2, b2);
 
             const float epsilon = 1.0f;
-            float verticalOffset = (state == PlayerState::SitDown || state == PlayerState::Jumping) ? 5.0f : 0.0f;
+            float verticalOffset = (state == PlayerState::SitDown || state == PlayerState::Jumping) ? 3.0f : 0.0f;
 
             if (abs((b1 + verticalOffset) - t2) < epsilon && r1 > l2 && l1 < r2) {
                 isOnGround = true;
@@ -366,6 +366,24 @@ void Player::Update(float elapsedTime) {
     animations[state].Update(elapsedTime);
 }
 
+
+
+void Player::HandleCollision(float elapsedTime, std::vector<Collider*>& nearbyColliders) {
+    if (!collider) return;
+
+    // Use the provided nearby colliders instead of all world colliders
+    CollisionManager::GetInstance()->Process(collider, elapsedTime, nearbyColliders);
+
+    float newX, newY;
+    collider->GetPosition(newX, newY);
+    x = newX;
+    y = newY;
+    collider->GetSpeed(_velocity.x, _velocity.y);
+
+    // Update world coordinates
+    worldX = x;
+    worldY = y;
+}
 void Player::HandleCollision(float elapsedTime)
 {
     if (!world) return;

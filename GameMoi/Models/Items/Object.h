@@ -60,6 +60,7 @@ public:
     void OnActivate(); // Called when object is activated
     bool IsActivated() const { return isActivated; }
     void MarkForDelete(); // Mark for deletion
+	bool IsMarkedForDelete() const { return isActivated; }
 
     // Set animations directly for the object
     void SetIdleAnimation(const Animation& anim) { idleAnim = anim; hasIdleAnim = true; }

@@ -104,6 +104,8 @@ public:
     //void SetStairColliders(std::vector<Collider*> colliders);
     void SetItemList(std::vector<Item*>* itemList);
 
+    void HandleCollision(float elapsedTime, std::vector<Collider*>& nearbyColliders);
+
     void HandleCollision(float elapsedTime);
     void HandleStateChange(float elapsedTime);
     void HandleMovingStairInteraction(float elapsedTime); // New function for moving stair logic

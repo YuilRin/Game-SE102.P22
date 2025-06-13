@@ -19,7 +19,11 @@ GameObject* Collider::GetOwner() const
 }
 
 void Collider::GetBoundingBox(float& left, float& top, float& right, float& bottom) const {
-    left = x;
+	if (width <= 0 || height <= 0) {
+		left = top = right = bottom = 0;
+		return;
+	}
+    left = x;   
     top = y;
     right = x + width;
     bottom = y + height;

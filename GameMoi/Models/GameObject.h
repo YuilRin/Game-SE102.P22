@@ -74,8 +74,13 @@ public:
      //Bounding box (override nếu muốn custom)
     virtual RECT getBounding() {
         float l, t, r, b;
-        collider->GetBoundingBox(l, t, r, b);
-        return RECT{ (LONG)l, (LONG)t, (LONG)r, (LONG)b };
+        if (collider != nullptr) {
+            collider->GetBoundingBox(l, t, r, b);
+
+            return RECT{ (LONG)l, (LONG)t, (LONG)r, (LONG)b };
+        }
+
+        
     }
 
     // Logic game

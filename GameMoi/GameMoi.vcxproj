@@ -151,6 +151,7 @@
     <ClInclude Include="Render.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tilemap\Collider.h" />
+    <ClInclude Include="Tilemap\ColliderWrapper.h" />
     <ClInclude Include="Tilemap\StairCollider.h" />
     <ClInclude Include="Tilemap\TileMap.h" />
     <ClInclude Include="Utilities\define.h" />
