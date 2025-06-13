@@ -55,7 +55,7 @@ bool TileMap::LoadMapData(string &filePath) {
 
 
 bool TileMap::LoadTexture(ID3D11Device* device, const wchar_t* filename) {
-    HRESULT hr = DirectX::CreateWICTextureFromFile(device, filename, nullptr, &texture);
+    HRESULT hr = DirectX::CreateWICTextureFromFile(device,filename, nullptr, &texture);
     return SUCCEEDED(hr);
 }
 

@@ -86,6 +86,7 @@ enum eStatus
     RUNNING = (1 << 3),
     DIE = (1 << 4),
     ATTACKING = (1 << 8),
+    DESTROY = (1<<7),
 };
 
 // ============================
@@ -117,6 +118,9 @@ enum eSoundId
 // ============================
 //  Kiểu vector mới
 // ============================
+
+#define MAX_OBJECTS 4
+#define MAX_LEVELS 32
 typedef XMFLOAT3 GVector3;
 typedef XMFLOAT2 GVector2;
 

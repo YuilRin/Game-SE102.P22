@@ -47,6 +47,8 @@ public:
 
     virtual void HandleCollision(float elapsedTime, std::vector<Collider*>& groundColliders);
 
+    void Release();
+
 
     // Collider
     //Collider* GetCollider() { return collider; }
@@ -69,12 +71,12 @@ public:
     // Va chạm đơn giản (override nếu cần)
     virtual float checkCollision(GameObject* object, float dt) { return 0.0f; }
 
-    // Bounding box (override nếu muốn custom)
-    //virtual RECT getBounding() {
-    //    float l, t, r, b;
-    //    //collider->GetBoundingBox(l, t, r, b);
-    //    return RECT{ (LONG)l, (LONG)t, (LONG)r, (LONG)b };
-    //}
+     //Bounding box (override nếu muốn custom)
+    virtual RECT getBounding() {
+        float l, t, r, b;
+        collider->GetBoundingBox(l, t, r, b);
+        return RECT{ (LONG)l, (LONG)t, (LONG)r, (LONG)b };
+    }
 
     // Logic game
     virtual void Update(float elapsedTime) = 0;
