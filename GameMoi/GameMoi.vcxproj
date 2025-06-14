@@ -146,6 +146,7 @@
     <ClInclude Include="Models\Weapons\Weapon.h" />
     <ClInclude Include="Models\Weapons\Whip.h" />
     <ClInclude Include="Models\World.h" />
+    <ClInclude Include="Player2.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="QuadTree.h" />
     <ClInclude Include="Render.h" />
@@ -190,6 +191,7 @@
     <ClCompile Include="Models\Weapons\Weapon.cpp" />
     <ClCompile Include="Models\Weapons\Whip.cpp" />
     <ClCompile Include="Models\World.cpp" />
+    <ClCompile Include="Player2.cpp" />
     <ClCompile Include="QuadTree.cpp" />
     <ClCompile Include="Rended.cpp" />
     <ClCompile Include="TextureManager.cpp" />

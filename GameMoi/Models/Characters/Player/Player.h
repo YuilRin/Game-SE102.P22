@@ -28,7 +28,7 @@ enum class PlayerState {
 };
 
 class Player : public GameObject {
-private:
+protected:
 
     bool isSteppingOneStair = false;
     float stepTimer = 0.0f;

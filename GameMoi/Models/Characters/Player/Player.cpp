@@ -58,11 +58,11 @@ Player::~Player()
 
 void Player::onKeyPressed(WPARAM key) {
     switch (key) {
-    case 'A': case VK_LEFT:
+    case 'A': 
         if(isOnGround && !isSteppingOneStair && state != PlayerState::Dead)
             MoveLeft();
         break;
-    case 'D': case VK_RIGHT:
+    case 'D': 
         if (isOnGround && !isSteppingOneStair && state != PlayerState::Dead)
             MoveRight();
         break;
@@ -70,18 +70,18 @@ void Player::onKeyPressed(WPARAM key) {
         if (isOnGround && !isSteppingOneStair && state != PlayerState::Dead)
             SitDown();
         break;
-    case VK_UP: case 'W':
+    case 'W':
         if(!isSteppingOneStair && state != PlayerState::Dead)
         ClimbUp(); 
         break;
-    case VK_DOWN: case 'S':
+    case 'S':
        
         if (!isSteppingOneStair && state != PlayerState::Dead)
             ClimbDown();
         
         break;
 
-    case 'K': //case VK_UP:
+    case VK_SPACE: //case VK_UP:
         if( !isSteppingOneStair && state != PlayerState::Dead)
         Jump();
         break;

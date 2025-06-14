@@ -314,10 +314,12 @@ void World::Update(float deltaTime) {
     UpdateQuadTrees();
 
     if (!player) return;
+    if (!player2) return;
 
     auto* playerCollider = player->GetCollider();
     if (!playerCollider) return;
-
+    auto* playerCollider2 = player2->GetCollider();
+    if (!playerCollider2) return;
     // Get nearby ground colliders for player physics using spatial partitioning
     float px, py;
     player->GetPosition(px, py);
@@ -325,7 +327,7 @@ void World::Update(float deltaTime) {
 
     // Handle player physics with nearby colliders only
     player->Update(deltaTime);
-
+    player2->Update(deltaTime);
     // Enemy collision detection using spatial partitioning
     float l, t, r, b;
     playerCollider->GetBoundingBox(l, t, r, b);
@@ -389,9 +391,10 @@ void World::Update(float deltaTime) {
     CheckWeaponEnemyCollision();
     CheckWeaponBreakableCollision();
     CheckPlayerObjectCollision();
-
+    CheckPlayerVsPlayerCollision();
     // Update game objects
     player->Update(deltaTime);
+    player2->Update(deltaTime);
 
     for (const auto& e : enemies) {
         if (e->IsActive()) {
@@ -436,7 +439,10 @@ void World::Render(std::unique_ptr<SpriteBatch>& spriteBatch) {
     if (player) {
         player->Render(spriteBatch);
     }
-
+    if (player2)
+    {
+        player2->Render(spriteBatch);
+    }
     // Render all active enemies (fallback to original method temporarily)
     for (const auto& e : enemies) {
         if (e->IsActive() && !e->IsDead()) {
@@ -614,4 +620,145 @@ void World::SetEnemyTexture(ID3D11ShaderResourceView* tex) {
 
 void World::SetPlayerTexture(ID3D11ShaderResourceView* tex) {
     playerTexture = tex;
+}
+void World::SetPlayer2Texture(ID3D11ShaderResourceView* tex) {
+    player2Texture = tex;
+}
+
+Player2* World::GetPlayer2() const {
+    return player2.get();
+}
+void World::SetPlayer2(std::unique_ptr<Player2> p) {
+    if (p) {
+        p->SetWorld(this);
+        player2 = std::move(p);
+    }
+}
+
+void World::CheckPlayerVsPlayerCollision() {
+    if (!player || !player2) return;
+
+    // Kiểm tra nếu một trong hai player đã chết thì không xét va chạm
+    if (player->GetState() == PlayerState::Dead ||
+        player2->GetState() == PlayerState::Dead) return;
+
+    auto p1Collider = player->GetCollider();
+    auto p2Collider = player2->GetCollider();
+
+    if (!p1Collider || !p2Collider) return;
+
+    // Lấy bounding box của cả hai player
+    float p1_l, p1_t, p1_r, p1_b;
+    float p2_l, p2_t, p2_r, p2_b;
+
+    p1Collider->GetBoundingBox(p1_l, p1_t, p1_r, p1_b);
+    p2Collider->GetBoundingBox(p2_l, p2_t, p2_r, p2_b);
+
+    // AABB collision detection
+    bool isColliding = !(p1_l >= p2_r || p1_r <= p2_l ||
+        p1_t >= p2_b || p1_b <= p2_t);
+
+    if (isColliding) {
+        // Xử lý va chạm - đẩy nhau ra
+        float overlapX = min(p1_r - p2_l, p2_r - p1_l);
+        float overlapY = min(p1_b - p2_t, p2_b - p1_t);
+
+        if (overlapX < overlapY) {
+            // Tách ra theo trục X
+            float pushDistance = overlapX / 2.0f + 1.0f;
+            if (player->GetX() < player2->GetX()) {
+                player->SetPosition(player->GetX() - pushDistance, player->GetY());
+                player2->SetPosition(player2->GetX() + pushDistance, player2->GetY());
+            }
+            else {
+                player->SetPosition(player->GetX() + pushDistance, player->GetY());
+                player2->SetPosition(player2->GetX() - pushDistance, player2->GetY());
+            }
+        }
+        else {
+            // Tách ra theo trục Y
+            float pushDistance = overlapY / 2.0f + 1.0f;
+            if (player->GetY() < player2->GetY()) {
+                player->SetPosition(player->GetX(), player->GetY() - pushDistance);
+                player2->SetPosition(player2->GetX(), player2->GetY() + pushDistance);
+            }
+            else {
+                player->SetPosition(player->GetX(), player->GetY() + pushDistance);
+                player2->SetPosition(player2->GetX(), player2->GetY() - pushDistance);
+            }
+        }
+    }
+}
+void World::HandlePlayerCombat(Player* attacker, Player* defender) {
+    if (!attacker || !defender) return;
+
+    auto attackerWeapon = attacker->GetCurrentWeapon();
+    if (!attackerWeapon || !attackerWeapon->IsActive()) return;
+
+    auto weaponCollider = attackerWeapon->GetCollider();
+    auto defenderCollider = defender->GetCollider();
+
+    if (!weaponCollider || !defenderCollider) return;
+
+    // Kiểm tra va chạm weapon vs player
+    float w_l, w_t, w_r, w_b;
+    float d_l, d_t, d_r, d_b;
+
+    weaponCollider->GetBoundingBox(w_l, w_t, w_r, w_b);
+    defenderCollider->GetBoundingBox(d_l, d_t, d_r, d_b);
+
+    bool isHit = !(w_l >= d_r || w_r <= d_l || w_t >= d_b || w_b <= d_t);
+
+    if (isHit) {
+        // Tính hướng knockback
+        float attackerX = attacker->GetX();
+        float defenderX = defender->GetX();
+        bool attackerIsLeft = attackerX < defenderX;
+
+        // Gây damage
+        int damage = attackerWeapon->GetDamage();
+        defender->TakeDamage(damage);
+
+        // Knockback
+        if (defender->GetInfo()->GetHeart() > 0) {
+            defender->ApplyKnockback(attackerIsLeft, 200.0f);
+        }
+        else {
+           
+            ResetPlayersToSpawn();
+        }
+    }
+}
+void World::ResetPlayersToSpawn() {
+    if (player) {
+        player->GetInfo()->SetHeart(50); // Reset HP
+        // Reset vị trí (cần implement SetSpawnPosition cho Player1 nếu chưa có)
+    }
+
+    if (player2) {
+        player2->GetInfo()->SetHeart(50); // Reset HP
+        player2->ResetToSpawn();
+    }
+}
+
+void World::HandlePlayer1Input(WPARAM key, bool isPressed) {
+    if (!player) return;
+
+    if (isPressed) {
+        player->onKeyPressed(key);
+    }
+    else {
+        player->onKeyReleased(key);
+    }
+}
+
+void World::HandlePlayer2Input(WPARAM key, bool isPressed) {
+    if (!player2 ) return;
+
+    if (isPressed) {
+        player2->onKeyPressed(key);
+    }
+    else {
+        player2->onKeyReleased(key);
+    }
 }

@@ -13,10 +13,12 @@
 #include "../QuadTree.h"
 #include "../Tilemap/Collider.h"
 #include "../Tilemap/ColliderWrapper.h"
+#include "../Player2.h"
 
 class World {
 private:
     std::unique_ptr<Player> player;
+    std::unique_ptr<Player2> player2;
     std::vector<std::unique_ptr<Enemy>> enemies;
     std::vector<std::unique_ptr<Item>> items;
     std::vector<std::unique_ptr<BreakableItem>> breakableItems;
@@ -39,6 +41,7 @@ private:
     ID3D11ShaderResourceView* enemyTexture;
     ID3D11ShaderResourceView* breakableItemTexture;
     ID3D11ShaderResourceView* playerTexture;
+    ID3D11ShaderResourceView* player2Texture;
 
     // Internal helper methods
     void UpdateQuadTrees();
@@ -64,6 +67,20 @@ public:
     // Player
     void SetPlayer(std::unique_ptr<Player> p);
     Player* GetPlayer() const;
+
+    void SetPlayer2(std::unique_ptr<Player2> p);
+    Player2* GetPlayer2() const;
+
+
+    void CheckPlayerVsPlayerCollision();
+    void HandlePlayerCombat(Player* attacker, Player* defender);
+    void ResetPlayersToSpawn();
+
+
+
+    // Input handling for both players
+    void HandlePlayer1Input(WPARAM key, bool isPressed);
+    void HandlePlayer2Input(WPARAM key, bool isPressed);
 
     // Enemy
     void AddEnemy(std::unique_ptr<Enemy> enemy);
@@ -116,4 +133,5 @@ public:
     void SetBreakableItemTexture(ID3D11ShaderResourceView* tex);
     void SetEnemyTexture(ID3D11ShaderResourceView* tex);
     void SetPlayerTexture(ID3D11ShaderResourceView* tex);
+    void SetPlayer2Texture(ID3D11ShaderResourceView* tex);
 };

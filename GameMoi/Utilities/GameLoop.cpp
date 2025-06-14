@@ -28,8 +28,10 @@ void GameLoop() {
         if (gameUI && world && world->GetPlayer()) {
             // FIX: Cập nhật UI trực tiếp từ player data
             Player* player = world->GetPlayer();
+            Player2* player2 = world->GetPlayer2();
             Info* playerInfo = player->GetInfo();
             player->UpdatePosition(deltaTime);
+            player2->UpdatePosition(deltaTime);
             if (playerInfo) {
                 // Cập nhật heart/HP từ player
                 gameUI->SetHeart(playerInfo->GetHeart());
